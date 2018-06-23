@@ -1,10 +1,112 @@
-<!DOCTYPE html>
-<html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-	<meta charset="utf-8">
-	<title>EasyUI管理员后台</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>北京PK拾管理后台</title> 
+	<link rel="stylesheet" type="text/css" href="${BASE_PATH}css/easyui/css/default.css" />
+	<link rel="stylesheet" type="text/css" href="${BASE_PATH}js/easyui/js/themes/gray/easyui.css" />
+    <link rel="stylesheet" type="text/css" href="${BASE_PATH}js/easyui/js/themes/icon.css" />
+    <link rel="stylesheet" href="${BASE_PATH}css/iconfont.css"/>
+    <script type="text/javascript" src="${BASE_PATH}js/easyui/js/jquery-1.4.2.min.js"></script>
+    <script type="text/javascript" src="${BASE_PATH}js/easyui/js/jQuery.easyui.js"></script>
+	<script type="text/javascript" src='${BASE_PATH}js/easyui/js/outlook2.js'></script>
+	<style type="text/css">
+		.comeback{display:block; float:left; margin-left:10px;}
+	</style>
+    <script type="text/javascript">
+	 var _menus = {"menus":[
+						{"menuid":"1","icon":"icon-sys","menuname":"系统设置",
+							"menus":[
+										{"menuname":"提现管理","icon":"icon-nav","url":"${BASE_PATH}AdminStrUrl/pucashPage.html"},
+										{"menuname":"用户中奖查看","icon":"icon-role","url":"${BASE_PATH}AdminStrUrl/userwinPage.html"},
+//										{"menuname":"历史下注记录","icon":"icon-log","url":"${BASE_PATH}AdminStrUrl/historyPage.html"},
+										{"menuname":"会员管理","icon":"icon-users","url":"${BASE_PATH}AdminStrUrl/userInfoPage.html"}
+							]
+						}
+				]};
+       
+        $(function() {        
+
+            $('#loginOut').click(function() {
+                $.messager.confirm('系统提示', '您确定要退出本次登录吗?', function(r) {
+                    if (r) {
+                        $.messager.alert("操作提示","已经退出了","info");
+                    }
+                });
+            })
+            //$('#tabs').tabs('close','欢迎使用')
+			//默认3秒后删除“欢迎使用”的tab标签
+        });
+        
+        function timer(intDiff){
+        	var ss = window.setInterval(function(){
+        		if(intDiff>=1){
+        			$(".tabs-inner span").text("欢迎使用("+intDiff+")");
+            	    intDiff--;
+        		}else{
+        			clearInterval(ss);
+        			//var t=setTimeout("",3000);
+        			
+        		}
+        	}, 1000);
+        }
+    </script>
 </head>
-<body>
-	管理员后台
+<body class="easyui-layout" style="overflow-y: hidden"  scroll="no">
+	<noscript> <!--元素用来定义在脚本未被执行时的替代内容-->
+		<div style=" position:absolute; z-index:100000; height:2046px;top:0px;left:0px; width:100%; background:white; text-align:center;">
+			<img src="${BASE_PATH}images/easyui/images/noscript.gif" alt='抱歉，请开启脚本支持！' />
+		</div>
+	</noscript>
+	
+	<!--顶部-->
+    <div region="north" split="true" border="false" style="overflow: hidden; height: 100px; background-color:#000000;line-height: 20px;color: #fff; font-family: Verdana,微软雅黑,黑体;">
+    	<div style="float:left; margin-top: 35px; margin-left: 30px;">
+    		<i class="iconfont icon-21466" style="font-size:50px; float:left"></i>
+			<div style="float:left; font-size:25px; padding-left:10px;">北京PK拾管理后台</div>
+			<div style="clear:both;"></div>
+    	</div>
+        <div style="width:100px; float:right;" class="head">
+			<!-- <a class="comeback">欢迎使用快三系统</a>
+			<a href="#" id="editpass" class="comeback">修改密码</a> --> 
+			<a href="${BASE_PATH}loginout.html" style="font-size:13px; margin-top: 35px;">退 出</a>
+		</div>
+    </div>
+	
+	<!--底部-->
+    <div region="south" split="true" style="height: 30px; background:#D2E0F2; ">
+        <div class="footer">By 行走的火焰 Email:xiaoli@59ibox.cn</div>
+    </div>
+	
+	<!--菜单项-->
+    <div region="west" split="true" title="导航菜单" style="width:180px;" id="west">
+		<div class="easyui-accordion" fit="true" border="false">
+				
+		</div>
+    </div>
+	
+	<!--主页面-->
+    <div id="mainPanle" region="center" style="background: #eee; overflow-y:hidden">
+        <div id="tabs" class="easyui-tabs"  fit="true" border="false" style="background:#fff;">
+			<div id="FirstTitle" title="最新下注信息" style="padding:20px;overflow:hidden;" id="home">
+
+				<h1>Welcome to jQuery UI!</h1>
+
+			</div>
+		</div>
+    </div>
+    
+    <!--关闭标签页的功能-->
+    <div id="mm" class="easyui-menu" style="width:150px;">
+		<div id="mm-tabclose">关闭</div>
+		<div id="mm-tabcloseall">全部关闭</div>
+		<div id="mm-tabcloseother">除此之外全部关闭</div>
+		<div class="menu-sep"></div>
+		<div id="mm-tabcloseright">当前页右侧全部关闭</div>
+		<div id="mm-tabcloseleft">当前页左侧全部关闭</div>
+		<div class="menu-sep"></div>
+		<div id="mm-exit">退出</div>
+	</div>
+
 </body>
 </html>

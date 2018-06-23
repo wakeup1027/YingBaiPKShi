@@ -1,0 +1,236 @@
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>已开过的号码</title>
+<link rel="stylesheet" type="text/css"href="${BASE_PATH}easyui/themes/gray/easyui.css"/>
+<link rel="stylesheet" type="text/css"href="${BASE_PATH}easyui/themes/icon.css"/>
+<link rel="stylesheet" type="text/css"href="${BASE_PATH}easyui/themes/gray/datagrid.css"/>
+<script type="text/javascript" src="${BASE_PATH}easyui/jquery.min.js"></script>
+<script type="text/javascript" src="${BASE_PATH}js/jquery.form.js"></script>
+<script type="text/javascript" src="${BASE_PATH}easyui/jquery.easyui.min.js"></script>
+<script type="text/javascript" src="${BASE_PATH}easyui/locale/easyui-lang-zh_CN.js"></script>
+</head>
+<style>
+body{background:#fff;}
+.datagrid-header-row,.datagrid-row {height:32px;}
+</style>
+<body>
+<script>
+$(function(){
+	$("#grigtBox").css("height",($(window).height()-53)+"px");
+	
+	$('#dg').datagrid({
+	    height: '100%',
+	    fit:true,
+	    url: '${BASE_PATH}adminstrcentent/getoverdate.html',
+	    method: 'POST',
+	    striped: true,
+	    nowrap: true,
+	    pageSize: 10,
+	    pageNumber:1, 
+	    pageList: [10, 20, 50, 100, 150, 200],
+		pagination : true,
+	    showFooter: true, 
+		loadMsg : '数据加载中请稍后……',
+	    toolbar:"#tb",
+	    singleSelect: false,
+		rownumbers:true,
+		columns: [[
+				    {field: 'ck', checkbox:true},
+				    {field: 'qiNum', title:'期号', width:'20%'},
+				    {field: 'Num', title:'开奖号码', width:'20%'},
+				    {field: 'creantime', title:'开奖时间', width:'57%',formatter:fotmateDate}
+	    ]]
+	});
+});
+
+var numUrl = "";
+
+function newMajor(){
+	$("#importfm").form('clear');
+	numUrl = "${BASE_PATH}adminstrcentent/iptAutoNum";
+	$('#dlg').dialog('open').dialog('setTitle','一键添加数据');
+}
+
+function submitForm(){
+		$('#importfm').form('submit',{  
+			url: numUrl,
+			onSubmit: function () {
+	            var isOk = false;
+	            isOk = $(this).form('enableValidation').form('validate');
+	            if(isOk){
+	            	$("#load").css("display","block");
+	            }
+	            return isOk;
+        	},
+			success: resutlMsg,
+			error: errorMsg
+		}); 
+		function resutlMsg(res){
+			res = JSON.parse(res);
+			if(res.msg==1){
+       			$('#dlg').dialog('close');
+           		$('#dg').datagrid('reload');
+           		$("#load").css("display","none");
+           		$.messager.alert('操作提示', "数据保存成功！", 'info');
+       		}else{
+       			$.messager.alert('操作提示', "数据保存不成功！", 'warning');
+       		}
+		}
+		function errorMsg(){
+			$.messager.alert('操作提示', "系统繁忙，请稍后再试！", 'warning');
+		}
+}
+
+function delet(){
+	var rows = $('#dg').datagrid('getChecked');
+	var idString = "";
+	for(var i=0; i<rows.length; i++){
+		idString += rows[i].id+",";
+	}
+	$.messager.confirm('删除提醒','确定删除选中的数据吗？',function(r){
+    	if (r){
+			$.post("${BASE_PATH}adminstrcentent/delOldNum",{"idStr":idString.substring(0,idString.length-1)},function(res){
+				if(res.msg==1||res.msg=="1"){
+					$('#dg').datagrid('reload');
+				}else{
+					$.messager.alert('操作提示', "删除失败！", 'warning');
+				}
+			});
+    	}
+	});
+}
+
+function alldelet(){
+	$.messager.confirm("系统提示","确定要清空这些记录吗？注意：期号也会重新从1开始计算",function(r){
+	    if (r){
+			$.ajax({
+				url:"${BASE_PATH}adminstrcentent/cleatLogNum",
+				type:"POST",
+				dataType:"json",
+				success: function(res) {
+					if(res.state=="success"){
+						$('#dg').datagrid('reload');
+					}
+				},error:function(){
+					$.messager.alert('操作提示', "请求错误！", 'warning');
+				}
+			});
+	    }
+	});
+}
+
+function queryfind(){
+	var key = $("#searchKey").textbox("getValue").trim();
+	$('#dg').datagrid({
+	    height: '100%',
+	    fit:true,
+	    url: '${BASE_PATH}adminstrcentent/searchDate.html',
+	    queryParams:{"qiNum":key},
+	    method: 'POST',
+	    striped: true,
+	    nowrap: true,
+	    pageSize: 10,
+	    pageNumber:1, 
+	    pageList: [10, 20, 50, 100, 150, 200],
+		pagination : true,
+	    showFooter: true, 
+		loadMsg : '数据加载中请稍后……',
+	    toolbar:"#tb",
+	    singleSelect: false,
+		rownumbers:true,
+		columns: [[
+				    {field: 'ck', checkbox:true},
+				    {field: 'qiNum', title:'期号', width:'20%'},
+				    {field: 'Num', title:'开奖号码', width:'20%'},
+				    {field: 'creantime', title:'开奖时间', width:'57%',formatter:fotmateDate}
+	    ]]
+	});
+}
+
+//格式化的方法
+function fotmateDate(value){
+	var dateStr = "";
+	if(value=="undefined"||value=="null"||value==null){}else{
+		var date = new Date(value);
+		dateStr = date.format("yyyy-MM-dd HH:mm:ss");
+	}
+    return dateStr;    
+}
+
+//js格式化日期插件代码
+Date.prototype.format = function (format) {  
+		 var o = {  
+		        "M+": this.getMonth() + 1, // month  
+		        "d+": this.getDate(), // day  
+		        "H+": this.getHours(), // hour  
+		        "m+": this.getMinutes(), // minute  
+		        "s+": this.getSeconds(), // second  
+		        "q+": Math.floor((this.getMonth() + 3) / 3), // quarter  
+		        "S": this.getMilliseconds()  
+		        // millisecond  
+		 }
+		 if (/(y+)/.test(format)){
+		        format = format.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length)); 
+		 } 
+		 for (var k in o){  
+		      if (new RegExp("(" + k + ")").test(format)){
+		            format = format.replace(RegExp.$1, RegExp.$1.length == 1 ? o[k] : ("00" + o[k]).substr(("" + o[k]).length)); 
+		 	  }
+		 } 
+		 return format;  
+}
+
+$.extend($.fn.validatebox.defaults.rules, {
+	countNum: {
+		validator: function(value,param){
+			return value<=200;
+		},
+		message: '为了系统运行正常，请保证添加数据不超过200条'
+    }
+});
+</script>
+<div>
+	<div style="float:left;">
+		<a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-edit',plain:true" onclick="newMajor()">一键添加数据</a>
+		<a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-cut',plain:true" onclick="delet()">删除</a>
+		<a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-cut',plain:true" onclick="alldelet()">清空数据</a>
+	</div>
+	<div style="float:left; margin-left:50px;">
+		<input id="searchKey" class="easyui-textbox" data-options="prompt:'请输入查找的期号'" style="width:200px; height:26px;"/>
+		<a href="javascript:void(0)" onclick="queryfind()" class="easyui-linkbutton" style="width:70px;">搜 索</a>
+	</div>
+	<div style="clear:both;"></div>
+</div>
+<div id="grigtBox" style="width:100%; height:400px; margin-top:8px;">
+	<div id="dg" style="width:100%; height:100%;"></div>
+</div>
+<div id="dlg" class="easyui-dialog" style="width:470px; height:350px; padding: 10px 20px" closed="true" buttons="#dlg-buttons">
+	<form id="importfm" class="easyui-form" method="post" novalidate >
+	<table cellspacing="5" style="font-size:13px;">
+		<tr>
+			<th style="text-align:right;">数据条数：</th>
+			<td>
+				<input name="forNum" class="easyui-textbox" data-options="required:true,prompt:'请输入增加多少条数据',validType:'countNum'" style="border:1px solid #e1e1e1; padding:10px; height:30px; width:243px; border-radius:5px; outline:none;"/>
+			</td>
+		</tr>
+		<tr>
+			<th>相隔时间：</th>
+			<td>
+				<input name="timeNum" class="easyui-textbox" data-options="required:true,prompt:'请输入间隔的时间（单位/分）'" style="border:1px solid #e1e1e1; padding:10px; width:243px; height:30px; border-radius:5px; outline:none;"/>
+			</td>
+		</tr>
+		<tr>
+			<th style="text-align:right;">创建日期：</th>
+			<td>
+				<input name="dateStr" class="easyui-datetimebox" data-options="required:true,showSeconds:true,editable:false" style="border:1px solid #e1e1e1; padding:10px; width:243px; height:30px; border-radius:5px; outline:none;"/>
+			</td>
+		</tr>
+	</table>
+	</form>
+</div>
+<div id="dlg-buttons">
+	<a href="javascript:void(0)" class="easyui-linkbutton" id="saveBean" iconCls="icon-ok" onclick="submitForm()" style="displaly:block;width: 90px">保存</a> 
+	<a href="javascript:void(0)" class="easyui-linkbutton" id="saveCancel" iconCls="icon-cancel" onclick="javascript:$('#dlg').dialog('close')" style="width:90px">取消</a>
+</div>
+<div id="load" style="position: absolute;top: 25%;left: 45%;z-index: 9999;width:32px; height:32px; background:url(${BASE_PATH}images/5-121204193R5-50.gif); margin:0px auto; display:none;"></div>
+</body>
+</html>

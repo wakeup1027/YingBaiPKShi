@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>清理缓存</title>
+<script src="${BASE_PATH}js/jquery.js"></script>
+<style>
+body{background:#fff;}
+</style>
+</head>
+<body>
+<div style="color:#ff0000; font-size:13px; text-align:center;">温馨提示：这个功能是清理缓存的功能，就是在你新增开奖记录的时候不会一下子在前端显示，因为有缓存存在，所以得先清理缓存，才能在前台显示刚刚新增的数据！</div>
+<button onclick="clearCacheFunc()" style="display:block; padding:10px 25px; border:none; border-radius:5px; margin:25px auto; background:blue; color:#fff; cursor:pointer;">清理缓存</button>
+<script>
+function clearCacheFunc(){
+	$.ajax({
+		url:"${BASE_PATH}adminstrcentent/clearCache",
+		type:"POST",
+		dataType:"json",
+		success: function(res) {
+			if(res.state=="success"){
+				alert("缓存清理完成！");
+			}else{
+				alert("缓存清理错误！请联系管理员");
+			}
+		},error:function(){
+			alert("系统错误！请联系管理员");
+		}
+	});
+}
+</script>
+</body>
+</html>

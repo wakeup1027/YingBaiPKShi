@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>定时器状态</title>
+<script src="${BASE_PATH}js/jquery.js"></script>
+<style>
+body{background:#fff;}
+table{border-right:1px solid #e1e1e1; border-bottom:1px solid #e1e1e1;}
+td,th{border-left:1px solid #e1e1e1; border-top:1px solid #e1e1e1;}
+</style>
+</head>
+<body>
+<div style="margin:45px auto auto auto;; width:400px; height:150px;">
+	<table style="width:400px;" border="0" cellpadding="15" cellspacing="0">
+		<tr>
+			<th style="width:100px; text-align:left;">开奖器状态</th>
+			<td>
+				<%if(tkb.status==1){%>
+					启动中
+				<%}else{%>
+					已停止
+				<%}%>
+			</td>
+		</tr>
+		<tr>
+			<th style="width:100px; text-align:left;">停止原因</th>
+			<td>
+				<%if(tkb.person==1){%>
+					手动停止
+				<%}else if(tkb.person==2){%>
+					开奖号码为空
+				<%}else if(tkb.person==3){%>
+					已超过今天规定的期数
+				<%}else{%>
+					开奖器运行中
+				<%}%>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2">
+				<%if(tkb.status==1){%>
+					<button onclick="stopt()" style="padding:10px 35px; border:none; cursor:pointer; outline:none; background:#E82633; border-radius:5px; color:#fff;">停止开奖器</button>
+				<%}else{%>
+					<button onclick="start()" style="padding:10px 35px; border:none; cursor:pointer; outline:none; background:#3C6CC7; border-radius:5px; color:#fff;">开启开奖器</button>					
+				<%}%>
+			</td>
+		</tr>
+	</table>
+</div>
+<script>
+var isstart = true;
+function start(){
+
+if(isstart){
+	isstart = false;
+	$.ajax({
+		url:"${BASE_PATH}adminstrcentent/start",
+		type:"POST",
+		dataType:"json",
+		success: function(res) {
+			location.reload();
+		},error:function(){
+			alert("请求错误！");
+		}
+	});
+}
+	
+}
+
+var isstops = true;
+function stopt(){
+if(isstops){
+	isstops = false;
+	$.ajax({
+		url:"${BASE_PATH}adminstrcentent/stop",
+		type:"POST",
+		dataType:"json",
+		success: function(res) {
+			location.reload();
+		},error:function(){
+			alert("请求错误！");
+		}
+	});
+}
+	
+}
+</script>
+</body>
+</html>
