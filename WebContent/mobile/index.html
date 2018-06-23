@@ -1,0 +1,263 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="keywords" content="菲律宾快三"/>
+<meta name="description" content="菲律宾快三 是专门以提供各种走势图为主的专业网站，每期及时更新号码"/>
+<title>菲律宾快三-查询</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+<script src="${BASE_PATH}js/jquery.js"></script>
+<style>
+body{font-size:13px;}
+.titleTable td,.titleTable th{border-top:1px solid #f1f1f1;border-left:1px solid #f1f1f1;}
+#zoushiPuture td{border-top:1px solid #f1f1f1;border-left:1px solid #f1f1f1; height:30px;}
+
+button{margin-left:15px; cursor:pointer;}
+</style>
+</head>
+
+<body style="background:#FAFAFA;">
+<div id="zoushiBox" style="width: 100%;margin:0px auto; margin-top:15px; display:block;">
+<table class="titleTable" border="0" cellpadding="0" cellspacing="0" style="width: 100%; height:61px; text-align:center; border-right:1px solid #f1f1f1;">
+  <tr>
+    <td style="width:60px;" rowspan="2" scope="col">期号</td>
+    <td style="width:116px;" colspan="3" rowspan="2" scope="col">开奖号码</td>
+    <td colspan="2" scope="col">大小</td>
+    <td colspan="2" scope="col">单双</td>
+  </tr>
+  <tr>
+    <td style="width:35px">大</td>
+    <td style="width:35px">小</td>
+    <td style="width:35px">单</td>
+    <td style="width:35px">双</td>
+  </tr>
+</table>
+<table id="zoushiPuture" border="0" cellpadding="0" cellspacing="0" style="width:100%;text-align:center; border-bottom:1px solid #f1f1f1; border-right:1px solid #f1f1f1;"></table>
+<div id="canvasBox1"></div>
+<div id="canvasBox2"></div>
+<div id="canvasBox3"></div>
+</div>
+<script type="text/javascript">
+var date = []; //随机开奖的结果集
+var pointDate = []; //画图的结果集
+var bigSmallDate = []; //大小的坐标结果集
+var signDoubleDate = []; //单双的坐标结果集
+<% if( dateList != null && dateList.~size > 0 ){ %>
+	<% for(item in dateList){ %>
+			date.push(formd("${item.qiNum}","${item.Num}"));
+	<%}
+}%>
+
+for(var j=0;j<date.length;j++){
+	var chdate = date[j].Num;
+	var firstNum = chdate.substring(0,1);
+	var secondNum = chdate.substring(1,2);
+	var threeNum = chdate.substring(2,3);
+	$("#zoushiPuture").append('<tr><td style="width:60px;">'+subStr(date[j].qiNum)+'期</td><td style="width:39px; background:#FFFFEE;">'+firstNum+'</td><td style="width:40px; background:#FFFFEE;">'+secondNum+'</td><td style="width:40px; background:#FFFFEE;">'+threeNum+'</td><td style="width:35px;"></td><td style="width:35px;"></td><td style="width:35px;"></td><td style="width:35px;"></td></tr>');
+
+	//写开奖号码公布
+    var tdArr = $("#zoushiPuture").find("tr").eq(j).find("td");
+	
+	//写和值
+	var allRes = parseInt(firstNum)+parseInt(secondNum)+parseInt(threeNum);
+    /*tdArr.eq(writResult(allRes)).text(allRes);
+    tdArr.eq(writResult(allRes)).css({"background":"#3E94F1","color":"#fff"});*/
+	
+	//整理画和值的线的坐标
+	/*var helfHeight = parseInt(tdArr.eq(writResult(allRes)).height())/2;
+	var helfWidth = parseInt(tdArr.eq(writResult(allRes)).width())/2;
+	var Y = parseInt(tdArr.eq(writResult(allRes)).offset().top)+helfWidth; 
+	var X = parseInt(tdArr.eq(writResult(allRes)).offset().left)+helfHeight; 
+	pointDate.push(formPointer(X,Y));*/
+	
+	//整理画(大小)的线的坐标
+	/*var bsHeight = parseInt(tdArr.eq(bigsamll(allRes)).height())/2;
+	var bsWidth = parseInt(tdArr.eq(bigsamll(allRes)).width())/2;
+	var bsY = parseInt(tdArr.eq(bigsamll(allRes)).offset().top)+bsWidth; 
+	var bsX = parseInt(tdArr.eq(bigsamll(allRes)).offset().left)+bsHeight; 
+	bigSmallDate.push(formPointer(bsX,bsY));*/
+	
+	//整理画(单双)的线的坐标
+	/*var dsHeight = parseInt(tdArr.eq(signDouble(allRes)).height())/2;
+	var dsWidth = parseInt(tdArr.eq(signDouble(allRes)).width())/2;
+	var dsY = parseInt(tdArr.eq(signDouble(allRes)).offset().top)+dsWidth; 
+	var dsX = parseInt(tdArr.eq(signDouble(allRes)).offset().left)+dsHeight; 
+	signDoubleDate.push(formPointer(dsX,dsY));*/
+	
+	//写大小
+	if(allRes<=10){
+		tdArr.eq(5).text("小");
+		tdArr.eq(5).css({"background":"#5CD38F","color":"#fff"});
+	}else if(allRes>10){
+		tdArr.eq(4).text("大");
+		tdArr.eq(4).css({"background":"#5CD38F","color":"#fff"});
+	}
+	
+	//写单双
+	if(allRes%2==0){
+		tdArr.eq(7).text("双");
+		tdArr.eq(7).css({"background":"#FF9C00","color":"#fff"});
+	}else{
+		tdArr.eq(6).text("单");
+		tdArr.eq(6).css({"background":"#FF9C00","color":"#fff"});
+	}
+}
+
+$(function(){
+	/*for(var i=1; i<pointDate.length; i++){
+		var top1 = pointDate[i-1].y;//起点的y坐标
+		var left1 = pointDate[i-1].x;//终点的x坐标
+		var top2 = pointDate[i].y;//终点的y坐标
+		var left2 = pointDate[i].x;//终点的x坐标
+		drawLine2(left1,top1,left2,top2,(i-1),1);
+	}*/
+	//console.log(bigSmallDate);
+	for(var i=1; i<bigSmallDate.length; i++){
+		var top1 = bigSmallDate[i-1].y;//起点的y坐标
+		var left1 = bigSmallDate[i-1].x;//终点的x坐标
+		var top2 = bigSmallDate[i].y;//终点的y坐标
+		var left2 = bigSmallDate[i].x;//终点的x坐标
+		drawLine2(left1,top1,left2,top2,(i-1),2);
+	}
+	
+	for(var i=1; i<signDoubleDate.length; i++){
+		var top1 = signDoubleDate[i-1].y;//起点的y坐标
+		var left1 = signDoubleDate[i-1].x;//终点的x坐标
+		var top2 = signDoubleDate[i].y;//终点的y坐标
+		var left2 = signDoubleDate[i].x;//终点的x坐标
+		drawLine2(left1,top1,left2,top2,(i-1),3);
+	}
+})
+
+function formd(qiNum, Num){
+	var jsond = {};
+	jsond.qiNum = qiNum;
+	jsond.Num = Num;
+	return jsond;
+}
+
+/*function writNum(num){
+	if(num==1||num=="1"){
+		return 4;
+	}else if(num==2||num=="2"){
+		return 5;
+	}else if(num==3||num=="3"){
+		return 6;
+	}else if(num==4||num=="4"){
+		return 7;
+	}else if(num==5||num=="5"){
+		return 8;
+	}else if(num==6||num=="6"){
+		return 9;
+	}
+}*/
+
+function bigsamll(allRes){
+	if(allRes<=10){
+		return 21;
+	}else if(allRes>10){
+		return 20;
+	}
+}
+
+function signDouble(allRes){
+	if(allRes%2==0){
+		return 23;
+	}else{
+		return 22;
+	}
+}
+
+function writResult(allRes){
+	if(allRes==3||allRes=="3"){
+		return 4;
+	}else if(allRes==4||allRes=="4"){
+		return 5;
+	}else if(allRes==5||allRes=="5"){
+		return 6;
+	}else if(allRes==6||allRes=="6"){
+		return 7;
+	}else if(allRes==7||allRes=="7"){
+		return 8;
+	}else if(allRes==8||allRes=="8"){
+		return 9;
+	}else if(allRes==9||allRes=="9"){
+		return 10;
+	}else if(allRes==10||allRes=="10"){
+		return 11;
+	}else if(allRes==11||allRes=="11"){
+		return 12;
+	}else if(allRes==12||allRes=="12"){
+		return 13;
+	}else if(allRes==13||allRes=="13"){
+		return 14;
+	}else if(allRes==14||allRes=="14"){
+		return 15;
+	}else if(allRes==15||allRes=="15"){
+		return 16;
+	}else if(allRes==16||allRes=="16"){
+		return 17;
+	}else if(allRes==17||allRes=="17"){
+		return 18;
+	}else if(allRes==18||allRes=="18"){
+		return 19;
+	}
+}
+
+function formPointer(x,y){
+	var jsond = {};
+	jsond.x = x;
+	jsond.y = y;
+	return jsond;
+}
+
+//封装一个画线的方法
+function drawLine2(x1,y1,x2,y2,index,objNum){
+	var top = 0;
+	var left = 0;
+	var width = 0;
+	var height = 0;
+	var starPoint1 = 0;
+	var overPoint1 = 0;
+	var starPoint2 = 0;
+	var overPoint2 = 0;
+	if(x2>x1){
+		top=y1;
+		left=x1;
+		width = x2-x1;
+		height = y2 - y1;
+		starPoint1 = 0;
+		overPoint1 = 0;
+		starPoint2 = width;
+		overPoint2 = height;
+	}else{
+		top=y1;
+		left=x2;
+		width = x1-x2;
+		height = y2 - y1;
+		starPoint1 = width;
+		overPoint1 = 0;
+		starPoint2 = 0;
+		overPoint2 = height;
+	}
+	//console.log(x1+","+y1+"/"+x2+","+y2+"/"+index);
+	var cava = '<canvas width="'+(width+2)+'" height="'+height+'" style="position: absolute; top: '+top+'px; left: '+left+'px;"></canvas>'
+	$("#canvasBox"+objNum).append(cava);
+	
+	var canvas=$("#canvasBox"+objNum+" canvas")[index];
+	var ctx=canvas.getContext('2d');
+	ctx.beginPath();
+	ctx.moveTo(starPoint1,overPoint1);
+	ctx.lineTo(starPoint2,overPoint2);
+	ctx.strokeStyle = "#3E94F1";
+	ctx.stroke();
+}
+
+function subStr(num){
+	var numStr = num.substring(4, num.length);
+	var numInt = parseInt(numStr);
+	return numInt;
+}
+</script>
+</body>
+</html>

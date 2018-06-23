@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>申请提现</title>
+<link rel="stylesheet" href="${BASE_PATH}css/ystep.css" media="all">
+<script src="${BASE_PATH}js/jquery-1.8.3.min.js"></script>
+<script type="text/javascript" src="${BASE_PATH}js/ystep.js"></script>
+</head>
+<body>
+<div>
+	<div style="background:#707089; height:37px; line-height:37px; color:#fff; padding-left:15px;">充值记录</div>
+	<div class="Technological" style="width:250px; margin: 15px auto 10px auto;"></div>
+</div>
+<script>
+$(".Technological").loadStep({
+	//ystep的外观大小
+	//可选值：small,large
+	size: "small",
+	//ystep配色方案
+	//可选值：green,blue
+	color: "blue",
+	//ystep中包含的步骤
+	steps: [{
+		//步骤名称
+		title: "发起申请",
+		//步骤内容(鼠标移动到本步骤节点时，会提示该内容)
+		content: "用户发起提现申请"
+	},{
+		title: "审核中",
+		content: "等待客服审核确认"
+	},{
+		title: "提现中",
+		content: "会在审核成功后1~3个工作日内转款,请耐心等待"
+	},{
+		title: "提现成功",
+		content: "提现成功！！"
+	}]
+});
+$(".Technological").setStep(3);
+</script>
+</body>
+</html>

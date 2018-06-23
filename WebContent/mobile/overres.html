@@ -1,0 +1,104 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="keywords" content="菲律宾快三"/>
+<meta name="description" content="菲律宾快三 是专门以提供各种走势图为主的专业网站，每期及时更新号码"/>
+<title>菲律宾快三-查询</title>
+<link rel="stylesheet" href="${BASE_PATH}css/zxf_page_mobile.css" />
+<script type="text/javascript" src="${BASE_PATH}js/jquery.js"></script>
+<script type="text/javascript" src="${BASE_PATH}js/zxf_page_mobile.js"></script>
+<style>
+table{text-align:center;}
+table td{border-right:1px solid #e5e5e5; border-bottom:1px solid #e5e5e5; height:46px;}
+.numStrClass{float:left; width:32px; height:32px; background: url(${BASE_PATH}images/flbks.png) left center no-repeat;}
+</style>
+</head>
+
+<body style="font-size:14px;">
+<div style="margin:0 auto;">
+<table border="0" cellpadding="0" cellspacing="0" style="border-top:1px solid #e5e5e5; border-left:1px solid #e5e5e5; width:100%;">
+    <tr style="background:#F9F9F9;">
+      <td style="width:109px;">期号</td>
+      <td>显示号码</td>
+    </tr>
+</table>
+<table class="cepingUl" border="0" cellpadding="0" cellspacing="0" style="border-left:1px solid #e5e5e5; width:100%;">
+    <% if( dateList != null && dateList.~size > 0 ){var i=0;%>
+	<% for(item in dateList){if(i<48){%>
+	<tr>
+	  <td style="width: 109px;">
+	  	<div style="color:#999; font-size:16px;line-height:30px;">${strutil.subStr(item.qiNum)}期</div>
+	  	<div style="line-height:30px;">${strutil.subStrTwo(item.creantime,11)}</div>
+	  </td>
+      <td>
+	  		<div style="margin:0px auto; width:110px; margin-top:10px;">
+				<div class="numStrClass" style="background-position: ${item.firstNum}px center;"></div>
+				<div class="numStrClass" style="background-position: ${item.secondNum}px center; margin-left:5px;"></div>
+				<div class="numStrClass" style="background-position: ${item.threeNum}px center; margin-left:5px;"></div>
+				<div style="clear:both;"></div>
+			</div>
+			<div style="width: 110px; margin: 0 auto; text-align:center;">
+				<div style="float:left; width:32px; line-height:32px;">${item.allNum}</div>
+				<div style="float:left; width:32px; line-height:32px; margin-left:5px;">${item.bigorsam}</div>
+				<div style="float:left; width:32px; line-height:32px; margin-left:5px;">${item.onlyAll}</div>
+				<div style="clear:both;"></div>
+			</div>
+	  </td>
+    </tr>
+	<%i++;}else{break;}}}%>
+    
+  </table>
+  <div class="zxf_pagediv" style="margin-top: 30px;"></div>
+</div>
+<script>
+var date = [];
+var coutPage=48; //一页显示的数据数
+
+<% if( dateList != null && dateList.~size > 0 ){ %>
+	<% for(item in dateList){ %>
+			date.push(FormJson("${item.qiNum}","${item.creantime}","${item.firstNum}","${item.secondNum}","${item.threeNum}","${item.allNum}","${item.bigorsam}","${item.onlyAll}"));
+	<%}
+}%>
+	
+$(function(){
+	$(".zxf_pagediv").createPage({
+		pageNum: Math.ceil((date.length)/coutPage), //总页数
+		current: 1, //选中页
+		backfun: function(e) {
+			$(".cepingUl").html("");
+			for(var j=(e.current-1)*coutPage; j<e.current*coutPage; j++){
+				if(j<date.length){
+					var td = '<tr><td><div style="color:#999; font-size:16px;line-height:30px;">'+subStr(date[j].qiNum)+'期</div><div style="line-height:30px;">'+subStrTwo(date[j].creantime,11)+'</div></td><td><div style="margin:0px auto; width:110px; margin-top:10px;"><div class="numStrClass" style="background-position: '+date[j].firstNum+'px center;"></div><div class="numStrClass" style="background-position: '+date[j].secondNum+'px center; margin-left:5px;"></div><div class="numStrClass" style="background-position: '+date[j].threeNum+'px center; margin-left:5px;"></div><div style="clear:both;"></div></div><div style="width: 110px; margin: 0 auto; text-align:center;"><div style="float:left; width:32px; line-height:32px;">'+date[j].allNum+'</div><div style="float:left; width:32px; line-height:32px; margin-left:5px;">'+date[j].bigorsam+'</div><div style="float:left; width:32px; line-height:32px; margin-left:5px;">'+date[j].onlyAll+'</div><div style="clear:both;"></div></div></td></tr>';
+					$(".cepingUl").append(td);
+				}
+			}
+		}
+	});
+});
+
+function FormJson(qiNum,creantime,firstNum,secondNum,threeNum,allNum,bigorsam,onlyAll){
+		var jsonFrom = {};
+		jsonFrom.qiNum=qiNum;
+		jsonFrom.creantime=creantime;
+		jsonFrom.firstNum=firstNum;
+		jsonFrom.secondNum=secondNum;
+		jsonFrom.threeNum=threeNum;
+		jsonFrom.allNum=allNum;
+		jsonFrom.bigorsam=bigorsam;
+		jsonFrom.onlyAll=onlyAll;
+		return jsonFrom;
+}
+
+function subStr(num){
+	var numStr = num.substring(4, num.length);
+	var numInt = parseInt(numStr);
+	return numInt;
+}
+
+function subStrTwo(num,star){
+	return num.substring(star, num.length);
+}
+</script>
+</body>
+</html>

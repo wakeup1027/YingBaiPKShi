@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>过期的号码</title>
+<link rel="stylesheet" href="${BASE_PATH}css/layui.css" media="all">
+<script src="${BASE_PATH}js/jquery-1.8.3.min.js"></script>
+<script type="text/javascript" src="${BASE_PATH}js/layui.js"></script>
+<style>
+	.taclass td,.taclass th{border-right:1px solid #e1e1e1; border-top:1px solid #e1e1e1;}
+</style>
+</head>
+<body>
+<button id="addDateOne" class="layui-btn layui-btn-normal" onclick="addNum()" style="margin-left:15px; margin-top:15px;">添加数据</button>
+<button id="addDate" class="layui-btn" onclick="addAutoNum()" style="margin-left:15px; margin-top:15px;">一键添加数据</button>
+<button id="clearDate" class="layui-btn layui-btn-danger" onclick="cleatLogNum()" style="margin-left:15px; margin-top:15px;">清空数据</button>
+<table class="layui-hide" id="dateBox" lay-filter="demo"></table>
+<script type="text/html" id="barDemo">
+  <a class="layui-btn layui-btn-sm" lay-event="edit">修改</a>
+  <a class="layui-btn layui-btn-danger layui-btn-sm" lay-event="del">删除</a>
+</script>
+
+<div id="opendResult" style="padding-bottom:15px; margin:0px auto; margin-top:15px; display: none; background: #fff; ">
+    <div style="padding: 15px;">
+		<table style="height:150px; width:100%;">
+			<tr>
+				<th style="text-align:right;">期号：</th>
+				<td>
+					<input id="qiNum" type="text" style="border:1px solid #e1e1e1; padding:10px 20px; width:243px; border-radius:5px; outline:none;"/>
+				</td>
+			</tr>
+			<tr>
+				<th>开奖号码：</th>
+				<td>
+					<input id="firstNum" type="text" style="border:1px solid #e1e1e1; padding:10px 20px; width:50px; border-radius:5px; outline:none;"/>
+					<input id="secondNum" type="text" style="border:1px solid #e1e1e1; padding:10px 20px; width:50px; border-radius:5px; outline:none;"/>
+					<input id="threeNum" type="text" style="border:1px solid #e1e1e1; padding:10px 20px; width:50px; border-radius:5px; outline:none;"/>
+				</td>
+			</tr>
+			<tr>
+				<th style="text-align:right;">创建时间：</th>
+				<td>
+					<input id="creantime" type="text" style="border:1px solid #e1e1e1; padding:10px 20px; width:243px; border-radius:5px; outline:none;"/>
+				</td>
+			</tr>
+		</table>
+	</div>
+</div>
+
+<div id="opendResult2" style="padding-bottom:15px; margin:0px auto; margin-top:15px; display: none; background: #fff;">
+    <div style="padding: 15px;">
+		<table style="height:150px; width:100%;">
+			<tr>
+				<th style="text-align:right;">数据条数：</th>
+				<td>
+					<input id="forNum" type="text" placeholder="请输入增加多少条数据" style="border:1px solid #e1e1e1; padding:10px 20px; width:243px; border-radius:5px; outline:none;"/>
+				</td>
+			</tr>
+			<tr>
+				<th>相隔时间：</th>
+				<td>
+					<input id="timeNum" type="text" placeholder="请输入间隔的时间（单位/分）" style="border:1px solid #e1e1e1; padding:10px 20px; width:243px; border-radius:5px; outline:none;"/>
+				</td>
+			</tr>
+			<tr>
+				<th style="text-align:right;">创建日期：</th>
+				<td>
+					<input id="dateStr" type="text" placeholder="格式：YYYY-MM-DD HH:mm:ss" style="border:1px solid #e1e1e1; padding:10px 20px; width:243px; border-radius:5px; outline:none;"/>
+				</td>
+			</tr>
+		</table>
+	</div>
+</div>
+
+<div id="opendResult3" style=" padding-bottom:15px; margin:0px auto; margin-top:15px;  display: none;  background: #fff;">
+    <div style="padding: 15px;">
+		<table style="height:100px; width:100%;">
+			<tr>
+				<th style="text-align:right;">开奖号码：</th>
+				<td>
+					<input id="openNum" type="text" style="border:1px solid #e1e1e1; padding:10px 20px; width:243px; border-radius:5px; outline:none;"/>
+				</td>
+			</tr>
+			<tr>
+				<th style="text-align:right;">开奖时间：</th>
+				<td>
+					<input id="UpCreanTime" type="text" placeholder="请输入新的开奖时间（格式请严格按照之前的格式）" style="border:1px solid #e1e1e1; padding:10px 20px; width:243px; border-radius:5px; outline:none;"/>
+				</td>
+			</tr>
+		</table>
+	</div>
+</div>
+
+<script>
+
+layui.use(['table'], function(){
+	var table = layui.table; //表格
+	table.render({
+	    elem: '#dateBox',
+	    height: $(window).height()-75,
+	    limit: 20,
+	    url: "${BASE_PATH}VipCustomer/loadOverDate.html", //数据接口
+	    page: true, //开启分页
+	    cols: [[ //表头
+	    	{field: 'id', title: 'ID', width:200, sort: true},
+	   	    {field: 'num', title: '号码', width:200},
+	   	    {field: 'qiNum', title: '期数', width:200},
+	   	    {field: 'creantime', title: '创建时间', width:300, sort: true},
+	   	 	{fixed: 'right', width: 165, align:'center', toolbar: '#barDemo'}
+	    ]],
+	    done:function(res){
+			//console.log(res);
+		}
+	});
+	
+	//监听工具条
+	table.on('tool(demo)', function(obj){ //注：tool是工具条事件名，demo是table原始容器的属性 lay-filter="对应的值"
+	    var data = obj.data, //获得当前行数据
+	      	layEvent = obj.event; //获得 lay-event 对应的值
+	    if(layEvent === 'del'){
+	      	layer.confirm('真的删除行么', function(index){
+		        $.ajax({
+	                url: "${BASE_PATH}VipCustomer/delOldNum.html",
+	                type: "POST",
+	                data:{"num":data.id},
+	                dataType: "json",
+	                success: function(data){
+	                    if(data.state=="success"){
+	                        obj.del();
+	                        layer.close(index);
+	                        layer.msg("删除成功", {icon: 6});
+	                    }else{
+	                        layer.msg("删除失败", {icon: 5});
+	                    }
+	                }
+	            });
+	      	});
+	    } else if(layEvent === 'edit') {
+	    	$("#openNum").val(data.num);
+	    	layer.open({
+	    		type: 1,
+	    		title: "修改信息",
+	    		area: '500px',
+                shadeClose: true,
+                btn: ['确定','关闭'],
+                btn1: function(index, layero){
+                	//向服务端发送删除指令
+    		        $.ajax({
+    	                url: "${BASE_PATH}VipCustomer/createUpNum.html",
+    	                type: "POST",
+    	                data:{"num":data.id,"OpenNum":$("#openNum").val(),"creatime":$("#UpCreanTime").val()},
+    	                dataType: "json",
+    	                success: function(data){
+    	                    if(data.state=="success"){
+    	                        layer.msg("修改成功", {icon: 6});
+    	                        layer.close(index);
+    	                    }else{
+    	                        layer.msg("修改失败", {icon: 5});
+    	                    }
+    	                }
+    	            });
+                },
+                content: $("#opendResult3")
+            });
+	    }
+	});
+	
+});	
+	
+function addNum(){
+	layer.open({
+		type: 1,
+		title: "添加单个号码",
+		area: '500px',
+        shadeClose: true,
+        btn: ['确定','关闭'],
+        btn1: function(index, layero){
+        	sureBtn(index);
+        },
+        content: $("#opendResult")
+    });
+}
+
+function addAutoNum(){
+	layer.open({
+		type: 1,
+		title: "一键添加号码",
+		area: '500px',
+        shadeClose: true,
+        btn: ['确定','关闭'],
+        btn1: function(index, layero){
+        	sureBtnYes(index);
+        },
+        content: $("#opendResult2")
+    });
+}
+
+function upthis(num){
+	$("#opendResult3").css("display","block"); creanTime2
+	$("#dateNum").val(num);
+}
+
+var fals = true;
+function sureBtn(inx){
+	var firstNum = $("#firstNum").val().trim();
+	var secondNum = $("#secondNum").val().trim();
+	var threeNum = $("#threeNum").val().trim();
+	var qiNum = $("#qiNum").val().trim();
+	var creantime = $("#creantime").val().trim();
+	console.log(qiNum+","+firstNum+","+secondNum+","+threeNum);
+	if(qiNum==""){alert("请填写期号");return;}
+	if(firstNum==""||secondNum==""||threeNum==""){alert("号码还没填全！");return;}
+	if(isNaN(firstNum)){alert("第一位不是数字");return;}
+	if(isNaN(secondNum)){alert("第二位不是数字");return;}
+	if(isNaN(threeNum)){alert("第三位不是数字");return;}
+	if(firstNum.length>1){alert("第一位只能输入一个数字");return;}
+	if(secondNum.length>1){alert("第二位只能输入一个数字");return;}
+	if(threeNum.length>1){alert("第三位只能输入一个数字");return;}
+	if(firstNum>6){alert("第一位输入错误，只能小于6的数值");return;}
+	if(secondNum>6){alert("第二位输入错误，只能小于6的数值");return;}
+	if(threeNum>6){alert("第三位输入错误，只能小于6的数值");return;}
+	if(fals){
+		fals = false;
+		$.ajax({
+			url:"${BASE_PATH}VipCustomer/saveOldNum",
+			type:"POST",
+			data:{
+				"qiNum":qiNum,
+				"creantime":creantime,
+				"firstNum":firstNum,
+				"secondNum":secondNum,
+				"threeNum":threeNum
+			},
+			dataType:"json",
+			success: function(res) {
+				if(res.state=="success"){
+					layer.msg("号码新增成功", {icon: 6});
+				}else{
+					layer.msg("号码新增失败", {icon: 5});
+				}
+				layer.close(inx);
+			},error:function(){
+				alert("请求错误！");
+			}
+		});
+	}
+}
+
+var fals2 = true;
+function sureBtnYes(inx){  
+	var forNum = $("#forNum").val().trim();
+	var timeNum = $("#timeNum").val().trim();
+	var dateStr = $("#dateStr").val().trim();	
+	if(forNum==""||timeNum==""||dateStr==""){alert("号码还没填全！");return;}
+	if(forNum==""){alert("请填写数据的条数");return;}
+	if(isNaN(forNum)){alert("数据的条数必须为数字");return;}
+	if(parseInt(forNum)>200){alert("每次只能插入小于200条数据");return;}
+	if(timeNum==""){alert("请填写时间间隔");return;}
+	if(isNaN(timeNum)){alert("时间间隔必须为数字");	return;}
+	if(fals2){
+		fals2 = false;
+		$.ajax({
+			url:"${BASE_PATH}VipCustomer/iptAutoNum",
+			type:"POST",
+			data:{
+				"forNum":forNum,
+				"timeNum":timeNum,
+				"dateStr":dateStr
+			},
+			dataType:"json",
+			success: function(res) {
+				if(res.state=="success"){
+					layer.msg("号码新增成功", {icon: 6});
+				}else{
+					layer.msg("号码新增失败", {icon: 5});
+				}
+				layer.close(inx);
+			},error:function(){
+				alert("请求错误！");
+			}
+		});
+	}
+}
+
+function cleatLogNum(){
+	layer.confirm('确定要清空这些记录吗？注意：期号也会重新从1开始计算', function(index){
+		$.ajax({
+			url:"${BASE_PATH}VipCustomer/cleatLogNum",
+			type:"POST",
+			dataType:"json",
+			success: function(res) {
+				if(res.state=="success"){
+					location.reload();
+				}
+			},error:function(){
+				alert("请求错误！");
+			}
+		});
+	});
+}
+</script>
+</body>
+</html>

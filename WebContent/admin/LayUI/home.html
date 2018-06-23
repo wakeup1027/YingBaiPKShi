@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>北京PK拾</title>
+<link rel="stylesheet" type="text/css" href="${BASE_PATH}css/iconfont.css"/>
+<script src="${BASE_PATH}js/jquery-1.8.3.min.js"></script>
+<script>
+$(function(){
+	$(".pageurl,.imgBox").click(function(){
+		var tzUrl = $(this).attr("date_url");
+		$("#iframeBox>iframe").attr("src",tzUrl);
+	});	
+});
+</script>
+<style>
+body{padding:0px; margin:0px; font-size:13px; color:#666; font-family:'微软雅黑';background:#f1f1f1;}
+.numUlBox{list-style-type:none; padding:0px; margin:0px auto 0px auto; width: 400px;}
+.numUlBox>li{margin-left:10px; background:#FA222D; color:#fff; font-size:15px; font-weight: bold; border-radius:20px; width:30px; height:30px; float:left; text-align:center; line-height:30px;}
+.btnBoxClass{overflow:hidden;}
+.btnBoxClass>div{width:60px; margin-left:5px; padding:5px 15px; background:#2A2B3D; cursor:pointer; border-radius:0px 0px 8px 8px;}
+</style>
+</head>
+<body>
+<div style="height:90px; background:#36374B;">
+	<div style="float:left; height:90px; width:300px;">
+		<img class="imgBox" date_url="VipCustomer/xiazhuPage.html" src="${BASE_PATH}images/logo.png" style="cursor:pointer;margin-top: 15px; margin-left:30px;"/>
+	</div>
+	<div style="float:left; height:70px; width:800px; background:#2A2B3D; border-radius: 50px; margin-top:10px;">
+		<div style="text-align:center; line-height:25px;">
+			<span style="color:#EEF613;">北京PK拾</span>
+			<span style="color:#fff;">第</span>
+			<span style="color:#EEF613;">688747</span>
+			<span style="color:#fff;">期</span>
+		</div>
+		<ul class="numUlBox">
+			<li>03</li>
+			<li>01</li>
+			<li>04</li>
+			<li>09</li>
+			<li>08</li>
+			<li>07</li>
+			<li>06</li>
+			<li>10</li>
+			<li>02</li>
+			<li>05</li>
+			<div style="clear:both;"></div>
+		</ul>
+	</div>
+	<div style="float:right; height:90px; width:190px; color:#fff;">
+		<div class="btnBoxClass">
+			<div style="float:left;">
+				<i class="iconfont icon-xinxi"></i>
+				<span>站内信</span>
+			</div>
+			<div style="float:right;">
+				<i class="iconfont icon-tuichu" style="font-size:13px;"></i>
+				<span>退出</span>
+			</div>
+			<span style="clear:both;"></span>		
+		</div>
+	</div>
+	<div style="clear:both;"></div>
+</div>
+<div style="margin-top:10px; width:100%; margin:10px auto;">
+	<div style="width:200px; height:600px; float:left; padding: 0px 5px;">
+		<div style="background:#fff; border-radius:5px;">
+			<div style="padding:10px 0px; text-align:center; background:#707089; color:#fff; border-radius:5px 5px 0px 0px;">账户信息</div>
+			<ul style="list-style-type:none; padding:10px 20px 20px 20px; margin:0px;">
+				<li>
+					<div style="float:left;">账号：</div>
+					<div style="float:left;">a15595670811</div>
+					<div style="clear:both;"></div>
+				</li>
+				<li style="margin-top:5px;">
+					<div style="float:left;">账户余额：</div>
+					<div style="float:left;">0.00</div>
+					<div style="clear:both;"></div>
+				</li>
+				<li style="margin-top:5px;">
+					<div style="float:left;">未结金额：</div>
+					<div style="float:left;">0.00</div>
+					<div style="clear:both;"></div>
+				</li>
+			</ul>
+		</div>
+		<a class="pageurl" date_url="VipCustomer/applyPage.html" style="display:block; background:#707089; color:#fff; padding:10px 0px; cursor:pointer; text-align:center; border-radius:5px; margin-top:10px;">申请提现</a>
+		<a class="pageurl" date_url="VipCustomer/rechargeLog.html" style="display:block; background:#707089; color:#fff; padding:10px 0px; cursor:pointer; text-align:center; border-radius:5px; margin-top:10px;">充值记录</a>
+		<a class="pageurl" date_url="VipCustomer/putCashLog.html" style="display:block; background:#707089; color:#fff; padding:10px 0px; cursor:pointer; text-align:center; border-radius:5px; margin-top:10px;">提现记录</a>
+		<a class="pageurl" date_url="VipCustomer/userCenter.html" style="display:block; background:#707089; color:#fff; padding:10px 0px; cursor:pointer; text-align:center; border-radius:5px; margin-top:10px;">个人中心</a>
+		<a class="pageurl" date_url="VipCustomer/historyPage.html" style="display:block; background:#707089; color:#fff; padding:10px 0px; cursor:pointer; text-align:center; border-radius:5px; margin-top:10px;">历史下注信息</a>
+	</div>
+	<div id="iframeBox" style="width:1000px; margin-left:6px; float:left;">
+		<iframe src="VipCustomer/xiazhuPage.html" scrolling="no" style="width: 100%; overflow-x:hidden; min-height:600px; border: none;"></iframe>
+	</div>
+	<div style="clear:both;"></div>
+</div>
+<div style="text-align:center; height:120px;">
+	<div style="height:30px; line-height:30px;">©ALIMAMA MUX, powered by alimama THX.法律声明</div>
+	<div style="height:30px; line-height:30px;">转载内容版权归作者及来源网站所有，本站原创内容转载请注明来源，商业媒体及纸媒请先联系：sangxing@taobao.com</div>
+</div>
+</body>
+</html>

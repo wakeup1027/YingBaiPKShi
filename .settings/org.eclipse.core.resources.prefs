@@ -1,0 +1,11 @@
+eclipse.preferences.version=1
+encoding//WebContent/WEB-INF/lib/jfinal-3.1-bin.jar=UTF-8
+encoding//WebContent/admin/LayUI/css/main.css=UTF-8
+encoding//WebContent/admin/LayUI/css/message.css=UTF-8
+encoding//src/com/config/AutoBindModels.java=UTF-8
+encoding//src/com/config/AutoBindRoutes.java=UTF-8
+encoding//src/com/config/ClassSearcher.java=UTF-8
+encoding//src/com/config/ControllerBind.java=UTF-8
+encoding//src/com/config/DateUtils.java=UTF-8
+encoding//src/com/config/ModelBind.java=UTF-8
+encoding//src/com/config/PathUtils.java=UTF-8

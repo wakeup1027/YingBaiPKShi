@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>提现记录</title>
+<link rel="stylesheet" href="${BASE_PATH}css/layui.css" media="all">
+<script src="${BASE_PATH}js/jquery-1.8.3.min.js"></script>
+<script type="text/javascript" src="${BASE_PATH}js/layui.js"></script>
+<style>
+body{padding:none; margin:0px;}
+</style>
+</head>
+<body>
+<div>
+	<div style="background:#707089; height:37px; line-height:37px; color:#fff; padding-left:15px;">提现记录</div>
+	<table class="layui-hide" id="dateBox" lay-filter="demo"></table>
+	<script type="text/html" id="barDemo">
+  		<a class="layui-btn layui-btn-danger layui-btn-sm" lay-event="del">删除</a>
+	</script>
+</div>
+<script>
+layui.use(['table'], function(){
+	var table = layui.table; //表格
+	table.render({
+	    elem: '#dateBox',
+	    height: $(window).height()-75,
+	    limit: 20,
+	    url: "", //数据接口
+	    page: true, //开启分页
+	    cols: [[ //表头
+	    	{field: 'id', title: 'ID', width:200},
+	   	    {field: 'money', title: '金额', width:200},
+	   	 	{field: 'status', title: '状态', width:200},
+	   	    {field: 'creantime', title: '提现时间', width:200},
+	   	 	{field: 'commit', title: '备注', width:300}
+	    ]],
+	    done:function(res){
+			//console.log(res);
+		}
+	});
+	
+	//监听工具条
+	table.on('tool(demo)', function(obj){
+	    var data = obj.data, //获得当前行数据
+	      	layEvent = obj.event; //获得 lay-event 对应的值
+	    if(layEvent === 'del'){
+	    	$.ajax({
+				url:"${BASE_PATH}VipCustomer/delNum/"+data.id,
+				type:"POST",
+				data:{},
+				dataType:"json",
+				success: function(res) {
+					if(res.state=="success"){
+						location.reload();
+					}
+				},error:function(){
+					alert("请求错误！");
+				}
+			});
+	    }
+	});
+});
+</script>
+</body>
+</html>
