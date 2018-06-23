@@ -6,11 +6,45 @@
 <link rel="stylesheet" href="${BASE_PATH}css/ystep.css" media="all">
 <script src="${BASE_PATH}js/jquery-1.8.3.min.js"></script>
 <script type="text/javascript" src="${BASE_PATH}js/ystep.js"></script>
+<style>
+body{padding:0px; margin:0px; font-size:13px; font-family:'微软雅黑'}
+table{width:100%;}
+table>tbody>tr{height:40px;}
+</style>
 </head>
 <body>
 <div>
-	<div style="background:#707089; height:37px; line-height:37px; color:#fff; padding-left:15px;">充值记录</div>
+	<div style="background:#707089; height:37px; line-height:37px; color:#fff; padding-left:15px; border-radius:5px 5px 0px 0px; font-size:13px;">申请提现</div>
 	<div class="Technological" style="width:250px; margin: 15px auto 10px auto;"></div>
+	<div style="margin-top:30px;">
+		<div style="margin:10px auto; width:300px; height:400px; background:#fff; padding:20px; border-radius:5px;">
+			<table>
+				<tr>
+					<td style="width:80px;"><span style="color:#ff0000;">*</span>提现金额：</td>
+					<td>
+						<input type="text" style="border:1px solid #e1e1e1; outline:none; height:25px; width:200px; padding-left:10px; border-radius:5px;"/>
+					</td>
+				</tr>
+				<tr>
+					<td style="width:80px;">说明：</td>
+					<td>
+						<input type="text" style="border:1px solid #e1e1e1; outline:none; height:25px; width:200px; padding-left:10px; border-radius:5px;"/>
+					</td>
+				</tr>
+				<tr>
+					<td style="width:80px;"><span style="color:#ff0000;">*</span>确认密码：</td>
+					<td>
+						<input type="password" style="border:1px solid #e1e1e1; outline:none; height:25px; width:200px; padding-left:10px; border-radius:5px;"/>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2">
+						<div style="margin-top:20px; text-align:center; color:#fff; background:#2F8EE8; padding:10px; border-radius:5px;">提交</div>
+					</td>
+				</tr>
+			</table>
+		</div>
+	</div>
 </div>
 <script>
 $(".Technological").loadStep({
@@ -37,7 +71,7 @@ $(".Technological").loadStep({
 		content: "提现成功！！"
 	}]
 });
-$(".Technological").setStep(3);
+$(".Technological").setStep(1);
 </script>
 </body>
 </html>

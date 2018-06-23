@@ -9,8 +9,28 @@ import demo.AdminInterceptor;
 @ControllerBind(controllerKey = "/AdminStrUrl")
 public class EasyUI_Controller extends BaseController{
 	
+	//首页
 	public void index(){
 		render("/admin/EasyUI/index.html");
 	}
-		
+	
+	//提现管理
+	public void pucashPage(){
+		render("/admin/EasyUI/pucash_page.html");
+	}
+	
+	//用户中奖查看
+	public void userwinPage(){
+		render("/admin/EasyUI/userwin_page.html");
+	}
+	
+	//历史下注记录
+	public void historyPage(){
+		render("/admin/EasyUI/history_page.html");
+	}
+	
+	//用户管理
+	public void userInfoPage(){
+		render("/admin/EasyUI/userInfo_page.html");
+	}
 }
