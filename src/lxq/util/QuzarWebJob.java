@@ -1,4 +1,4 @@
-package lxq.util;
+/*package lxq.util;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -26,3 +26,4 @@ public class QuzarWebJob implements Job{
 	}
 
 }
+*/

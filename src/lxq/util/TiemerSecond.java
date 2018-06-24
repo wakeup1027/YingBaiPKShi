@@ -1,4 +1,4 @@
-package lxq.util;
+/*package lxq.util;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -38,3 +38,4 @@ public class TiemerSecond extends BaseController{
 	}
 	
 }
+*/

@@ -1,4 +1,4 @@
-package lxq.util;
+/*package lxq.util;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -55,16 +55,17 @@ public class TaskNumber extends BaseController{
 					}
 					nowNum.update();
 				}
-			/*}else{ //如果已开的期数大于规定的期数则应该是开完了
+			}else{ //如果已开的期数大于规定的期数则应该是开完了
 				System.out.println("超过今天规定的期数，我这个计数器作用的计时器也该结束了");
 				TimeNumOver tasktover = TimeNumOver.dao.findById(1);
 				tasktover.set("number", -1);
 				tasktover.update();
 				timer.cancel();
-			}*/
+			}
 			
 		}
 		
 	}
 	
 }
+*/

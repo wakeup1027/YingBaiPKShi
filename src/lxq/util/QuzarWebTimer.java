@@ -1,4 +1,4 @@
-package lxq.util;
+/*package lxq.util;
 
 import static org.quartz.JobBuilder.newJob;
 import static org.quartz.TriggerBuilder.newTrigger;
@@ -77,3 +77,4 @@ public class QuzarWebTimer {
 		return instance;
 	}
 }
+*/

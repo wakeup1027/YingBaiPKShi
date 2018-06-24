@@ -5,21 +5,17 @@ import java.util.List;
 
 import com.alibaba.fastjson.JSONObject;
 import com.base.BaseController;
-import com.bean.IsAutoStart;
-import com.bean.Lottery;
-import com.bean.LotteryBean;
-import com.bean.LotteryLog;
-import com.bean.LotteryLogBean;
-import com.bean.OpenNum;
-import com.bean.TaskTimerBean;
+import com.bean.BetsDataLog_Bean;
+import com.bean.ApplyMoneyLog_Bean;
+import com.bean.ApplyMoneyLog;
+import com.bean.BetsDataLog;
+import com.bean.Recharge;
+import com.bean.Recharge_Bean;
 import com.config.ControllerBind;
 import com.jfinal.aop.Before;
 import com.jfinal.plugin.activerecord.Db;
 
 import demo.UserInterceptor;
-import lxq.util.DateUtil;
-import lxq.util.FormString;
-import lxq.util.QuzarTimer;
 
 @Before(UserInterceptor.class)
 @ControllerBind(controllerKey = "/VipCustomer")
@@ -67,219 +63,87 @@ public class LayUI_Controller extends BaseController{
 		render(HomePathPage+"kaijianNum.html");
 	}
 	
+	//充值记录数据
+	public void RechargeLog(){
+		String userid = getPara("fd_userid");
+		List<Recharge> list = Recharge.dao.find("SELECT * FROM recharge WHERE fd_userid = '"+userid+"' ORDER BY fd_creatime DESC LIMIT "+(getParaToInt("page")-1)*getParaToInt("limit")+","+getParaToInt("limit"));
+		List<Recharge_Bean> newPer = new ArrayList<Recharge_Bean>();
+		for(Recharge pr : list){
+			Recharge_Bean ll = new Recharge_Bean();
+			ll.setFd_id(pr.getStr("fd_id"));
+			ll.setFd_money(pr.getInt("fd_money"));
+			ll.setFd_userid(pr.getStr("fd_userid"));
+			ll.setFd_username(pr.getStr("fd_username"));
+			ll.setFd_status(pr.getStr("fd_status"));
+			ll.setFd_creatime(pr.getDate("fd_creatime")+"");
+			ll.setFd_arraytime(pr.getDate("fd_arraytime")+"");
+			ll.setFd_ordernum(pr.getStr("fd_ordernum"));
+			ll.setFd_ordertype(pr.getStr("fd_ordertype"));
+			newPer.add(ll);
+		}
+		JSONObject json = new JSONObject();
+		json.put("code", 0);
+		json.put("msg", "");
+		json.put("count", Db.queryLong("SELECT count(*) FROM recharge WHERE fd_userid = '"+userid+"'"));
+		json.put("data", newPer);
+		renderJson(json.toJSONString());
+	}
+	
+	//下注记录
+	public void BetsDataLog(){
+		String userid = getPara("fd_userid");
+		List<BetsDataLog> list = BetsDataLog.dao.find("SELECT * FROM betsdatalog WHERE fd_userid = '"+userid+"' ORDER BY fd_creatime DESC LIMIT "+(getParaToInt("page")-1)*getParaToInt("limit")+","+getParaToInt("limit"));
+		List<BetsDataLog_Bean> newPer = new ArrayList<BetsDataLog_Bean>();
+		for(BetsDataLog pr : list){
+			BetsDataLog_Bean ll = new BetsDataLog_Bean();
+			ll.setFd_id(pr.getStr("fd_id"));
+			ll.setFd_userid(pr.getStr("fd_userid"));
+			ll.setFd_username(pr.getStr("fd_username"));
+			ll.setFd_type(pr.getStr("fd_type"));
+			ll.setFd_num(pr.getStr("fd_num"));
+			ll.setFd_zhushu(pr.getStr("fd_zhushu"));
+			ll.setFd_qishu(pr.getStr("fd_qishu"));
+			ll.setFd_tatol(pr.getInt("fd_tatol"));
+			ll.setFd_iswin(pr.getStr("fd_iswin"));
+			ll.setFd_creatime(pr.getDate("fd_creatime")+"");
+			newPer.add(ll);
+		}
+		JSONObject json = new JSONObject();
+		json.put("code", 0);
+		json.put("msg", "");
+		json.put("count", Db.queryLong("SELECT count(*) FROM betsdatalog WHERE fd_userid = '"+userid+"'"));
+		json.put("data", newPer);
+		renderJson(json.toJSONString());
+	}
+	
+	//提现记录
+	public void ApplyMoneyLog(){
+		String userid = getPara("fd_userid");
+		List<ApplyMoneyLog> list = ApplyMoneyLog.dao.find("SELECT * FROM applymoneylog WHERE fd_userid = '"+userid+"' ORDER BY fd_creatime DESC LIMIT "+(getParaToInt("page")-1)*getParaToInt("limit")+","+getParaToInt("limit"));
+		List<ApplyMoneyLog_Bean> newPer = new ArrayList<ApplyMoneyLog_Bean>();
+		for(ApplyMoneyLog pr : list){
+			ApplyMoneyLog_Bean ll = new ApplyMoneyLog_Bean();
+			ll.setFd_id(pr.getStr("fd_id"));
+			ll.setFd_money(pr.getInt("fd_money"));
+			ll.setFd_userid(pr.getStr("fd_userid"));
+			ll.setFd_username(pr.getStr("fd_username"));
+			ll.setFd_status(pr.getStr("fd_status"));
+			ll.setFd_creatime(pr.getDate("fd_creatime")+"");
+			newPer.add(ll);
+		}
+		JSONObject json = new JSONObject();
+		json.put("code", 0);
+		json.put("msg", "");
+		json.put("count", Db.queryLong("SELECT count(*) FROM applymoneylog WHERE fd_userid = '"+userid+"'"));
+		json.put("data", newPer);
+		renderJson(json.toJSONString());
+	}
+	
 	//加载已开过的数据
 	public void loadNoDate(){
-		List<Lottery> list = Lottery.dao.find("SELECT * FROM lottery ORDER BY creantime DESC LIMIT "+(getParaToInt("page")-1)*getParaToInt("limit")+","+getParaToInt("limit"));
-		List<LotteryBean> newPer = new ArrayList<LotteryBean>();
-		for(Lottery pr : list){
-			LotteryBean ll = new LotteryBean();
-			ll.setId(pr.getInt("id"));
-			ll.setNum(pr.getInt("Num"));
-			ll.setCreantime(pr.getStr("creantime"));
-			newPer.add(ll);
-		}
-		JSONObject json = new JSONObject();
-		json.put("code", 0);
-		json.put("msg", "");
-		json.put("count", Db.queryLong("SELECT count(*) FROM lottery"));
-		json.put("data", newPer);
-		renderJson(json.toJSONString());
+		/*DateUtil DU = new DateUtil();
+		String creantime = DU.getTime(dateStr, timeNum);*/
 	}
 	
-	//添加未开奖的号码
-	public void saveNum(){
-		JSONObject json = new JSONObject();
-		Lottery ltt = new Lottery();
-		ltt.set("Num",Integer.parseInt(getPara("firstNum")+""+getPara("secondNum")+""+getPara("threeNum")));
-		ltt.set("creantime",getNow());
-		if(ltt.save()){
-			json.put("state", "success");
-			json.put("msg", "号码录入成功！");
-		}else{
-			json.put("state", "error");
-			json.put("msg", "号码录入失败！请稍后再试！");
-		}
-		renderJson(json.toJSONString());
-	}
-	
-	//删除未开奖的号码
-	public void delNum(){
-		JSONObject json = new JSONObject();
-		int numid = getParaToInt();
-		Lottery ltt = Lottery.dao.findById(numid);
-		ltt.delete();
-		json.put("state", "success");
-		json.put("msg", "号码删除成功！");
-		renderJson(json.toJSONString());
-	}
-	
-	//已开奖的号码界面跳转
-	public void getoverList(){
-		render(HomePathPage+"overNum.html");
-	}
-	
-	//加载已开过的数据
-	public void loadOverDate(){
-		List<LotteryLog> list = LotteryLog.dao.find("SELECT * FROM lottery_log ORDER BY creantime DESC LIMIT "+(getParaToInt("page")-1)*getParaToInt("limit")+","+getParaToInt("limit"));
-		List<LotteryLogBean> newPer = new ArrayList<LotteryLogBean>();
-		for(LotteryLog pr : list){
-			LotteryLogBean ll = new LotteryLogBean();
-			ll.setId(pr.getInt("id"));
-			ll.setNum(pr.getInt("Num"));
-			ll.setQiNum(pr.getStr("qiNum"));
-			ll.setCreantime(pr.getStr("creantime"));
-			newPer.add(ll);
-		}
-		JSONObject json = new JSONObject();
-		json.put("code", 0);
-		json.put("msg", "");
-		json.put("count", Db.queryLong("SELECT count(*) FROM lottery_log"));
-		json.put("data", newPer);
-		renderJson(json.toJSONString());
-	}
-	
-	//删除已开过的号码（一个一个删除）
-	public void delOldNum(){
-		JSONObject json = new JSONObject();
-		LotteryLog ltt = new LotteryLog();
-		ltt.set("id", getPara("num"));
-		if(ltt.delete()){
-			json.put("state", "success");
-			json.put("msg", "号码删除成功！");
-		}else{
-			json.put("state", "error");
-			json.put("msg", "号码删除失败！请稍后再试！");
-		}
-		renderJson(json.toJSONString());
-	}
-	
-	//修改开奖号码和创建时间
-	public void createUpNum(){
-		LotteryLog lo = LotteryLog.dao.findById(getParaToInt("num"));
-		lo.set("Num", getPara("OpenNum"));
-		lo.set("creantime", getPara("creatime"));
-		lo.update();
-		JSONObject json = new JSONObject();
-		json.put("state", "success");
-		renderJson(json.toJSONString());
-	}
-	
-	//录入已开过的号码（一个一个录）
-	public void saveOldNum(){
-		JSONObject json = new JSONObject();
-		LotteryLog ltt = new LotteryLog();
-		ltt.set("qiNum",getPara("qiNum"));
-		ltt.set("Num",Integer.parseInt(getPara("firstNum")+""+getPara("secondNum")+""+getPara("threeNum")));
-		ltt.set("creantime",getPara("creantime"));
-		if(ltt.save()){
-			json.put("state", "success");
-			json.put("msg", "号码录入成功！");
-		}else{
-			json.put("state", "error");
-			json.put("msg", "号码录入失败！请稍后再试！");
-		}
-		renderJson(json.toJSONString());
-	}
-	
-	//一键录入号码
-	public void iptAutoNum(){
-		DateUtil DU = new DateUtil();
-		FormString fs = new FormString();
-		String dateStr = getPara("dateStr");
-		int timeNum = getParaToInt("timeNum");
-		int forNum = getParaToInt("forNum");
-		for(int i=1; i<=forNum; i++){
-			OpenNum openn = OpenNum.dao.findById(1);
-			String creantime = DU.getTime(dateStr, timeNum);
-			LotteryLog lott = new LotteryLog();
-			lott.set("creantime", creantime);
-			lott.set("qiNum",creantime.substring(0, 4)+new FormString().formNum(openn.getInt("nowNum")));
-			lott.set("Num", fs.getThreeNum());
-			lott.save();
-			openn.set("nowNum", openn.getInt("nowNum")+1);
-			openn.update();
-			dateStr = creantime;
-		}
-		JSONObject json = new JSONObject();
-		json.put("state", "success");
-		renderJson(json.toJSONString());
-	}
-	
-	//清空开奖记录
-	public void cleatLogNum(){
-		Db.update("TRUNCATE TABLE lottery_log");
-		OpenNum nup = OpenNum.dao.findById(1);
-		nup.set("nowNum", 1);
-		nup.update();
-			
-		JSONObject json = new JSONObject();
-		json.put("state", "success");
-		renderJson(json.toJSONString());
-	}
-	
-	//获取开奖器状态
-	public void getTaskStautus(){
-		TaskTimerBean tkb = TaskTimerBean.dao.findById(1);
-		setAttr("tkb",tkb);
-		render(HomePathPage+"TaskTime.html");
-	}
-	
-	//启动开奖器
-	public void start(){
-		/*Tiemer.timer1();
-		TiemerSecond.timer1();//这个定时器是同步前后端的倒计时定时器
-		JSONObject json = new JSONObject();
-		json.put("state", true);
-		renderJson(json.toJSONString());*/
-		QuzarTimer qazt = QuzarTimer.getInstance();
-		qazt.starQuzar();
-		
-		JSONObject json = new JSONObject();
-		json.put("state", true);
-		renderJson(json.toJSONString());
-	}
-	
-	//停止开奖器
-	public void stop(){
-		QuzarTimer qazt = QuzarTimer.getInstance();
-		qazt.stopQuzar();
-		
-		JSONObject json = new JSONObject();
-		json.put("state", true);
-		renderJson(json.toJSONString());
-	}
-	
-	//获取自动开奖状态
-	public void setAutoStautus(){
-		IsAutoStart tkb = IsAutoStart.dao.findById(1);
-		setAttr("tkb",tkb);
-		render(HomePathPage+"isAutoStart.html");
-	}
-	
-	//开启自动开奖设置
-	public void starAuto(){
-		IsAutoStart ysd = IsAutoStart.dao.findById(1);
-		ysd.set("status", 1);
-		JSONObject json = new JSONObject();
-		if(ysd.update()){
-			json.put("state", "success");
-		}else{
-			json.put("state", "error");
-		}
-		renderJson(json.toJSONString());
-	}
-	
-	//关闭自动开奖的设置
-	public void stopAuto(){
-		IsAutoStart ysd = IsAutoStart.dao.findById(1);
-		ysd.set("status", 0);
-		JSONObject json = new JSONObject();
-		if(ysd.update()){
-			json.put("state", "success");
-		}else{
-			json.put("state", "error");
-		}
-		renderJson(json.toJSONString());
-	}
 	
 }

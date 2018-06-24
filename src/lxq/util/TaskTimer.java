@@ -1,4 +1,4 @@
-package lxq.util;
+/*package lxq.util;
 
 import java.util.List;
 import java.util.Timer;
@@ -40,10 +40,10 @@ public class TaskTimer extends BaseController{
 			taskt.update();
 			
 			//设置重置开奖期数
-			/*OpenNum on = OpenNum.dao.findById(1);//查找一天开奖的期数
+			OpenNum on = OpenNum.dao.findById(1);//查找一天开奖的期数
 			on.set("nowNum", 1);
 			on.set("spareNum", on.getInt("openNum"));
-			on.update();*/
+			on.update();
 		}
 
 		@Override
@@ -105,7 +105,7 @@ public class TaskTimer extends BaseController{
 						on.update();
 					}
 				}
-			/*}else{
+			}else{
 				System.out.println("超过今天规定的期数，我要结束掉了");
 				TaskTimerBean taskt = TaskTimerBean.dao.findById(1);
 				taskt.set("status", 0);
@@ -114,7 +114,7 @@ public class TaskTimer extends BaseController{
 				
 				timer.cancel();
 				return;
-			}*/
+			}
 
 			//判断计时器是否结束掉，而且结束的方法必须写在执行run任务结束之后。
 			TaskTimerBean taskt = TaskTimerBean.dao.findById(1);
@@ -126,3 +126,4 @@ public class TaskTimer extends BaseController{
 	}
 	
 }
+*/

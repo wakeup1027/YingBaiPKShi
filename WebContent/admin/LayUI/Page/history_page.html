@@ -25,16 +25,26 @@ layui.use(['table'], function(){
 	    elem: '#dateBox',
 	    height: $(window).height()-75,
 	    limit: 20,
-	    url: "", //数据接口
+	    where: {fd_userid: '22222'},
+	    url: "${BASE_PATH}VipCustomer/BetsDataLog.html", //数据接口
 	    page: true, //开启分页
 	    cols: [[ //表头
-	   	    {field: 'userName', title: '会员名', width:100},
-	    	{field: 'qiNumber', title: '期号', width:200},
-	   	 	{field: 'type', title: '类型', width:100},
-	   	 	{field: 'number', title: '号码', width:200},
-	   	 	{field: 'zhuNum', title: '注数', width:100},
-	   		{field: 'total', title: '总价', width:100},
-	   	    {field: 'creantime', title: '下注时间', width:200}
+	   	    {field: 'fd_username', title: '会员名', width:100},
+	    	{field: 'fd_qishu', title: '期号', width:200},
+	   	 	{field: 'fd_type', title: '类型', width:100, templet:xzType},
+	   	 	{field: 'fd_num', title: '下注号码', width:100},
+	   	 	{field: 'fd_zhushu', title: '注数', width:100},
+	   		{field: 'fd_tatol', title: '总价', width:100},
+	   		{field: 'fd_iswin', title: '是否赢', width:100, templet:function(d){
+	   	    	if(d.fd_iswin==0||d.fd_iswin=="0"){
+	   	    		return "输";
+	   	    	}else if(d.fd_iswin==1||d.fd_iswin=="1"){
+	   	    		return "赢";
+	   	    	}else{
+	   	    		return "未知结果";
+	   	    	}
+	   	    }},
+	   	    {field: 'fd_creatime', title: '下注时间', width:189, templet:fotmateDate}
 	    ]],
 	    done:function(res){
 			//console.log(res);
@@ -62,6 +72,68 @@ layui.use(['table'], function(){
 	    }
 	});
 });
+
+//格式化下注类型
+function xzType(value){
+	value = value.fd_type;
+	if(value==1||value=="1"){
+	   return "冠军";
+	}else if(value==2||value=="2"){
+	   return "亚军";
+	}else if(value==3||value=="3"){
+	   return "季军";
+	}else if(value==4||value=="4"){
+	   return "第四名";
+	}else if(value==5||value=="5"){
+	   return "第五名";
+	}else if(value==6||value=="6"){
+	   return "第六名";
+	}else if(value==7||value=="7"){
+	   return "第7名";
+	}else if(value==8||value=="8"){
+	   return "第8名";
+	}else if(value==9||value=="9"){
+	   return "第9名";
+	}else if(value==10||value=="10"){
+	   return "第10名";
+	}else{
+	  return "未知类型";
+	}
+}
+
+//格式化的方法
+function fotmateDate(value){
+	value = value.fd_creatime;
+	var dateStr = "";
+	if(value=="undefined"||value=="null"||value==null){}else{
+		var date = new Date(value);
+		dateStr = date.format("yyyy-MM-dd HH:mm:ss");
+	}
+    return dateStr;    
+}
+
+//js格式化日期插件代码
+Date.prototype.format = function (format) {  
+		 var o = {  
+		        "M+": this.getMonth() + 1, // month  
+		        "d+": this.getDate(), // day  
+		        "H+": this.getHours(), // hour  
+		        "m+": this.getMinutes(), // minute  
+		        "s+": this.getSeconds(), // second  
+		        "q+": Math.floor((this.getMonth() + 3) / 3), // quarter  
+		        "S": this.getMilliseconds()  
+		        // millisecond  
+		 }
+		 if (/(y+)/.test(format)){
+		        format = format.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length)); 
+		 } 
+		 for (var k in o){  
+		      if (new RegExp("(" + k + ")").test(format)){
+		            format = format.replace(RegExp.$1, RegExp.$1.length == 1 ? o[k] : ("00" + o[k]).substr(("" + o[k]).length)); 
+		 	  }
+		 } 
+		 return format;  
+}
 </script>
 </body>
 </html>

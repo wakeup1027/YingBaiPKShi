@@ -1,4 +1,4 @@
-package lxq.util;
+/*package lxq.util;
 
 import static org.quartz.JobBuilder.newJob;
 import static org.quartz.TriggerBuilder.newTrigger;
@@ -16,11 +16,11 @@ import org.quartz.SchedulerException;
 import org.quartz.Trigger;
 import org.quartz.impl.StdSchedulerFactory;
 
-/**
+*//**
  * ¿ª½±Æ÷µÄÀà
  * @author Administrator
  *
- */
+ *//*
 
 public class QuzarTimer {
 	private Scheduler scheduler = null;
@@ -45,7 +45,7 @@ public class QuzarTimer {
 
 			Trigger TimeTrigger = newTrigger()
             	    .withIdentity(TimeTriggerStr, TimeTriggerWithIdentityStr)
-            	    .withSchedule(CronScheduleBuilder.cronSchedule("0 */1 * * * ?")
+            	    .withSchedule(CronScheduleBuilder.cronSchedule("0 1 * * * ?")
             	    		.withMisfireHandlingInstructionDoNothing())  //0 2 10 23 4 ? 2018
             	    .build();
 			
@@ -95,3 +95,4 @@ public class QuzarTimer {
 	}
 	
 }
+*/
