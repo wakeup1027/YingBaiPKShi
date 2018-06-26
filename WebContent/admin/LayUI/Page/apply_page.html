@@ -22,24 +22,24 @@ table>tbody>tr{height:40px;}
 				<tr>
 					<td style="width:80px;"><span style="color:#ff0000;">*</span>提现金额：</td>
 					<td>
-						<input type="text" style="border:1px solid #e1e1e1; outline:none; height:25px; width:200px; padding-left:10px; border-radius:5px;"/>
+						<input id="cash" type="text" style="border:1px solid #e1e1e1; outline:none; height:25px; width:200px; padding-left:10px; border-radius:5px;"/>
 					</td>
 				</tr>
 				<tr>
 					<td style="width:80px;">说明：</td>
 					<td>
-						<input type="text" style="border:1px solid #e1e1e1; outline:none; height:25px; width:200px; padding-left:10px; border-radius:5px;"/>
+						<input id="commit" type="text" style="border:1px solid #e1e1e1; outline:none; height:25px; width:200px; padding-left:10px; border-radius:5px;"/>
 					</td>
 				</tr>
 				<tr>
 					<td style="width:80px;"><span style="color:#ff0000;">*</span>确认密码：</td>
 					<td>
-						<input type="password" style="border:1px solid #e1e1e1; outline:none; height:25px; width:200px; padding-left:10px; border-radius:5px;"/>
+						<input id="fdpassword" type="password" style="border:1px solid #e1e1e1; outline:none; height:25px; width:200px; padding-left:10px; border-radius:5px;"/>
 					</td>
 				</tr>
 				<tr>
 					<td colspan="2">
-						<div style="margin-top:20px; text-align:center; color:#fff; background:#2F8EE8; padding:10px; border-radius:5px;">提交</div>
+						<div onclick="submitbtn()" style="margin-top:20px; text-align:center; color:#fff; background:#2F8EE8; padding:10px; border-radius:5px;">提交</div>
 					</td>
 				</tr>
 			</table>
@@ -65,13 +65,33 @@ $(".Technological").loadStep({
 		content: "等待客服审核确认"
 	},{
 		title: "提现中",
-		content: "会在审核成功后1~3个工作日内转款,请耐心等待"
+		content: "客服会在审核成功后1~3个工作日内转款,请耐心等待"
 	},{
 		title: "提现成功",
 		content: "提现成功！！"
 	}]
 });
 $(".Technological").setStep(1);
+
+function submitbtn(){
+	$.ajax({
+        url: "${BASE_PATH}VipCustomer/ApplyVoid.html",
+        type: "POST",
+        data:{
+        	"cash":$("#cash").val(),
+        	"commit":$("#commit").val(),
+        	"fdpassword":$("#fdpassword").val()
+        },
+        dataType: "json",
+        success: function(data){
+			if(data.code=="200"||data.code==200){
+				alert("申请成功！等待客服审核");
+			}else{
+				alert("密码不对！");
+			}
+        }
+    });	
+}
 </script>
 </body>
 </html>

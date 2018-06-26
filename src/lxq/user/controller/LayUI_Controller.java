@@ -1,12 +1,16 @@
 package lxq.user.controller;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import com.alibaba.fastjson.JSONObject;
 import com.base.BaseController;
 import com.bean.BetsDataLog_Bean;
 import com.bean.ApplyMoneyLog_Bean;
+import com.bean.ApplyMoney;
 import com.bean.ApplyMoneyLog;
 import com.bean.BetsDataLog;
 import com.bean.Recharge;
@@ -26,6 +30,11 @@ public class LayUI_Controller extends BaseController{
 	//主页
 	public void index(){
 		render(HomePath+"home.html");
+	}
+	
+	//会员充值
+	public void recharge(){
+		render(HomePathPage+"recharge.html");
 	}
 	
 	//下注界面
@@ -61,6 +70,31 @@ public class LayUI_Controller extends BaseController{
 	//未开奖界面跳转
 	public void inpNum(){
 		render(HomePathPage+"kaijianNum.html");
+	}
+	
+	//申请提现功能
+	public void ApplyVoid(){
+		JSONObject json = new JSONObject();
+		String agenPass = getPara("fdpassword");
+		String truePass = getSessionAttr("Password");
+		if(agenPass.equals(truePass)){
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			Date now = new Date();
+			ApplyMoney model = new ApplyMoney();
+			String uuid = UUID.randomUUID().toString().replace("-", "").toLowerCase();
+			model.set("fd_id", uuid);
+			model.set("fd_money", getParaToInt("cash"));
+			model.set("fd_userid", getSessionAttr("UserId"));
+			model.set("fd_username", getSessionAttr("loginUser"));
+			model.set("fd_status", "0");
+			model.set("fd_creatime",sdf.format(now));
+			model.set("fd_commit", getPara("commit"));
+			model.save();
+			json.put("code", 200);
+		}else{
+			json.put("code", 500);
+		}
+		renderJson(json.toJSONString());
 	}
 	
 	//充值记录数据

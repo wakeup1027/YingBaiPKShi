@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>注册界面</title>
+<script src="${BASE_PATH}js/jquery-1.8.3.min.js"></script>
+</head>
+<body>
+<table>
+	<tr>
+		<td>用户名：</td>
+		<td><input id="username" type="text"/></td>
+	</tr>
+	<tr>
+		<td>密码：</td>
+		<td><input id="userpass" type="password"/></td>
+	</tr>
+	<tr>
+		<td>确认密码：</td>
+		<td><input id="userpassagen" type="password"/></td>
+	</tr>
+	<tr>
+		<td>手机号码：</td>
+		<td><input id="userphone" type="text"/></td>
+	</tr>
+	<tr>
+		<td>真实姓名：</td>
+		<td><input id="truename" type="text"/></td>
+	</tr>
+	<tr>
+		<td>身份证：</td>
+		<td><input id="useridcare" type="text"/></td>
+	</tr>
+	<tr>
+		<td><a href="javascript:submitbtn()" style="display:block; padding:10px 30px;border:1px solid #e1e1e1;">提交</a></td>
+	</tr>
+</table>
+<script>
+function submitbtn(){
+	$.ajax({
+        url: "${BASE_PATH}ApplyRegit.html",
+        type: "POST",
+        data:{
+        	"userInfo.fd_username":$("#username").val(),
+        	"userInfo.fd_password":$("#userpass").val(),
+        	"userInfo.fd_phone":$("#userphone").val(),
+        	"userInfo.fd_truename":$("#truename").val(),
+        	"userInfo.fd_IDcase":$("#useridcare").val()
+        },
+        dataType: "json",
+        success: function(data){
+        	console.log(data);
+			if(data.status=="200"||data.status==200){
+				alert("注册成功！等待客服审核");
+				history.go(-1);
+			}
+        }
+    });	
+}
+</script>
+</body>
+</html>
