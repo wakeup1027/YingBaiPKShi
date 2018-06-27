@@ -15,6 +15,7 @@ import com.bean.ApplyMoneyLog;
 import com.bean.BetsDataLog;
 import com.bean.Recharge;
 import com.bean.Recharge_Bean;
+import com.bean.UserInfo;
 import com.config.ControllerBind;
 import com.jfinal.aop.Before;
 import com.jfinal.plugin.activerecord.Db;
@@ -47,14 +48,77 @@ public class LayUI_Controller extends BaseController{
 		render(HomePathPage+"history_page.html");
 	}
 	
-	//申请提现届满
+	//申请提现界面
 	public void applyPage(){
+		String userid = getSessionAttr("UserId");
+		ApplyMoney amoney = ApplyMoney.dao.findFirst("SELECT * FROM applymoney WHERE fd_userid = '"+userid+"' AND (fd_status = '0' OR fd_status = '1')");
+		if(null!=amoney){
+			setAttr("status",amoney.get("fd_status"));
+		}else{
+			setAttr("status","2");
+		}
 		render(HomePathPage+"apply_page.html");
 	}
 	
 	//用户中心
 	public void userCenter(){
-		render(HomePathPage+"user_center.html");
+		String userid = getSessionAttr("UserId");
+		UserInfo uinfo = UserInfo.dao.findById(userid);
+		if(uinfo!=null){
+			setAttr("name",uinfo.get("fd_truename"));
+			setAttr("username",uinfo.get("fd_username"));
+			setAttr("idcase",uinfo.get("fd_IDcase"));
+			setAttr("banka",uinfo.get("fd_bank"));
+			setAttr("phonenum",uinfo.get("fd_phone"));
+			render(HomePathPage+"user_center.html");
+		}else{
+			render("/");//返回登录页重新登录
+		}
+	}
+	
+	//用户修改自己的信息（身份证号码） 
+	public void upidcase(){
+		JSONObject json = new JSONObject();
+		String userid = getSessionAttr("UserId");
+		UserInfo uifo = UserInfo.dao.findById(userid);
+		uifo.set("fd_IDcase", getPara("newInfodate"));
+		boolean doYes = uifo.update();
+		if(doYes){
+			json.put("state", "success");
+		}else{
+			json.put("state", "error");
+		}
+		renderJson(json.toJSONString());
+	}
+	
+	//用户修改自己的信息（手机号码）
+	public void upphonenum(){
+		JSONObject json = new JSONObject();
+		String userid = getSessionAttr("UserId");
+		UserInfo uifo = UserInfo.dao.findById(userid);
+		uifo.set("fd_phone", getPara("newInfodate"));
+		boolean doYes = uifo.update();
+		if(doYes){
+			json.put("state", "success");
+		}else{
+			json.put("state", "error");
+		}
+		renderJson(json.toJSONString());
+	}
+	
+	//用户修改自己的信息（银行号码）
+	public void upbanka(){
+		JSONObject json = new JSONObject();
+		String userid = getSessionAttr("UserId");
+		UserInfo uifo = UserInfo.dao.findById(userid);
+		uifo.set("fd_bank", getPara("newInfodate"));
+		boolean doYes = uifo.update();
+		if(doYes){
+			json.put("state", "success");
+		}else{
+			json.put("state", "error");
+		}
+		renderJson(json.toJSONString());
 	}
 	
 	//充值记录
@@ -75,23 +139,48 @@ public class LayUI_Controller extends BaseController{
 	//申请提现功能
 	public void ApplyVoid(){
 		JSONObject json = new JSONObject();
+		String userid = getSessionAttr("UserId");
 		String agenPass = getPara("fdpassword");
 		String truePass = getSessionAttr("Password");
+		//比较密码是否正确
 		if(agenPass.equals(truePass)){
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			Date now = new Date();
-			ApplyMoney model = new ApplyMoney();
-			String uuid = UUID.randomUUID().toString().replace("-", "").toLowerCase();
-			model.set("fd_id", uuid);
-			model.set("fd_money", getParaToInt("cash"));
-			model.set("fd_userid", getSessionAttr("UserId"));
-			model.set("fd_username", getSessionAttr("loginUser"));
-			model.set("fd_status", "0");
-			model.set("fd_creatime",sdf.format(now));
-			model.set("fd_commit", getPara("commit"));
-			model.save();
-			json.put("code", 200);
+			UserInfo uifo = UserInfo.dao.findById(userid);
+			int yuem = uifo.getInt("fd_money");//账户余额
+			int getm = getParaToInt("cash");//申请提现金额
+			//账户余额必须大于或等于提现余额
+			if(yuem>=getm){
+				int iceingm = uifo.getInt("fd_icemoney");//账户正在冻结的余额
+				if(iceingm==0){
+					//用账户余额里面的现金减去提现金额当成是冻结金额
+					uifo.set("fd_money", yuem-getm);
+					uifo.set("fd_icemoney",getm);
+					uifo.update();
+					//保存提现申请
+					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+					Date now = new Date();
+					ApplyMoney model = new ApplyMoney();
+					String uuid = UUID.randomUUID().toString().replace("-", "").toLowerCase();
+					model.set("fd_id", uuid);
+					model.set("fd_money", getm);
+					model.set("fd_userid", userid);
+					model.set("fd_username", getSessionAttr("loginUser"));
+					model.set("fd_status", "0");
+					model.set("fd_creatime",sdf.format(now));
+					model.set("fd_commit", getPara("commit"));
+					model.save();
+					json.put("mes", "请求已受理，请耐心等待客服审核...");
+					json.put("code", 200);
+				}else{
+					json.put("mes", "账户存在冻结的余额，不能申请提现！请耐心等待客服处理之后再申请...");
+					json.put("code", 502);
+				}
+			}else{
+				json.put("mes", "账户余额不足！");
+				json.put("code", 501);
+			}
+			
 		}else{
+			json.put("mes", "密码不正确！");
 			json.put("code", 500);
 		}
 		renderJson(json.toJSONString());

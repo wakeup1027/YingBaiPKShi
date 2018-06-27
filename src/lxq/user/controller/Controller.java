@@ -31,7 +31,7 @@ public class Controller extends BaseController {
 		UserInfo uinfo = GetUserInfo.CheckUser(getPara("userName"), getPara("password"));
 		if(uinfo!=null){
 			setSessionAttr("loginUser", uinfo.get("fd_username"));
-			setSessionAttr("UserId", uinfo.get("fd_id"));
+			setSessionAttr("UserId", uinfo.get("id"));
 			setSessionAttr("Password", uinfo.get("fd_password"));
 			redirect("/VipCustomer.html");
 		}else{
@@ -50,7 +50,7 @@ public class Controller extends BaseController {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		Date now = new Date();
 		UserInfo model = getModel(UserInfo.class,"userInfo");
-		model.set("fd_id", uuid);
+		model.set("id", uuid);
 		model.set("fd_creatime",sdf.format(now));
 		model.set("fd_status","0");
 		boolean res = model.save();

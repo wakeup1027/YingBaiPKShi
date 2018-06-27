@@ -3,6 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <title>用户中心</title>
+<link rel="stylesheet" href="${BASE_PATH}css/layui.css" media="all">
+<script src="${BASE_PATH}js/jquery-1.8.3.min.js"></script>
+<script type="text/javascript" src="${BASE_PATH}js/layui.js"></script>
 <style>
 body{background:#fff; padding:15px;}
 table{color:#666; font-size:13px; width:400px; margin-top:15px;}
@@ -14,28 +17,103 @@ table>tbody>tr{height:25px; line-height:25px;}
 <table>
 	<tr>
 		<td style="width:80px">姓名：</td>
-		<td>罗英柏</td>
+		<td>${name}</td>
 		<td></td>
 	</tr>
 	<tr>
 		<td>会员名：</td>
-		<td>a15765689236</td>
+		<td>${username}</td>
 		<td></td>
 	</tr>
 	<tr>
-		<td>手机号码：</td>
-		<td>15765689236</td>
+		<td>身份证：</td>
+		<td>${idcase}</td>
 		<td>
-			<a href="javascript:void(0)">修改</a>
+			<a href="javascript:void(0)" onclick="addAutoNum(this)" text="idcase" style="color:blue;text-decoration:underline;">修改</a>
+		</td>
+	</tr>
+	<tr>
+		<td>手机号码：</td>
+		<td>${phonenum}</td>
+		<td>
+			<a href="javascript:void(0)" onclick="addAutoNum(this)" text="phonenum" style="color:blue;text-decoration:underline;">修改</a>
 		</td>
 	</tr>
 	<tr>
 		<td>银行卡：</td>
-		<td>*************9236</td>
+		<td>${banka}</td>
 		<td>
-			<a href="javascript:void(0)">修改</a>
+			<a href="javascript:void(0)" onclick="addAutoNum(this)" text="banka" style="color:blue;text-decoration:underline;">修改</a>
 		</td>
 	</tr>
 </table>
+<div id="opendBox" style="padding-bottom:15px; margin:0px auto; margin-top:15px; display: none; background: #fff;">
+	<table style="margin:15px auto;">
+		<tr>
+			<td id="inptName" style="width:100px;">标题：</td>
+			<td>
+				<input type="text" id="newInfodate" style="padding: 5px 10px; border: 1px solid #e1e1e1; border-radius: 5px;"/>
+			</td>
+		</tr>
+	</table>
+</div>
+<script>
+//声明layui下面才能使用layer的方法
+layui.use(['table'], function(){});
+
+function addAutoNum(inc){
+	var typebtn = $(inc).attr("text");	
+	layer.open({
+		type: 1,
+		title: formType(typebtn),
+		area: '500px',
+        shadeClose: true,
+        btn: ['确定','关闭'],
+        btn1: function(index, layero){
+        	UpdateFunc(typebtn);
+        },
+        content: $("#opendBox")
+    });
+}
+
+function UpdateFunc(typenam){
+	var UpdateUrl = "${BASE_PATH}VipCustomer/upidcase.html";
+	if(typenam=="phonenum"){
+		UpdateUrl = "${BASE_PATH}VipCustomer/upphonenum.html";
+	}else if(typenam=="banka"){
+		UpdateUrl = "${BASE_PATH}VipCustomer/upbanka.html";
+	}
+	$.ajax({
+		url:UpdateUrl,
+		type:"POST",
+		data:{"newInfodate":$("#newInfodate").val()},
+		dataType:"json",
+		success: function(res) {
+			if(res.state=="success"){
+				location.reload();
+			}else{
+				alert("修改失败！请稍后再次修改！");
+			}
+		},error:function(){
+			alert("请求错误！");
+		}
+	});
+}
+
+function formType(typebtn){
+	var titlename;
+	if(typebtn=="idcase"){
+		titlename = "修改身份证";
+		$("#inptName").text("新身份证号码：");
+	}else if(typebtn=="phonenum"){
+		titlename = "修改手机号码";
+		$("#inptName").text("新手机号码：");
+	}else if(typebtn=="banka"){
+		titlename = "修改绑定银行卡";
+		$("#inptName").text("新银行卡号码：");
+	}
+	return titlename;
+}
+</script>
 </body>
 </html>

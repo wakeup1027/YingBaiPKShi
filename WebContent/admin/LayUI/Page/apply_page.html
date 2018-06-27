@@ -18,6 +18,20 @@ table>tbody>tr{height:40px;}
 	<div class="Technological" style="width:250px; margin: 15px auto 10px auto;"></div>
 	<div style="margin-top:30px;">
 		<div style="margin:10px auto; width:300px; height:400px; background:#fff; padding:20px; border-radius:5px;">
+		<%if(status==0||status=="0"){%>
+			<script>
+				var settepNum = 2;
+			</script>
+			<div style="line-height:50px; height:50px; text-align:center; color:#666;">请耐心等待！客服审核中...</div>
+		<%}else if(status==1||status=="1"){%>
+			<script>
+				var settepNum = 3;
+			</script>
+			<div style="line-height:50px; height:50px; text-align:center; color:#666;">请耐心等待！客服正在转账提现中...</div>
+		<%}else{%>
+			<script>
+				var settepNum = 1;
+			</script>
 			<table>
 				<tr>
 					<td style="width:80px;"><span style="color:#ff0000;">*</span>提现金额：</td>
@@ -43,6 +57,7 @@ table>tbody>tr{height:40px;}
 					</td>
 				</tr>
 			</table>
+		<%}%>
 		</div>
 	</div>
 </div>
@@ -71,7 +86,7 @@ $(".Technological").loadStep({
 		content: "提现成功！！"
 	}]
 });
-$(".Technological").setStep(1);
+$(".Technological").setStep(settepNum);
 
 function submitbtn(){
 	$.ajax({
@@ -84,11 +99,8 @@ function submitbtn(){
         },
         dataType: "json",
         success: function(data){
-			if(data.code=="200"||data.code==200){
-				alert("申请成功！等待客服审核");
-			}else{
-				alert("密码不对！");
-			}
+        	console.log(data);
+        	alert(data.mes);
         }
     });	
 }
