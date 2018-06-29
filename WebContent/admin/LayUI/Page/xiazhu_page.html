@@ -19,7 +19,9 @@ body{background:#fff;font-size:13px; color:#666; font-family:'微软雅黑';padd
 .inptStyle{width:50px; outline:none; padding-left:10px; height:20px; border:1px solid #e1e1e1; float:left; margin-top:9px;}
 .jiaJianBtnBox{float: left; width: 13px; height: 22px; margin-top: 9px; border: 1px solid #e1e1e1; border-left: none;}
 .jiaBtn{height: 12px;line-height: 12px;font-size: 12px;margin-top: -1px; cursor:pointer;}
+.jiaBtn:hover{color:blue;}
 .jianBtn{height: 12px; line-height: 12px; font-size: 12px; margin-top: -2px; cursor:pointer;}
+.jianBtn:hover{color:blue;}
 .btnHomeBox{ overflow:hidden; margin-top:10px; width:200px; float:right;}
 .btnHomeBox>div{float:left; margin-left:15px; width:80px; cursor:pointer; text-align:center; height:28px; line-height:28px; border:1px solid #e1e1e1; border-radius:50px;}
 .money{width:80px;}
@@ -31,13 +33,13 @@ body{background:#fff;font-size:13px; color:#666; font-family:'微软雅黑';padd
 			<div style="background:#707089; border-radius:5px 5px 0px 0px; height:37px; line-height:37px; color:#fff; padding-left:15px;">封盘倒计时</div>
 			<div class="btnHomeBox">
 				<div style="background:#E3E3EB;">重置</div>
-				<div style="background:#2161B3; color:#fff;">确认下注</div>
+				<div id="trueBtn" style="background:#2161B3; color:#fff;">确认下注</div>
 				<span style="clear:both;"></span>
 			</div>
 		</div>
 		<ul class="ulBox">
 			<li>
-				<div class="titleClass">冠军</div>
+				<div class="titleClass" atyn="1">冠军</div>
 				<div class="numContent">
 					<div class="numContentList">
 						<div class="conteStype num">1</div>
@@ -159,7 +161,7 @@ body{background:#fff;font-size:13px; color:#666; font-family:'微软雅黑';padd
 				</div>
 			</li>
 			<li>
-				<div class="titleClass">亚军</div>
+				<div class="titleClass" atyn="2">亚军</div>
 				<div class="numContent">
 					<div class="numContentList">
 						<div class="conteStype num">1</div>
@@ -281,7 +283,7 @@ body{background:#fff;font-size:13px; color:#666; font-family:'微软雅黑';padd
 				</div>
 			</li>
 			<li>
-				<div class="titleClass">季军</div>
+				<div class="titleClass" atyn="3">季军</div>
 				<div class="numContent">
 					<div class="numContentList">
 						<div class="conteStype num">1</div>
@@ -403,7 +405,7 @@ body{background:#fff;font-size:13px; color:#666; font-family:'微软雅黑';padd
 				</div>
 			</li>
 			<li>
-				<div class="titleClass">第四名</div>
+				<div class="titleClass" atyn="4">第四名</div>
 				<div class="numContent">
 					<div class="numContentList">
 						<div class="conteStype num">1</div>
@@ -525,7 +527,7 @@ body{background:#fff;font-size:13px; color:#666; font-family:'微软雅黑';padd
 				</div>
 			</li>
 			<li>
-				<div class="titleClass">第五名</div>
+				<div class="titleClass" atyn="5">第五名</div>
 				<div class="numContent">
 					<div class="numContentList">
 						<div class="conteStype num">1</div>
@@ -671,6 +673,19 @@ $(function(){
 			old = 0;
 		}
 		$(iptobj).val(old-10);
+	});
+	$("#trueBtn").click(function(){
+		//alert(111);
+		$(".ulBox>li").each(function(){
+			console.log("=========================");
+			var typeNum = $(this).children(".titleClass").attr("atyn");
+			var obj = $(this).children(".numContent").children(".numContentList");
+			obj.each(function(){
+				var zhus = $(this).find(".num").text();
+				var monshu = $(this).find(".inptStyle").val();
+				console.log("类型："+typeNum+",号码："+zhus+",注数："+monshu);
+			});
+		});
 	});
 });
 </script>
