@@ -6,10 +6,13 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.base.BaseController;
 import com.bean.BetsDataLog_Bean;
 import com.bean.ApplyMoneyLog_Bean;
+import com.bean.BetsData;
 import com.bean.ApplyMoney;
 import com.bean.ApplyMoneyLog;
 import com.bean.BetsDataLog;
@@ -46,6 +49,59 @@ public class LayUI_Controller extends BaseController{
 	//下注历史记录界面
 	public void historyPage(){
 		render(HomePathPage+"history_page.html");
+	}
+	
+	//下注功能
+	public void newBetsdata(){
+		JSONObject json = new JSONObject();
+		int sum = 0;
+		String jsodata = getPara("strj");
+		String userid = getSessionAttr("UserId");
+		UserInfo uinfo = UserInfo.dao.findById(userid);
+		List<BetsData> betli = new ArrayList<BetsData>();
+		JSONArray jsonArray = JSON.parseArray(jsodata);
+		for (int i = 0; i < jsonArray.size(); i++){
+            BetsData btd = new BetsData();
+            JSONObject jsonObject = jsonArray.getJSONObject(i);
+            String type = jsonObject.getString("typeNum");
+            String num = jsonObject.getString("zhus");
+            int dzMoney = jsonObject.getInteger("monshu");
+            String uuid = UUID.randomUUID().toString().replace("-", "").toLowerCase();
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			Date now = new Date();
+            btd.set("fd_id", uuid);
+            btd.set("fd_userid", userid);
+            btd.set("fd_username", uinfo.get("fd_username"));
+            btd.set("fd_type", type);
+            btd.set("fd_num", num);
+            btd.set("fd_qishu", "688747");
+            btd.set("fd_creatime", sdf.format(now));
+            btd.set("fd_tatol", dzMoney);
+            betli.add(btd);
+            sum += dzMoney;
+        }
+		if(sum>uinfo.getInt("fd_money")){
+			json.put("state", "error");
+			json.put("mes", "余额不足！");
+		}else{
+			boolean bl = false;
+			for(BetsData bt : betli){
+				try {
+					bt.save();
+				} catch (Exception e) {
+					bl = true;
+					System.out.println(e);
+				}
+			}
+			if(bl){
+				json.put("state", "error");
+				json.put("mes", "保存出错！");
+			}else{
+				json.put("state", "success");
+				json.put("mes", "下注成功！");
+			}
+		}
+		renderJson(json.toJSONString());
 	}
 	
 	//申请提现界面

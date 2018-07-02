@@ -32,7 +32,7 @@ body{background:#fff;font-size:13px; color:#666; font-family:'微软雅黑';padd
 		<div style="height:80px;">
 			<div style="background:#707089; border-radius:5px 5px 0px 0px; height:37px; line-height:37px; color:#fff; padding-left:15px;">封盘倒计时</div>
 			<div class="btnHomeBox">
-				<div style="background:#E3E3EB;">重置</div>
+				<div id="resetBtn" style="background:#E3E3EB;">重置</div>
 				<div id="trueBtn" style="background:#2161B3; color:#fff;">确认下注</div>
 				<span style="clear:both;"></span>
 			</div>
@@ -675,18 +675,83 @@ $(function(){
 		$(iptobj).val(old-10);
 	});
 	$("#trueBtn").click(function(){
-		//alert(111);
+		var s=[];
 		$(".ulBox>li").each(function(){
-			console.log("=========================");
 			var typeNum = $(this).children(".titleClass").attr("atyn");
 			var obj = $(this).children(".numContent").children(".numContentList");
 			obj.each(function(){
 				var zhus = $(this).find(".num").text();
 				var monshu = $(this).find(".inptStyle").val();
-				console.log("类型："+typeNum+",号码："+zhus+",注数："+monshu);
+				if(parseInt(monshu)>0){
+					s.push(formsj(typeNum,zhus,parseInt(monshu)));
+				}
+			});
+		});
+		if(s.length>0){
+			$.ajax({
+			    url:"${BASE_PATH}VipCustomer/newBetsdata.html",
+			    dataType:"json",
+			    async:true,
+			    data:{"strj":JSON.stringify(s)},
+			    type:"POST",
+			    beforeSend:function(){},
+			    success:function(req){
+			    	alert(req.mes);
+			    	if(req.state=="success"){
+			    		location.reload();
+			    	}
+			    },
+			    complete:function(){},
+			    error:function(){}
+			});
+		}else{
+			alert("你还没有下注，请下注！");
+		}
+		
+	});
+	$(".inptStyle").focus(function(){
+		if($(this).val()=="0"||$(this).val()==0){
+			$(this).val("");
+		}
+	});
+	$(".inptStyle").blur(function(){
+		if($(this).val()==""){
+			$(this).val("0");
+			return;
+		}
+		if(isNaN($(this).val())){
+			alert("请输入数字型金额");
+			$(this).val("0");
+			return;
+		}
+		if(parseInt($(this).val())<0){
+			alert("请输入大于0的金额");
+			$(this).val("0");
+			return;
+		}
+		if($(this).val().indexOf(".")>=0){
+			alert("请输入整数的金额");
+			$(this).val("0");
+			return;
+		}
+		$(this).val(parseInt($(this).val()));
+	});
+	$("#resetBtn").click(function(){
+		$(".ulBox>li").each(function(){
+			var obj = $(this).children(".numContent").children(".numContentList");
+			obj.each(function(){
+				$(this).find(".inptStyle").val("0");
 			});
 		});
 	});
 });
+
+function formsj(typeNum,zhus,monshu){
+	var jipm = {};
+	jipm.typeNum = typeNum;
+	jipm.zhus = zhus;
+	jipm.monshu = monshu;
+	return jipm;
+}
 </script>
 </html>
