@@ -14,7 +14,7 @@ body{padding:0px; margin:0px; font-size:13px; font-family:'微软雅黑'}
 <div>
 	<div style="background:#707089; height:37px; line-height:37px; color:#fff; padding-left:15px; border-radius:5px 5px 0px 0px; font-size:13px;">会员充值</div>
 	<div class="Technological" style="width:250px; margin: 15px auto 10px auto;"></div>
-	<div style="float:left;padding-top:30px;">
+	<div id="saomaBox" style="background: #fff;padding-top:30px;height: 330px; width: 320px; margin: 30px auto;border-radius:5px;">
 		<table style="margin:0px auto; text-align:center;" cellspacing="10" cellpadding="10" border="0">
 			<tr>
 				<td>
@@ -29,10 +29,10 @@ body{padding:0px; margin:0px; font-size:13px; font-family:'微软雅黑'}
 				<td>支付宝</td>
 			</tr>
 		</table>
-		<div style="padding:7px 20px; background:#0000FF; margin:10px auto; cursor:pointer; border-radius:5px; color:#fff; text-align:center; width:250px;">扫码转账成功,去填写转账订单</div>
+		<div id="gowrite" style="padding:7px 20px; background:#0000FF; margin:10px auto; cursor:pointer; border-radius:5px; color:#fff; text-align:center; width:250px;">扫码转账成功,去填写转账订单</div>
 	</div>
 	<!-- 填写订单号 -->
-	<div style="float:left;padding:30px 20px 30px 20px; background:#fff; height:300px; margin-top:30px; border-radius:5px;">
+	<div id="writeBox" style="padding:30px 20px 30px 20px; background:#fff; height:300px; width:300px; margin: 30px auto; border-radius:5px; display:none;">
 		<table cellspacing="0" cellpadding="10">
 			<tr>
 				<td>支付类型：</td>
@@ -44,18 +44,67 @@ body{padding:0px; margin:0px; font-size:13px; font-family:'微软雅黑'}
 				</td>
 			</tr>
 			<tr>
+				<td>充值金额：</td>
+				<td><input type="text" style="border: 1px solid #e1e1e1; padding: 5px; border-radius: 5px;"/></td>
+			</tr>
+			<tr>
 				<td>转账订单号：</td>
 				<td><input type="text" style="border: 1px solid #e1e1e1; padding: 5px; border-radius: 5px;"/></td>
 			</tr>
 		</table>
-		<div style="padding:7px 20px; background:#0000FF; margin:10px auto; cursor:pointer; border-radius:5px; color:#fff; text-align:center;">确定</div>
+		<div id="submbtn" style="padding:7px 20px; background:#0000FF; margin:10px auto; cursor:pointer; border-radius:5px; color:#fff; text-align:center;">确定</div>
 	</div>
-	<div style="float:left;padding:30px 20px 30px 20px; height:300px; margin-top:30px; border-radius:5px;">
-		<div>客服审核中...</div>
+	<div id="mesBox" style="padding:30px 20px 30px 20px; height:300px; border-radius:5px; width: 300px; background: #fff; border-radius:5px; margin:30px auto; display:none;">
+		<table style="width: 100%;" cellspacing="0" cellpadding="10">
+			<tr>
+				<td style="width:70px;">用户名：</td>
+				<td>${rechar.fd_username}</td>
+			</tr>
+			<tr>
+				<td>充值金额：</td>
+				<td>${rechar.fd_money}</td>
+			</tr>
+			<tr>
+				<td>充值状态：</td>
+				<td style="color:#ff0000;">客服审核中...</td>
+			</tr>
+		</table>
 	</div>	
 	<div style="clear:both;"></div>
 </div>
+
 <script>
+$(function(){
+	<%if(rechar.fd_status==-1||rechar.fd_status=="-1"){}else{%>
+		$("#saomaBox").hide();
+		$("#writeBox").hide();
+		$("#mesBox").show();
+		$(".Technological").setStep(3);
+	<%}%>
+	$("#gowrite").bind("click",function(){
+		$("#saomaBox").hide();
+		$("#writeBox").show();
+		$(".Technological").setStep(2);
+	});
+	$("#submbtn").bind("click",function(){
+		return;
+		$.ajax({
+	        url: "${BASE_PATH}VipCustomer/ApplyVoid.html",
+	        type: "POST",
+	        data:{
+	        	"cash":$("#cash").val(),
+	        	"commit":$("#commit").val(),
+	        	"fdpassword":$("#fdpassword").val()
+	        },
+	        dataType: "json",
+	        success: function(data){
+	        	console.log(data);
+	        	$(".Technological").setStep(3);
+	        }
+	    });	
+		
+	});
+})
 $(".Technological").loadStep({
 	//ystep的外观大小
 	//可选值：small,large
@@ -80,7 +129,7 @@ $(".Technological").loadStep({
 		content: "充值成功！！"
 	}]
 });
-$(".Technological").setStep(2);
+$(".Technological").setStep(1);
 </script>
 </body>
 </html>

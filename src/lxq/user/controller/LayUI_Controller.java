@@ -17,6 +17,7 @@ import com.bean.ApplyMoney;
 import com.bean.ApplyMoneyLog;
 import com.bean.BetsDataLog;
 import com.bean.Recharge;
+import com.bean.RechargeNow;
 import com.bean.Recharge_Bean;
 import com.bean.UserInfo;
 import com.config.ControllerBind;
@@ -38,7 +39,54 @@ public class LayUI_Controller extends BaseController{
 	
 	//会员充值
 	public void recharge(){
+		String userid = getSessionAttr("UserId");
+		RechargeNow rechar = RechargeNow.dao.findFirst("SELECT * FROM rechargenow WHERE fd_userid = '"+userid+"'");
+		if(null==rechar){
+			RechargeNow rch = new RechargeNow();
+			rch.set("fd_status", "-1");
+			setAttr("rechar",rch);
+		}else{
+			setAttr("rechar",rechar);
+		}
 		render(HomePathPage+"recharge.html");
+	}
+	
+	//会员充值提交的信息
+	public void subRechar(){
+		JSONObject json = new JSONObject();
+		String zhifuType = getPara("tp");
+		String orderNum = getPara("orum");
+		Recharge fdf = Recharge.dao.findFirst("SELECT * FROM recharge WHERE fd_ordernum = '"+orderNum+"'");
+		if(fdf!=null){
+			json.put("state", "error");
+			json.put("mes", "订单号已被使用！");
+			renderJson(json.toJSONString());
+			return;
+		}
+		int money = getParaToInt("nom");
+		String userid = getSessionAttr("UserId");
+		String username = getSessionAttr("loginUser");
+		String uuid = UUID.randomUUID().toString().replace("-", "").toLowerCase();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		Date now = new Date();
+		RechargeNow recge = new RechargeNow();
+		recge.set("fd_id", uuid);
+		recge.set("fd_money", money);
+		recge.set("fd_userid", userid);
+		recge.set("fd_username", username);
+		recge.set("fd_status", "0");
+		recge.set("fd_creatime", sdf.format(now));
+		recge.set("fd_ordernum", orderNum);
+		recge.set("fd_ordertype", zhifuType);
+		boolean sares = recge.save();
+		if(sares){
+			json.put("state", "success");
+			json.put("mes", "信息提交成功！");
+		}else{
+			json.put("state", "error");
+			json.put("mes", "系统繁忙，请稍后再试！");
+		}
+		renderJson(json.toJSONString());
 	}
 	
 	//下注界面
