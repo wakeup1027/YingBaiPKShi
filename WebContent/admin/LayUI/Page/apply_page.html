@@ -22,12 +22,42 @@ table>tbody>tr{height:40px;}
 			<script>
 				var settepNum = 2;
 			</script>
-			<div style="line-height:50px; height:50px; text-align:center; color:#666;">请耐心等待！客服审核中...</div>
+			<div style="line-height:50px; height:50px; text-align:center; color:#666;">
+				<table style="text-align:left;">
+					<tr>
+						<td>用户名：</td>
+						<td>${user}</td>
+					</tr>
+					<tr>
+						<td>提现金额：</td>
+						<td>${money}</td> 
+					</tr>
+					<tr>
+						<td>提现状态：</td>
+						<td style="color:#ff0000">请耐心等待！客服审核中...</td>
+					</tr>
+				</table>
+			</div>
 		<%}else if(status==1||status=="1"){%>
 			<script>
 				var settepNum = 3;
 			</script>
-			<div style="line-height:50px; height:50px; text-align:center; color:#666;">请耐心等待！客服正在转账提现中...</div>
+			<div style="line-height:50px; height:50px; text-align:center; color:#666;">
+				<table style="text-align:left;">
+					<tr>
+						<td>用户名：</td>
+						<td>${user}</td>
+					</tr>
+					<tr>
+						<td>提现金额：</td>
+						<td>${money}</td> 
+					</tr>
+					<tr>
+						<td>提现状态：</td>
+						<td style="color:#ff0000">请耐心等待！客服正在转账提现中...</td>
+					</tr>
+				</table>
+			</div>
 		<%}else{%>
 			<script>
 				var settepNum = 1;

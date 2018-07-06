@@ -34,6 +34,11 @@ public class LayUI_Controller extends BaseController{
 	
 	//主页
 	public void index(){
+		String userid = getSessionAttr("UserId");
+		UserInfo uinfo = UserInfo.dao.findById(userid);
+		setAttr("userm",uinfo.get("fd_username"));
+		setAttr("money",uinfo.get("fd_money"));
+		setAttr("icemoney",uinfo.get("fd_icemoney"));
 		render(HomePath+"home.html");
 	}
 	
@@ -54,8 +59,8 @@ public class LayUI_Controller extends BaseController{
 	//会员充值提交的信息
 	public void subRechar(){
 		JSONObject json = new JSONObject();
-		String zhifuType = getPara("tp");
-		String orderNum = getPara("orum");
+		String zhifuType = getPara("reTy");  
+		String orderNum = getPara("ormn");
 		Recharge fdf = Recharge.dao.findFirst("SELECT * FROM recharge WHERE fd_ordernum = '"+orderNum+"'");
 		if(fdf!=null){
 			json.put("state", "error");
@@ -157,6 +162,8 @@ public class LayUI_Controller extends BaseController{
 		String userid = getSessionAttr("UserId");
 		ApplyMoney amoney = ApplyMoney.dao.findFirst("SELECT * FROM applymoney WHERE fd_userid = '"+userid+"' AND (fd_status = '0' OR fd_status = '1')");
 		if(null!=amoney){
+			setAttr("user",amoney.get("fd_username"));
+			setAttr("money",amoney.get("fd_money"));
 			setAttr("status",amoney.get("fd_status"));
 		}else{
 			setAttr("status","2");

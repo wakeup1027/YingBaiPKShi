@@ -37,7 +37,7 @@ body{padding:0px; margin:0px; font-size:13px; font-family:'微软雅黑'}
 			<tr>
 				<td>支付类型：</td>
 				<td>
-					<select style="border: 1px solid #e1e1e1; padding:2px 10px;">
+					<select id="reTy" style="border: 1px solid #e1e1e1; padding:2px 10px;">
 					  <option value ="1">微信</option>
 					  <option value ="2">支付宝</option>
 					</select>
@@ -45,11 +45,11 @@ body{padding:0px; margin:0px; font-size:13px; font-family:'微软雅黑'}
 			</tr>
 			<tr>
 				<td>充值金额：</td>
-				<td><input type="text" style="border: 1px solid #e1e1e1; padding: 5px; border-radius: 5px;"/></td>
+				<td><input id="mno" type="text" style="border: 1px solid #e1e1e1; padding: 5px; border-radius: 5px;"/></td>
 			</tr>
 			<tr>
 				<td>转账订单号：</td>
-				<td><input type="text" style="border: 1px solid #e1e1e1; padding: 5px; border-radius: 5px;"/></td>
+				<td><input id="ormn" type="text" style="border: 1px solid #e1e1e1; padding: 5px; border-radius: 5px;"/></td>
 			</tr>
 		</table>
 		<div id="submbtn" style="padding:7px 20px; background:#0000FF; margin:10px auto; cursor:pointer; border-radius:5px; color:#fff; text-align:center;">确定</div>
@@ -87,19 +87,20 @@ $(function(){
 		$(".Technological").setStep(2);
 	});
 	$("#submbtn").bind("click",function(){
-		return;
 		$.ajax({
-	        url: "${BASE_PATH}VipCustomer/ApplyVoid.html",
+	        url: "${BASE_PATH}VipCustomer/subRechar.html",
 	        type: "POST",
 	        data:{
-	        	"cash":$("#cash").val(),
-	        	"commit":$("#commit").val(),
-	        	"fdpassword":$("#fdpassword").val()
+	        	"nom":$("#mno").val(),
+	        	"reTy":$("#reTy").val(),
+	        	"ormn":$("#ormn").val()
 	        },
 	        dataType: "json",
 	        success: function(data){
-	        	console.log(data);
-	        	$(".Technological").setStep(3);
+	        	alert(data.mes);
+	        	if(data.state=="success"){
+	        		window.location.reload();
+	        	}
 	        }
 	    });	
 		
