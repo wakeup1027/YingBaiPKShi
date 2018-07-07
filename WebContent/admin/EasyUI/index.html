@@ -8,6 +8,7 @@
     <link rel="stylesheet" type="text/css" href="${BASE_PATH}js/easyui/js/themes/icon.css" />
     <link rel="stylesheet" href="${BASE_PATH}css/iconfont.css"/>
     <script type="text/javascript" src="${BASE_PATH}js/easyui/js/jquery-1.4.2.min.js"></script>
+	<script type="text/javascript" src="${BASE_PATH}js/echarts.js"></script>
     <script type="text/javascript" src="${BASE_PATH}js/easyui/js/jQuery.easyui.js"></script>
 	<script type="text/javascript" src='${BASE_PATH}js/easyui/js/outlook2.js'></script>
 	<style type="text/css">
@@ -17,10 +18,12 @@
 	 var _menus = {"menus":[
 						{"menuid":"1","icon":"icon-sys","menuname":"系统设置",
 							"menus":[
+										{"menuname":"充值管理","icon":"icon-pen","url":"${BASE_PATH}AdminStrUrl/pucashPage.html"},
 										{"menuname":"提现管理","icon":"icon-nav","url":"${BASE_PATH}AdminStrUrl/pucashPage.html"},
-										{"menuname":"用户中奖查看","icon":"icon-role","url":"${BASE_PATH}AdminStrUrl/userwinPage.html"},
-//										{"menuname":"历史下注记录","icon":"icon-log","url":"${BASE_PATH}AdminStrUrl/historyPage.html"},
-										{"menuname":"会员管理","icon":"icon-users","url":"${BASE_PATH}AdminStrUrl/userInfoPage.html"}
+										{"menuname":"用户下注","icon":"icon-role","url":"${BASE_PATH}AdminStrUrl/userwinPage.html"},
+										{"menuname":"会员管理","icon":"icon-users","url":"${BASE_PATH}AdminStrUrl/userInfoPage.html"},
+										{"menuname":"下注记录","icon":"icon-log","url":"${BASE_PATH}AdminStrUrl/historyPage.html"},
+										{"menuname":"系统设置","icon":"icon-set","url":"${BASE_PATH}AdminStrUrl/historyPage.html"}
 							]
 						}
 				]};
@@ -89,9 +92,280 @@
     <div id="mainPanle" region="center" style="background: #eee; overflow-y:hidden">
         <div id="tabs" class="easyui-tabs"  fit="true" border="false" style="background:#fff;">
 			<div id="FirstTitle" title="最新下注信息" style="padding:20px;overflow:hidden;" id="home">
-
-				<h1>Welcome to jQuery UI!</h1>
-
+				<div id="main" style="width:800px; height:500px;"></div>
+				<script>
+				var myChart = echarts.init(document.getElementById('main'));
+				var guanjun = [
+								{
+									'number':'1',
+									'person':'50',
+									'tatol':'100000'
+								},{
+									'number':'2',
+									'person':'20',
+									'tatol':'5000'
+								},{
+									'number':'3',
+									'person':'20',
+									'tatol':'5000'
+								},{
+									'number':'4',
+									'person':'20',
+									'tatol':'5000'
+								},{
+									'number':'5',
+									'person':'20',
+									'tatol':'5000'
+								},{
+									'number':'6',
+									'person':'20',
+									'tatol':'5000'
+								},{
+									'number':'7',
+									'person':'20',
+									'tatol':'5000'
+								},{
+									'number':'8',
+									'person':'20',
+									'tatol':'5000'
+								},{
+									'number':'9',
+									'person':'20',
+									'tatol':'5000'
+								}
+							];
+				var yajun = [
+								{
+									'number':'1',
+									'person':'50',
+									'tatol':'100000'
+								},{
+									'number':'2',
+									'person':'20',
+									'tatol':'5000'
+								},{
+									'number':'3',
+									'person':'20',
+									'tatol':'5000'
+								},{
+									'number':'4',
+									'person':'20',
+									'tatol':'5000'
+								},{
+									'number':'5',
+									'person':'20',
+									'tatol':'5000'
+								},{
+									'number':'6',
+									'person':'20',
+									'tatol':'5000'
+								},{
+									'number':'7',
+									'person':'20',
+									'tatol':'5000'
+								},{
+									'number':'8',
+									'person':'20',
+									'tatol':'5000'
+								},{
+									'number':'9',
+									'person':'20',
+									'tatol':'5000'
+								}
+							];
+				var jijun = [
+								{
+									'number':'1',
+									'person':'50',
+									'tatol':'100000'
+								},{
+									'number':'2',
+									'person':'20',
+									'tatol':'5000'
+								},{
+									'number':'3',
+									'person':'20',
+									'tatol':'5000'
+								},{
+									'number':'4',
+									'person':'20',
+									'tatol':'5000'
+								},{
+									'number':'5',
+									'person':'20',
+									'tatol':'5000'
+								},{
+									'number':'6',
+									'person':'20',
+									'tatol':'5000'
+								},{
+									'number':'7',
+									'person':'20',
+									'tatol':'5000'
+								},{
+									'number':'8',
+									'person':'20',
+									'tatol':'5000'
+								},{
+									'number':'9',
+									'person':'20',
+									'tatol':'5000'
+								}
+							];
+				var numberFour = [
+								{
+									'number':'1',
+									'person':'50',
+									'tatol':'100000'
+								},{
+									'number':'2',
+									'person':'20',
+									'tatol':'5000'
+								},{
+									'number':'3',
+									'person':'20',
+									'tatol':'5000'
+								},{
+									'number':'4',
+									'person':'20',
+									'tatol':'5000'
+								},{
+									'number':'5',
+									'person':'20',
+									'tatol':'5000'
+								},{
+									'number':'6',
+									'person':'20',
+									'tatol':'5000'
+								},{
+									'number':'7',
+									'person':'20',
+									'tatol':'5000'
+								},{
+									'number':'8',
+									'person':'20',
+									'tatol':'5000'
+								},{
+									'number':'9',
+									'person':'20',
+									'tatol':'5000'
+								}
+							];
+				var numberfive = [
+								{
+									'number':'1',
+									'person':'50',
+									'tatol':'100000'
+								},{
+									'number':'2',
+									'person':'20',
+									'tatol':'5000'
+								},{
+									'number':'3',
+									'person':'20',
+									'tatol':'5000'
+								},{
+									'number':'4',
+									'person':'20',
+									'tatol':'5000'
+								},{
+									'number':'5',
+									'person':'20',
+									'tatol':'5000'
+								},{
+									'number':'6',
+									'person':'20',
+									'tatol':'5000'
+								},{
+									'number':'7',
+									'person':'20',
+									'tatol':'5000'
+								},{
+									'number':'8',
+									'person':'20',
+									'tatol':'5000'
+								},{
+									'number':'9',
+									'person':'20',
+									'tatol':'5000'
+								}
+							];
+				var option = {
+				    title: {
+				        text: '第688747期会员下注情况',
+				        subtext: '本期下注总金额：1502300',
+				        left: 'center'
+				    },
+				    tooltip : {
+				        trigger: 'item',
+				        //formatter: "{a} <br/>{b} : {c} ({d}%)"
+						formatter:function(params){
+							var paramsDa = params.data.jsonData;
+							console.log(paramsDa);
+							var res='<div style=\'width:300px;\'><table style=\'text-align:center\'><tr><td style=\'width:80px;\'>下注号码</td><td style=\'width:120px;\'>下注人数</td><td>总金额</td></tr>' 
+							if(paramsDa=="undefined"||paramsDa==undefined){
+								res+='<tr><td>未下注</td><td>0</td><td>0</td></tr>'
+							}else{
+								for(var i=0;i<paramsDa.length;i++){
+									res+='<tr><td>'+paramsDa[i].number+'</td><td>'+paramsDa[i].person+'</td><td>'+paramsDa[i].tatol+'</td></tr>'
+								}
+							}
+							res+='</table></div>'
+							return res;
+						}
+				    },
+				    legend: {
+				        // orient: 'vertical',
+				        // top: 'middle',
+				        bottom: 10,
+				        left: 'center',
+				        data: ['冠军', '亚军','季军','第四名','第五名']
+				    },
+				    series : [
+				        {
+				            type: 'pie',
+				            radius : '65%',
+				            center: ['50%', '50%'],
+				            selectedMode: 'single',
+				            data:[
+				                {
+									value:1548, 
+									name: '冠军',
+									jsonData:guanjun
+								},
+				                {
+									value:535, 
+									name: '亚军',
+									jsonData:yajun
+				                },
+				                {
+				                	value:510, 
+				                	name: '季军',
+				                	jsonData:jijun
+				                },
+				                {
+				                	value:634, 
+				                	name: '第四名',
+				                	jsonData:numberFour
+				                },
+				                {
+				                	value:735, 
+				                	name: '第五名',
+				                	jsonData:numberfive
+				                }
+				            ],
+				            itemStyle: {
+				                emphasis: {
+				                    shadowBlur: 10,
+				                    shadowOffsetX: 5,
+				                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+				                }
+				            }
+				        }
+				    ]
+				};
+				myChart.setOption(option);
+				</script>
 			</div>
 		</div>
     </div>
