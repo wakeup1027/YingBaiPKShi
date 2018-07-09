@@ -12,30 +12,22 @@ import java.net.URL;
  * 
  */
 public class KaiCaiDateUntil {
+	private static final String token = "t10e9c565ded1e473k";
+	private static final String code = "bjpk10";
+	private static final String rows = "1";
+	private static final String format = "json";
+	//private static final String date = "2018-02-18";
+	
 	public static void main(String[] args) {
-		//正式环境的请求数据
-		String url = "http://r.apiplus.net/newly.do?token=d5b129407dbac0d0f4d7d6c689c55dd1&code=bjpk10&rows=5&format=json&date=2015-02-18";
-		//测试环境的请求数据
-		String url1 = "http://t.apiplus.net/daily.do?code=bjpk10&format=json&date=2018-06-20";
+		String url = "http://ho.apiplus.net/newly.do?";
+		url += "token="+token+"&";
+		url += "code="+code+"&";
+		url += "rows="+rows+"&";
+		url += "format="+format;
 		String urlAll = new StringBuffer(url).toString();
 		String charset = "UTF-8";
-		String jsonResult = get(urlAll, charset);// 得到JSON字符串
+		String jsonResult = getHttpDate(urlAll, charset);// 得到JSON字符串
 		System.out.println(jsonResult);
-		/*JSONObject object = JSONObject.fromObject(jsonResult);// 转化为JSON类
-		try {
-			Iterator it = object.keys();
-			while (it.hasNext()) {
-				String key = (String) it.next();
-				String value = object.getString(key);
-				JSONObject object1 = JSONObject.fromObject(value);// 转化为JSON类
-				String outputStr = "id:" + key;
-				outputStr += " number:" + object1.getString("number");
-				outputStr += " dateline:" + object1.getString("dateline");
-				System.out.println(outputStr);
-			}
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}*/
 
 	}
 
@@ -45,7 +37,7 @@ public class KaiCaiDateUntil {
 	 * @param charset:字符编码
 	 * @return 返回json结果
 	 */
-	public static String get(String urlAll, String charset) {
+	public static String getHttpDate(String urlAll, String charset) {
 		BufferedReader reader = null;
 		String result = null;
 		StringBuffer sbf = new StringBuffer();
@@ -64,7 +56,6 @@ public class KaiCaiDateUntil {
 			String strRead = null;
 			while ((strRead = reader.readLine()) != null) {
 				sbf.append(strRead);
-				sbf.append("\r\n");
 			}
 			reader.close();
 			result = sbf.toString();

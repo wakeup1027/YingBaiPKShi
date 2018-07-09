@@ -1,11 +1,7 @@
-/*package lxq.util;
+package lxq.util;
 
 import static org.quartz.JobBuilder.newJob;
 import static org.quartz.TriggerBuilder.newTrigger;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import org.quartz.CronScheduleBuilder;
 
@@ -16,11 +12,11 @@ import org.quartz.SchedulerException;
 import org.quartz.Trigger;
 import org.quartz.impl.StdSchedulerFactory;
 
-*//**
+/**
  * 开奖器的类
  * @author Administrator
  *
- *//*
+ */
 
 public class QuzarTimer {
 	private Scheduler scheduler = null;
@@ -30,9 +26,9 @@ public class QuzarTimer {
 	private static final String TimeTriggerStr = "TimeTrigger";
 	private static final String TimeTriggerWithIdentityStr = "TimeTriggerWithIdentity";
 	
-	private QuzarTimer(){
+	/*private QuzarTimer(){
 		Quzar();
-	}
+	}*/
 	
 	public void Quzar(){
 		//创建scheduler
@@ -45,15 +41,16 @@ public class QuzarTimer {
 
 			Trigger TimeTrigger = newTrigger()
             	    .withIdentity(TimeTriggerStr, TimeTriggerWithIdentityStr)
-            	    .withSchedule(CronScheduleBuilder.cronSchedule("0 1 * * * ?")
+            	    .withSchedule(CronScheduleBuilder.cronSchedule("0/5 * * * * ?")
             	    		.withMisfireHandlingInstructionDoNothing())  //0 2 10 23 4 ? 2018
             	    .build();
 			
 			//加入这个调度
-            scheduler.scheduleJob(QuzarTimerJob, TimeTrigger);//开奖器10分钟执行一次的计时器
+            scheduler.scheduleJob(QuzarTimerJob, TimeTrigger);
             scheduler.start();
             
-            scheduler.pauseJob(JobKey.jobKey(QuzarTimerJobStr, QuzarTimerGroupStr));
+            //暂停任务
+            //scheduler.pauseJob(JobKey.jobKey(QuzarTimerJobStr, QuzarTimerGroupStr));
 		} catch (SchedulerException e) {
 			e.printStackTrace();
 		}
@@ -63,7 +60,6 @@ public class QuzarTimer {
 	public void starQuzar(){
         try {
         	scheduler.resumeJob(JobKey.jobKey(QuzarTimerJobStr, QuzarTimerGroupStr));
-    		//QuzarWebTimer.getInstance().starQuzar();
 		} catch (SchedulerException e) {
 			e.printStackTrace();
 		}
@@ -73,7 +69,6 @@ public class QuzarTimer {
 	public void stopQuzar(){
         try {
         	scheduler.pauseJob(JobKey.jobKey(QuzarTimerJobStr, QuzarTimerGroupStr));
-        	QuzarWebTimer.getInstance().stopQuzar();
 		} catch (SchedulerException e) {
 			e.printStackTrace();
 		}
@@ -95,4 +90,3 @@ public class QuzarTimer {
 	}
 	
 }
-*/
