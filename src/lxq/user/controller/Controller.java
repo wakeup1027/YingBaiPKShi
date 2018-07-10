@@ -39,30 +39,6 @@ public class Controller extends BaseController {
 		}
 	}
 	
-	//申请注册界面
-	public void regit(){
-		render("/admin/LayUI/regit.html");
-	}
-	
-	//保存用户申请信息
-	public void ApplyRegit(){
-		String uuid = UUID.randomUUID().toString().replace("-", "").toLowerCase();
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		Date now = new Date();
-		UserInfo model = getModel(UserInfo.class,"userInfo");
-		model.set("id", uuid);
-		model.set("fd_creatime",sdf.format(now));
-		model.set("fd_status","0");
-		boolean res = model.save();
-		JSONObject json = new JSONObject();
-		if(res){
-			json.put("status", "200");
-		}else{
-			json.put("status", "500");
-		}
-		renderJson(json.toJSONString());
-	}
-	
 	//退户登录
 	public void loginout(){
 		removeSessionAttr("loginUser");

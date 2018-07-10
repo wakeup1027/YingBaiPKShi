@@ -15,7 +15,6 @@ public class AdminInterceptor implements Interceptor{
 		HttpServletRequest request = controller.getRequest();
 		HttpSession session = request.getSession();
 		Object obj = session.getAttribute("loginAdmin");
-		System.out.println("===拦截未登录的管理员===");
 		if (obj == null) {
 			System.out.println("该管理员还没有登陆");
 			controller.redirect("/alogin/login.html");

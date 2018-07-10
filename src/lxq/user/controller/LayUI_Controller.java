@@ -39,6 +39,7 @@ public class LayUI_Controller extends BaseController{
 		setAttr("userm",uinfo.get("fd_username"));
 		setAttr("money",uinfo.get("fd_money"));
 		setAttr("icemoney",uinfo.get("fd_icemoney"));
+		setAttr("applymoney",uinfo.get("fd_applymoney"));
 		render(HomePath+"home.html");
 	}
 	
@@ -372,6 +373,31 @@ public class LayUI_Controller extends BaseController{
 		json.put("data", newPer);
 		renderJson(json.toJSONString());
 	}
+	
+	//申请注册界面
+		public void regit(){
+			render("/admin/LayUI/regit.html");
+		}
+		
+		//保存用户申请信息
+		public void ApplyRegit(){
+			String uuid = UUID.randomUUID().toString().replace("-", "").toLowerCase();
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			Date now = new Date();
+			UserInfo model = getModel(UserInfo.class,"userInfo");
+			model.set("id", uuid);
+			model.set("fd_creatime",sdf.format(now));
+			model.set("fd_status","0");
+			model.set("fd_tjUser",getSessionAttr("loginUser"));
+			boolean res = model.save();
+			JSONObject json = new JSONObject();
+			if(res){
+				json.put("status", "200");
+			}else{
+				json.put("status", "500");
+			}
+			renderJson(json.toJSONString());
+		}
 	
 	//加载已开过的数据
 	public void loadNoDate(){

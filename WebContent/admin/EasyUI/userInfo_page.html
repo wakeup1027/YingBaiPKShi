@@ -34,7 +34,7 @@ $(function(){
 	$('#dg').datagrid({
 	    height: '100%',
 	    fit:true,
-	    url: '',
+	    url: '${BASE_PATH}AdminStrUrl/loaduserd.html',
 	    method: 'POST',
 	    striped: true,
 	    nowrap: true,
@@ -49,15 +49,17 @@ $(function(){
 		rownumbers:true,
 		columns: [[
 				    {field: 'ck', checkbox:true},
-				    {field: 'qiNum', title:'会员名', width:'10%'},
-				    {field: 'Num', title:'真实姓名', width:'10%'},
-				    {field: 'Num', title:'账户余额', width:'10%'},
-				    {field: 'Num', title:'余额状态', width:'10%'},
-				    {field: 'Num', title:'手机', width:'10%'},
-				    {field: 'Num', title:'身份证', width:'10%'},
-				    {field: 'Num', title:'银行卡', width:'10%'},
-				    {field: 'Num', title:'账户状态', width:'10%'},
-				    {field: 'creantime', title:'注册时间', width:'15%',formatter:fotmateDate}
+				    {field: 'fd_username', title:'会员名', width:'10%'},
+				    {field: 'fd_truename', title:'真实姓名', width:'10%'},
+				    {field: 'fd_money', title:'账户余额', width:'10%'},
+				    {field: 'fd_icemoney', title:'冻结金额', width:'10%'},
+				    {field: 'fd_applymoney', title:'提现金额', width:'10%'},
+				    {field: 'fd_phone', title:'手机号码', width:'10%'},
+				    {field: 'fd_IDcase', title:'身份证', width:'10%'},
+				    {field: 'fd_bank', title:'银行卡', width:'10%'},
+				    {field: 'fd_status', title:'账户状态', width:'10%'},
+				    {field: 'fd_tjUser', title:'推荐人', width:'10%'},
+				    {field: 'fd_creatime', title:'注册时间', width:'15%',formatter:fotmateDate}
 	    ]]
 	});
 });
