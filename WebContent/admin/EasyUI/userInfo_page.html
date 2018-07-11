@@ -14,9 +14,9 @@
 <body>
 <div>
 	<div style="float:left;">
-		<a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-edit',plain:true" onclick="newMajor()">同意注册</a>
-		<a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-cut',plain:true" onclick="delet()">不同意注册</a>
-		<a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-cut',plain:true" onclick="delet()">冻结账号</a>
+		<a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-edit',plain:true" onclick="_agen()">正常账号</a>
+		<a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-cut',plain:true" onclick="_djie()">冻结账号</a>
+		<a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-cut',plain:true" onclick="_delet()">废弃账号</a>
 	</div>
 	<div style="float:left; margin-left:50px;">
 		<input id="searchKey" class="easyui-textbox" data-options="prompt:'请输入查找的期号'" style="width:200px; height:26px;"/>
@@ -57,12 +57,117 @@ $(function(){
 				    {field: 'fd_phone', title:'手机号码', width:'10%'},
 				    {field: 'fd_IDcase', title:'身份证', width:'10%'},
 				    {field: 'fd_bank', title:'银行卡', width:'10%'},
-				    {field: 'fd_status', title:'账户状态', width:'10%'},
+				    {field: 'fd_status', title:'账户状态', width:'10%',formatter:function(value){  
+		            	if(value == '1' || value == 1){
+							return "正常";
+						}else if(value == '0' || value == 0){
+							return "未激活";
+						}else if(value == '2' || value == 2){
+							return "冻结";
+						}
+					}},
 				    {field: 'fd_tjUser', title:'推荐人', width:'10%'},
 				    {field: 'fd_creatime', title:'注册时间', width:'15%',formatter:fotmateDate}
 	    ]]
 	});
 });
+
+function _agen(){
+	var rows = $('#dg').datagrid('getSelections');
+	if(rows.length==0){
+		$.messager.alert('info', '请选择操作数据！');
+		return;
+	}
+	$.messager.confirm('确认', '修改所选用户状态?', function (r) {
+        if (r) {
+        	var onu="";
+        	for(var i=0; i<rows.length; i++){
+        		onu+=rows[i].id+",";
+        	}
+        	$.ajax({
+                type: "POST",
+                data:{"onu":onu},
+                dataType: 'json',
+                url: "${BASE_PATH}AdminStrUrl/clikUser.html",
+                success:function(data) {
+                    if(data.status=="1"||data.status==1){
+                    	$('#dg').datagrid('reload');
+                    }else{
+                    	$.messager.alert('Warning', '操作失败！建议激活一个');
+                    }
+                },error:function(error){
+                	console.log(error);
+                }
+        	});
+        }
+    });
+}
+
+function _djie(){
+	var rows = $('#dg').datagrid('getSelections');
+	if(rows.length==0){
+		$.messager.alert('info', '请选择操作数据！');
+		return;
+	}
+	$.messager.confirm('确认', '冻结所选用户?', function (r) {
+        if (r) {
+        	var onu="";
+        	for(var i=0; i<rows.length; i++){
+        		onu+=rows[i].id+",";
+        	}
+        	$.ajax({
+                type: "POST",
+                data:{"onu":onu},
+                dataType: 'json',
+                url: "${BASE_PATH}AdminStrUrl/djieUser.html",
+                success:function(data) {
+                    if(data.status=="1"||data.status==1){
+                    	$('#dg').datagrid('reload');
+                    }else{
+                    	$.messager.alert('Warning', '激活失败！建议激活一个');
+                    }
+                },error:function(error){
+                	console.log(error);
+                }
+        	});
+        }
+    });
+}
+
+function _delet(){
+	var rows = $('#dg').datagrid('getSelections');
+	if(rows.length==0){
+		$.messager.alert('info', '请选择操作数据！');
+		return;
+	}
+	$.messager.confirm('确认', '废弃所选未激活用户?', function (r) {
+        if (r) {
+        	var onu="";
+        	for(var i=0; i<rows.length; i++){
+        		if(rows[i].fd_status=="1"||rows[i].fd_status=="2"||rows[i].fd_status==1||rows[i].fd_status==2){
+        			$.messager.alert('Warning', '存在已激活或者冻结用户，不能废弃！');
+        			return;
+        		}
+        		onu+=rows[i].id+",";
+        	}
+        	$.ajax({
+                type: "POST",
+                data:{"onu":onu},
+                dataType: 'json',
+                url: "${BASE_PATH}AdminStrUrl/detetUser.html",
+                success:function(data) {
+                    if(data.status=="1"||data.status==1){
+                    	$('#dg').datagrid('reload');
+                    }else{
+                    	$.messager.alert('Warning', '激活失败！建议激活一个');
+                    }
+                },error:function(error){
+                	console.log(error);
+                }
+        	});
+        }
+    });
+}
 
 //格式化的方法
 function fotmateDate(value){

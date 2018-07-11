@@ -11,6 +11,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.base.BaseController;
 import com.bean.BetsDataLog_Bean;
+import com.bean.OpenNumber;
 import com.bean.ApplyMoneyLog_Bean;
 import com.bean.BetsData;
 import com.bean.ApplyMoney;
@@ -36,10 +37,15 @@ public class LayUI_Controller extends BaseController{
 	public void index(){
 		String userid = getSessionAttr("UserId");
 		UserInfo uinfo = UserInfo.dao.findById(userid);
+		OpenNumber opnunew = OpenNumber.dao.findFirst("SELECT fd_number,fd_qishu FROM opennumber ORDER BY fd_creatime DESC");
 		setAttr("userm",uinfo.get("fd_username"));
 		setAttr("money",uinfo.get("fd_money"));
 		setAttr("icemoney",uinfo.get("fd_icemoney"));
 		setAttr("applymoney",uinfo.get("fd_applymoney"));
+		String fpw = opnunew.get("fd_number");
+		String[] howall = fpw.split(",");
+		setAttr("opnum",howall);
+		setAttr("qish",opnunew.get("fd_qishu"));
 		render(HomePath+"home.html");
 	}
 	

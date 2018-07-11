@@ -30,22 +30,16 @@ body{padding:0px; margin:0px; font-size:13px; color:#666; font-family:'微软雅
 		<div style="text-align:center; line-height:25px;">
 			<span style="color:#EEF613;">北京PK拾</span>
 			<span style="color:#fff;">第</span>
-			<span style="color:#EEF613;">688747</span>
+			<span style="color:#EEF613;">${qish}</span>
 			<span style="color:#fff;">期</span>
 		</div>
 		<ul class="numUlBox">
-			<li>03</li>
-			<li>01</li>
-			<li>04</li>
-			<li>09</li>
-			<li>08</li>
-			<li>07</li>
-			<li>06</li>
-			<li>10</li>
-			<li>02</li>
-			<li>05</li>
-			<div style="clear:both;"></div>
+		<% if( opnum != null && opnum.~size > 0 ){var i=0;%>
+		<% for(item in opnum){if(i<10){%>
+		<li>${item}</li>
+		<%i++;}else{break;}}}%>
 		</ul>
+		<div style="clear:both;"></div>
 	</div>
 	<div style="float:right; height:90px; width:190px; color:#fff;">
 		<div class="btnBoxClass">

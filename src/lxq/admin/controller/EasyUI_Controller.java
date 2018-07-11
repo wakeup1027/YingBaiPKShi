@@ -1,6 +1,5 @@
 package lxq.admin.controller;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -8,7 +7,6 @@ import java.util.Map;
 import com.alibaba.fastjson.JSONObject;
 import com.base.BaseController;
 import com.bean.UserInfo;
-import com.bean.UserInfoLog;
 import com.config.ControllerBind;
 import com.jfinal.aop.Before;
 import demo.AdminInterceptor;
@@ -49,29 +47,83 @@ public class EasyUI_Controller extends BaseController{
 		int page = getParaToInt("page");
 		int rows = getParaToInt("rows");
 		List<UserInfo> UI = UserInfo.dao.findByPage(page, rows, "");
-		/*List<UserInfoLog> luilog = new ArrayList<UserInfoLog>();
-		for(UserInfo uin : UI){
-			UserInfoLog ulog = new UserInfoLog();
-			ulog.setId(uin.getStr("id"));
-			ulog.setFd_username(uin.getStr("fd_username"));
-			ulog.setFd_truename(uin.getStr("fd_truename"));
-			ulog.setFd_money(uin.getInt("fd_money"));
-			ulog.setFd_icemoney(uin.getInt("fd_icemoney"));
-			ulog.setFd_applymoney(uin.getInt("fd_applymoney"));
-			ulog.setFd_phone(uin.getStr("fd_phone"));
-			ulog.setFd_IDcase(uin.getStr("fd_IDcase"));
-			ulog.setFd_bank(uin.getStr("fd_bank"));
-			ulog.setFd_status(uin.getStr("fd_status"));
-			ulog.setFd_tjUser(uin.getStr("fd_tjUser"));
-			ulog.setFd_creatime(uin.getStr("fd_creatime"));
-			luilog.add(ulog);
-		}*/
-		
 		Long total = UserInfo.dao.count("SELECT * FROM userinfo");
 		map.put("rows", UI);
 	    map.put("total", total); 
 		renderJson(map);
 		
+	}
+	
+	//激活用户
+	public void clikUser(){
+		JSONObject json = new JSONObject();
+		String orderStr = getPara("onu");
+		String[] ords = orderStr.split(",");
+		boolean doUp = false;
+		for(String sd : ords){
+			UserInfo uif = UserInfo.dao.findById(sd);
+			uif.set("fd_status", "1");
+			try {
+				uif.update();
+			} catch (Exception e) {
+				doUp = true;
+				System.out.println("激活用户出现失败！");
+			}
+		}
+		if(doUp){
+			json.put("status", 0);
+		}else{
+			json.put("status", 1);
+		}
+		renderJson(json.toJSONString());
+	}
+	
+	//激活用户
+	public void djieUser(){
+		JSONObject json = new JSONObject();
+		String orderStr = getPara("onu");
+		String[] ords = orderStr.split(",");
+		boolean doUp = false;
+		for(String sd : ords){
+			UserInfo uif = UserInfo.dao.findById(sd);
+			uif.set("fd_status", "2");
+			try {
+				uif.update();
+			} catch (Exception e) {
+				doUp = true;
+				System.out.println("冻结用户出现失败！");
+			}
+		}
+		if(doUp){
+			json.put("status", 0);
+		}else{
+			json.put("status", 1);
+		}
+		renderJson(json.toJSONString());
+	}
+	
+	//废弃用户
+	public void detetUser(){
+		JSONObject json = new JSONObject();
+		String orderStr = getPara("onu");
+		String[] ords = orderStr.split(",");
+		boolean doUp = false;
+		for(String sd : ords){
+			UserInfo uif = new UserInfo(); //UserInfo.dao.findById(sd);
+			uif.set("id", sd);
+			try {
+				uif.delete();
+			} catch (Exception e) {
+				doUp = true;
+				System.out.println("废弃用户出现失败！");
+			}
+		}
+		if(doUp){
+			json.put("status", 0);
+		}else{
+			json.put("status", 1);
+		}
+		renderJson(json.toJSONString());
 	}
 	
 	//开始定时器
