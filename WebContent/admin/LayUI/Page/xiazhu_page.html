@@ -3,7 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <title>下注界面</title>
+<link rel="stylesheet" href="${BASE_PATH}css/layui.css" media="all">
 <script src="${BASE_PATH}js/jquery-1.8.3.min.js"></script>
+<script type="text/javascript" src="${BASE_PATH}js/layui.js"></script>
 <style>
 body{background:#fff;font-size:13px; color:#666; font-family:'微软雅黑';padding:0px; margin:0px;}
 .ulBox{list-style-type:none; padding:0px; margin:0px; overflow:hidden; margin-top:10px;}
@@ -14,7 +16,7 @@ body{background:#fff;font-size:13px; color:#666; font-family:'微软雅黑';padd
 .numContentList{height:40px;border-bottom:1px solid #e1e1e1;}
 .numContentList:last-child{border:none;}
 .conteStype{float:left; width:40px; height:100%; text-align:center; line-height:40px;}
-.num{width:25px; height:25px; line-height:25px; border:1px solid #CBCBCB; box-shadow: 1px 1px 5px #d1d1d1; background:#fff; font-weight:bold; color:#000; border-radius: 50px; margin-top:7px; margin-left:15px;}
+.num,.numtd{width:25px; height:25px; line-height:25px; border:1px solid #CBCBCB; box-shadow: 1px 1px 5px #d1d1d1; background:#fff; font-weight:bold; color:#000; border-radius: 50px; margin-top:7px; margin-left:15px;}
 .zhu{color:#FA222D; width:60px; font-weight:bold; font-size:16px;}
 .inptStyle{width:50px; outline:none; padding-left:10px; height:20px; border:1px solid #e1e1e1; float:left; margin-top:9px;}
 .jiaJianBtnBox{float: left; width: 13px; height: 22px; margin-top: 9px; border: 1px solid #e1e1e1; border-left: none;}
@@ -39,7 +41,7 @@ body{background:#fff;font-size:13px; color:#666; font-family:'微软雅黑';padd
 			</div>
 			<div class="btnHomeBox">
 				<div id="resetBtn" style="background:#E3E3EB;">重置</div>
-				<div id="trueBtn" style="background:#2161B3; color:#fff;">确认下注</div>
+				<div id="trueBtn" onclick="addAutoNum()" style="background:#2161B3; color:#fff;">确认下注</div>
 				<span style="clear:both;"></span>
 			</div>
 		</div>
@@ -1266,6 +1268,14 @@ body{background:#fff;font-size:13px; color:#666; font-family:'微软雅黑';padd
 			</li>
 		</ul>
 	</div>
+	<div id="opendBox" style="padding-bottom:15px; margin:0px auto; margin-top:15px; display: none; background: #fff;">
+		<table style="margin:15px auto; width:100%; text-align:center;"></table>
+		<div style="width:440px;">
+			<div id="countotal" style="float:right; color:#ff0000; font-weight:bold;">500元</div>
+			<div style="float:right;">总共：</div>
+			<div style="clear:both;"></div>
+		</div>
+	</div>
 </body>
 <script>
 $(function(){
@@ -1289,41 +1299,6 @@ $(function(){
 			old = 0;
 		}
 		$(iptobj).val(old-10);
-	});
-	$("#trueBtn").click(function(){
-		var s=[];
-		$(".ulBox>li").each(function(){
-			var typeNum = $(this).children(".titleClass").attr("atyn");
-			var obj = $(this).children(".numContent").children(".numContentList");
-			obj.each(function(){
-				var zhus = $(this).find(".num").text();
-				var monshu = $(this).find(".inptStyle").val();
-				if(parseInt(monshu)>0){
-					s.push(formsj(typeNum,zhus,parseInt(monshu)));
-				}
-			});
-		});
-		if(s.length>0){
-			$.ajax({
-			    url:"${BASE_PATH}VipCustomer/newBetsdata.html",
-			    dataType:"json",
-			    async:true,
-			    data:{"strj":JSON.stringify(s)},
-			    type:"POST",
-			    beforeSend:function(){},
-			    success:function(req){
-			    	alert(req.mes);
-			    	if(req.state=="success"){
-			    		location.reload();
-			    	}
-			    },
-			    complete:function(){},
-			    error:function(){}
-			});
-		}else{
-			alert("你还没有下注，请下注！");
-		}
-		
 	});
 	$(".inptStyle").focus(function(){
 		if($(this).val()=="0"||$(this).val()==0){
@@ -1395,6 +1370,66 @@ function settime(countdown) {
     }
 }
 
+layui.use(['table'], function(){});
+function addAutoNum(){
+	var objs = $("#opendBox>table");
+	objs.empty();
+	objs.append('<tr style="height:35px;"><th style="width:200px;">下注类型</th><th style="width:200px;">下注号码</th><th style="width:200px;">下注金额</th></tr>');
+	var s=[];
+	$(".ulBox>li").each(function(){
+		var typeNum = $(this).children(".titleClass").attr("atyn");
+		var obj = $(this).children(".numContent").children(".numContentList");
+		obj.each(function(){
+			var zhus = $(this).find(".num").text();
+			var monshu = $(this).find(".inptStyle").val();
+			if(parseInt(monshu)>0){
+				s.push(formsj(typeNum,zhus,parseInt(monshu)));
+			}
+		});
+	});
+	if(s.length==0){
+		alert("你还没有下注，请下注！");
+		return;
+	}
+	var sum = 0;
+	for(var i=0; i<s.length; i++){
+		var trtd = '<tr style="height:35px;"><td>'+forname(s[i].typeNum)+'</td><td><div class="numtd" style="margin:0px auto;">'+s[i].zhus+'</div></td><td style="color:#ff0000; font-weight:bold;">'+s[i].monshu+'</td></tr>';
+		objs.append(trtd);
+		sum+=parseInt(s[i].monshu);
+	}
+	$("#countotal").text(sum+"元");
+	layer.open({
+		type: 1,
+		title: '下注确认',
+		area: '500px',
+        shadeClose: true,
+        btn: ['确定','关闭'],
+        btn1: function(index, layero){
+        	UpdateFunc(s);
+        },
+        content: $("#opendBox")
+    });
+}
+
+function UpdateFunc(s){
+	$.ajax({
+		 url:"${BASE_PATH}VipCustomer/newBetsdata.html",
+		 dataType:"json",
+		 async:true,
+		 data:{"strj":JSON.stringify(s)},
+		 type:"POST",
+		 beforeSend:function(){},
+		 success:function(req){
+		  	alert(req.mes);
+		  	if(req.state=="success"){
+		   		location.reload();
+		   	}
+		 },
+		 complete:function(){},
+		 error:function(){}
+	});
+}
+
 //把毫秒化成分和秒
 function fromTime(timeNum){
 	var mm = "";
@@ -1411,6 +1446,45 @@ function formsj(typeNum,zhus,monshu){
 	jipm.zhus = zhus;
 	jipm.monshu = monshu;
 	return jipm;
+}
+
+function forname(num){
+	console.log(num);
+	var name = "";
+	switch(num){
+		case "1":
+			name = "冠军";
+	 	break;
+		case "2":
+			name = "亚军";
+	  	break;
+		case "3":
+			name = "季军";
+	  	break;
+		case "4":
+			name = "第四名";
+	  	break;
+		case "5":
+			name = "第五名";
+	  	break;
+		case "6":
+			name = "第六名";
+	  	break;
+		case "7":
+			name = "第七名";
+	  	break;
+		case "8":
+			name = "第八名";
+	  	break;
+		case "9":
+			name = "第九名";
+	  	break;
+		case "10":
+			name = "第十名";
+	  	break;
+		default:name = "未知类型";
+	}
+	return name;
 }
 </script>
 </html>

@@ -25,7 +25,6 @@ layui.use(['table'], function(){
 	    elem: '#dateBox',
 	    height: $(window).height()-75,
 	    limit: 20,
-	    where: {fd_userid: '22222'},
 	    url: "${BASE_PATH}VipCustomer/BetsDataLog.html", //数据接口
 	    page: true, //开启分页
 	    cols: [[ //表头
@@ -40,6 +39,8 @@ layui.use(['table'], function(){
 	   	    		return "输";
 	   	    	}else if(d.fd_iswin==1||d.fd_iswin=="1"){
 	   	    		return "赢";
+	   	    	}else if(d.fd_iswin==2||d.fd_iswin=="2"){
+	   	    		return "未开奖";
 	   	    	}else{
 	   	    		return "未知结果";
 	   	    	}

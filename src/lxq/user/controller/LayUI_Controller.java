@@ -115,13 +115,15 @@ public class LayUI_Controller extends BaseController{
 	public void newBetsdata(){
 		JSONObject json = new JSONObject();
 		int sum = 0;
+		OpenNumber opnunew = OpenNumber.dao.findFirst("SELECT fd_qishu FROM opennumber ORDER BY fd_creatime DESC");
+		int qishunum = opnunew.getInt("fd_qishu");
 		String jsodata = getPara("strj");
 		String userid = getSessionAttr("UserId");
 		UserInfo uinfo = UserInfo.dao.findById(userid);
-		List<BetsData> betli = new ArrayList<BetsData>();
+		List<BetsDataLog> betli = new ArrayList<BetsDataLog>();
 		JSONArray jsonArray = JSON.parseArray(jsodata);
 		for (int i = 0; i < jsonArray.size(); i++){
-            BetsData btd = new BetsData();
+			BetsDataLog btd = new BetsDataLog();
             JSONObject jsonObject = jsonArray.getJSONObject(i);
             String type = jsonObject.getString("typeNum");
             String num = jsonObject.getString("zhus");
@@ -134,9 +136,10 @@ public class LayUI_Controller extends BaseController{
             btd.set("fd_username", uinfo.get("fd_username"));
             btd.set("fd_type", type);
             btd.set("fd_num", num);
-            btd.set("fd_qishu", "688747");
+            btd.set("fd_qishu", (qishunum+1)+"");
             btd.set("fd_creatime", sdf.format(now));
             btd.set("fd_tatol", dzMoney);
+            btd.set("fd_iswin", "2");
             betli.add(btd);
             sum += dzMoney;
         }
@@ -145,7 +148,7 @@ public class LayUI_Controller extends BaseController{
 			json.put("mes", "Óà¶î²»×ã£¡");
 		}else{
 			boolean bl = false;
-			for(BetsData bt : betli){
+			for(BetsDataLog bt : betli){
 				try {
 					bt.save();
 				} catch (Exception e) {
@@ -332,7 +335,7 @@ public class LayUI_Controller extends BaseController{
 	
 	//ÏÂ×¢¼ÇÂ¼
 	public void BetsDataLog(){
-		String userid = getPara("fd_userid");
+		String userid = getSessionAttr("UserId");
 		List<BetsDataLog> list = BetsDataLog.dao.find("SELECT * FROM betsdatalog WHERE fd_userid = '"+userid+"' ORDER BY fd_creatime DESC LIMIT "+(getParaToInt("page")-1)*getParaToInt("limit")+","+getParaToInt("limit"));
 		List<BetsDataLog_Bean> newPer = new ArrayList<BetsDataLog_Bean>();
 		for(BetsDataLog pr : list){
