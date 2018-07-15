@@ -10,6 +10,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.bean.OpenNumber;
+import com.bean.SecondTable;
 
 public class QuzarTimerJob implements Job{
 	private static final String token = "t10e9c565ded1e473k";
@@ -41,7 +42,12 @@ public class QuzarTimerJob implements Job{
 				openNum.set("fd_number", obj.getString("opencode"));
 				openNum.set("fd_creatime", obj.getString("opentime"));
 				openNum.set("fd_timestamp", obj.getString("opentimestamp"));
-				openNum.save();
+				boolean yessave = openNum.save();
+				if(yessave){
+					SecondTable st = SecondTable.dao.findById("857bef8a26ba4e97aa5550c4072fdebe");
+					st.set("second", 300);
+					st.update();
+				}
 			}
 		}
 	}

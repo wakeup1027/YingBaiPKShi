@@ -26,9 +26,9 @@ public class QuzarTimer {
 	private static final String TimeTriggerStr = "TimeTrigger";
 	private static final String TimeTriggerWithIdentityStr = "TimeTriggerWithIdentity";
 	
-	/*private QuzarTimer(){
+	private QuzarTimer(){
 		Quzar();
-	}*/
+	}
 	
 	public void Quzar(){
 		//´´½¨scheduler
@@ -41,7 +41,7 @@ public class QuzarTimer {
 
 			Trigger TimeTrigger = newTrigger()
             	    .withIdentity(TimeTriggerStr, TimeTriggerWithIdentityStr)
-            	    .withSchedule(CronScheduleBuilder.cronSchedule("0/5 * * * * ?")
+            	    .withSchedule(CronScheduleBuilder.cronSchedule("0/3 * * * * ?")
             	    		.withMisfireHandlingInstructionDoNothing())  //0 2 10 23 4 ? 2018
             	    .build();
 			

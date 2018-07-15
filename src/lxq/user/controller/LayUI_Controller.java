@@ -20,6 +20,7 @@ import com.bean.BetsDataLog;
 import com.bean.Recharge;
 import com.bean.RechargeNow;
 import com.bean.Recharge_Bean;
+import com.bean.SecondTable;
 import com.bean.UserInfo;
 import com.config.ControllerBind;
 import com.jfinal.aop.Before;
@@ -409,9 +410,11 @@ public class LayUI_Controller extends BaseController{
 		}
 	
 	//加载已开过的数据
-	public void loadNoDate(){
-		/*DateUtil DU = new DateUtil();
-		String creantime = DU.getTime(dateStr, timeNum);*/
+	public void findmswe(){
+		SecondTable st = SecondTable.dao.findById("857bef8a26ba4e97aa5550c4072fdebe");
+		JSONObject json = new JSONObject();
+		json.put("ss", st.getInt("second")*1000);
+		renderJson(json.toJSONString());
 	}
 	
 	
