@@ -104,6 +104,10 @@ public class LayUI_Controller extends BaseController{
 	
 	//下注界面
 	public void xiazhuPage(){
+		SecondTable st = SecondTable.dao.findById("857bef8a26ba4e97aa5550c4072fdebe");
+		setAttr("sec",st.getInt("second")*1000);
+		setAttr("close",st.getStr("close"));
+		setAttr("closetime",st.getInt("closetime")*1000);
 		render(HomePathPage+"xiazhu_page.html");
 	}
 	
@@ -115,6 +119,13 @@ public class LayUI_Controller extends BaseController{
 	//下注功能
 	public void newBetsdata(){
 		JSONObject json = new JSONObject();
+		SecondTable st = SecondTable.dao.findById("857bef8a26ba4e97aa5550c4072fdebe");
+		if("0".equals(st.getStr("close"))){
+			json.put("state", "error");
+			json.put("mes", "已经封盘不能下注！");
+			renderJson(json.toJSONString());
+			return;
+		}
 		int sum = 0;
 		OpenNumber opnunew = OpenNumber.dao.findFirst("SELECT fd_qishu FROM opennumber ORDER BY fd_creatime DESC");
 		int qishunum = opnunew.getInt("fd_qishu");
@@ -147,23 +158,25 @@ public class LayUI_Controller extends BaseController{
 		if(sum>uinfo.getInt("fd_money")){
 			json.put("state", "error");
 			json.put("mes", "余额不足！");
+			renderJson(json.toJSONString());
+			return;
+		}
+		
+		boolean bl = false;
+		for(BetsDataLog bt : betli){
+			try {
+				bt.save();
+			} catch (Exception e) {
+				bl = true;
+				System.out.println(e);
+			}
+		}
+		if(bl){
+			json.put("state", "error");
+			json.put("mes", "保存出错！");
 		}else{
-			boolean bl = false;
-			for(BetsDataLog bt : betli){
-				try {
-					bt.save();
-				} catch (Exception e) {
-					bl = true;
-					System.out.println(e);
-				}
-			}
-			if(bl){
-				json.put("state", "error");
-				json.put("mes", "保存出错！");
-			}else{
-				json.put("state", "success");
-				json.put("mes", "下注成功！");
-			}
+			json.put("state", "success");
+			json.put("mes", "下注成功！");
 		}
 		renderJson(json.toJSONString());
 	}

@@ -20,7 +20,7 @@ body{background:#fff;font-size:13px; color:#666; font-family:'微软雅黑';padd
 .conteStype{float:left; width:40px; height:100%; text-align:center; line-height:40px;}
 .num,.numtd{width:25px; height:25px; line-height:25px; border:1px solid #CBCBCB; box-shadow: 1px 1px 5px #d1d1d1; background:#fff; font-weight:bold; color:#000; border-radius: 50px; margin-top:7px; margin-left:15px;}
 .zhu{color:#FA222D; width:60px; font-weight:bold; font-size:16px;}
-.inptStyle{width:50px; outline:none; padding-left:10px; height:22px; border:1px solid #e1e1e1; float:left; margin-top:9px;}
+.inptStyle,.inptStyleClose{width:50px; outline:none; padding-left:10px; height:22px; border:1px solid #e1e1e1; float:left; margin-top:9px;}
 .jiaJianBtnBox{float: left; width: 13px; height: 22px; margin-top: 9px; border: 1px solid #e1e1e1; border-left: none;}
 .jiaBtn{height: 12px;line-height: 12px;font-size: 12px;margin-top: -1px; cursor:pointer;}
 .jiaBtn:hover{color:blue;}
@@ -35,11 +35,12 @@ body{background:#fff;font-size:13px; color:#666; font-family:'微软雅黑';padd
 	<div>
 		<div style="height:80px;">
 			<div style="background:#707089; border-radius:5px 5px 0px 0px; height:37px; line-height:37px; color:#fff; padding-left:15px;">
-				<span>封盘倒计时：</span>
+				<span>开奖倒计时：</span>
 				<span id="mmBox">04</span>
 				<span>分</span>
 				<span id="ssBox">32</span>
-				<span>秒</span>
+				<span>秒</span>&nbsp;&nbsp;&nbsp;&nbsp;
+				<span id="opening"></span>
 			</div>
 			<div class="btnHomeBox">
 				<div id="resetBtn" style="background:#E3E3EB;">重置</div>
@@ -118,14 +119,15 @@ $(function(){
 			});
 		});
 	});
-	sdjms();
+	//sdjms();
+	sendemail(${sec});
 });
 
 document.addEventListener("visibilitychange", function(){
-	document.hidden ? "北京PK拾":sdjms();
+	document.hidden ? "北京PK拾":parent.location.reload();
 });
 
-var timer3;
+/*var timer3;
 function sdjms(){
 	$.ajax({
 		 url:"${BASE_PATH}VipCustomer/findmswe.html",
@@ -137,16 +139,17 @@ function sdjms(){
 			if(req.ss<=30000){
 				console.log("===改封盘===");
 			}
-		  	sendemail(req.ss);
+		  	
 		 },
 		 error:function(){}
 	});
-}
+}*/
 
 function sendemail(countdown){
 	if(countdown<=0){
 		$("#mmBox").text("--");
 		$("#ssBox").text("--");
+		$("#opening").text("开奖中...");
 		/*$("#openNumTshi").css({"color":"#E73F3F","font-weight":"700"});
     	$("#openNumTshi").text("开奖结束");*/
 	}else{
@@ -157,20 +160,21 @@ function settime(countdown) {
     if(countdown <= 0){ //倒计时完之后刷新整个页面
     	$("#mmBox").text("--");
 		$("#ssBox").text("--");
+		$("#opening").text("开奖中...");
     	var timer2=window.setTimeout(function(){
     		parent.location.reload();
 			window.clearTimeout(timer2);
 		},10000);
     }else{  //否则倒计时
-    	if(countdown<=30000){
-    		console.log("====封盘===");
+    	if(countdown==${closetime}){
+    		parent.location.reload();
     	}
     	var mmss = fromTime(countdown);
     	countdown = parseInt(countdown)-1000;
     	var Time = mmss.split(",");
     	$("#mmBox").text((Time[0]<10?"0"+Time[0]:Time[0]));
 		$("#ssBox").text((Time[1]<10?"0"+Time[1]:Time[1]));
-		timer3 = window.setTimeout(function(){
+		var timer3 = window.setTimeout(function(){
 			settime(countdown);
 		},1000)
     }
@@ -293,12 +297,16 @@ function forname(num){
 }
 
 function BuildHtml(){
+	var num = ${close};
 	for(var i=1; i<=10; i++){
 		var htmlstring = [];
 		var paret = '<li><div class="titleClass" atyn="'+i+'">'+forname(i+"")+'</div><div class="numContent">';
 		htmlstring.push(paret);
 		for(var j=1; j<=10; j++){
 			var chhtml = '<div class="numContentList"><div class="conteStype num">'+j+'</div><div class="conteStype zhu">10</div><div class="conteStype money"><input class="inptStyle" type="text" value="0"/><div class="jiaJianBtnBox"><div class="jiaBtn">▲</div><div class="jianBtn">▼</div></div><div style="clear:both;"></div></div><div style="clear:both;"></div></div>';
+			if(num==0||num=="0"){
+				chhtml = '<div class="numContentList"><div class="conteStype num">'+j+'</div><div class="conteStype zhu">10</div><div class="conteStype money"><input class="inptStyleClose" type="text" readonly placeholder="封盘"/><div class="jiaJianBtnBox"><div class="jiaBtn">▲</div><div class="jianBtn">▼</div></div><div style="clear:both;"></div></div><div style="clear:both;"></div></div>';
+			}
 			htmlstring.push(chhtml);
 		}
 		htmlstring.push('</div></li>');
