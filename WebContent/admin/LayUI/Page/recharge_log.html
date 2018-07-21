@@ -25,7 +25,6 @@ layui.use(['table'], function(){
 	    elem: '#dateBox',
 	    height: $(window).height()-75,
 	    limit: 20,
-	    where: {fd_userid: 'ewrerwer'},
 	    url: "${BASE_PATH}VipCustomer/RechargeLog.html", //数据接口
 	    page: true, //开启分页
 	    cols: [[ //表头
@@ -34,12 +33,12 @@ layui.use(['table'], function(){
 	   	 	{field: 'fd_ordertype', title: '支付平台', width:100},
 	   		{field: 'fd_ordernum', title: '支付订单号', width:200},
 	   	 	{field: 'fd_status', title: '状态', width:90, templet:function(d){
-	   	    	if(d.fd_status==1||d.fd_status=="1"){
+	   	    	if(d.fd_status==0||d.fd_status=="0"){
 	   	    		return "审核中";
-	   	    	}else if(d.fd_status==2||d.fd_status=="2"){
+	   	    	}else if(d.fd_status==1||d.fd_status=="1"){
 	   	    		return "已到账";
 	   	    	}else{
-	   	    		return "未知结果";
+	   	    		return "未知状态";
 	   	    	}
 	   	    }},
 	   	    {field: 'fd_creatime', title: '充值时间', width:200, templet:fotmateDate},

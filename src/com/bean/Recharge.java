@@ -1,7 +1,7 @@
 package com.bean;
 
+import com.base.BaseModel;
 import com.config.ModelBind;
-import com.jfinal.plugin.activerecord.Model;
 
 /**
  * ³äÖµ¼ÇÂ¼
@@ -9,7 +9,7 @@ import com.jfinal.plugin.activerecord.Model;
  *
  */
 @ModelBind(table = "recharge")
-public class Recharge extends Model<Recharge>{
+public class Recharge extends BaseModel<Recharge>{
 	private static final long serialVersionUID = 1L;
 	public static final Recharge dao = new Recharge();
 }

@@ -14,8 +14,7 @@
 <body>
 <div>
 	<div style="float:left;">
-		<a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-edit',plain:true" onclick="newMajor()">审核通过</a>
-		<a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-cut',plain:true" onclick="delet()">审批不通过</a>
+		<a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-edit',plain:true" onclick="newMajor()">修改状态</a>
 	</div>
 	<div style="float:left; margin-left:50px;">
 		<input id="searchKey" class="easyui-textbox" data-options="prompt:'请输入查找的期号'" style="width:200px; height:26px;"/>
@@ -33,7 +32,7 @@ $(function(){
 	$('#dg').datagrid({
 	    height: '100%',
 	    fit:true,
-	    url: '',
+	    url: '${BASE_PATH}AdminStrUrl/loadpucashPage.html',
 	    method: 'POST',
 	    striped: true,
 	    nowrap: true,
@@ -48,10 +47,22 @@ $(function(){
 		rownumbers:true,
 		columns: [[
 				    {field: 'ck', checkbox:true},
-				    {field: 'qiNum', title:'申请人', width:'20%'},
-				    {field: 'Num', title:'提现金额', width:'20%'},
-				    {field: 'Num', title:'状态', width:'20%'},
-				    {field: 'creantime', title:'申请时间', width:'27%',formatter:fotmateDate}
+				    {field: 'fd_username', title:'申请会员', width:'10%'},
+				    {field: 'fd_money', title:'提现金额', width:'7%'},
+				    {field: 'fd_status', title:'提现状态', width:'7%',formatter:function(value){  
+		            	if(value == '0' || value == 0){
+							return "审核中";
+						}else if(value == '1' || value == 1){
+							return "已受理";
+						}else if(value == '2' || value == 2){
+							return "提现完成";
+						}else{
+							return "未知状态";
+						}
+					}},
+				    {field: 'fd_commit', title:'提现说明', width:'30%'},
+				    {field: 'fd_creatime', title:'申请时间', width:'20%',formatter:fotmateDate},
+				    {field: 'fd_arraytime', title:'完成时间', width:'20%',formatter:fotmateDate}
 	    ]]
 	});
 });

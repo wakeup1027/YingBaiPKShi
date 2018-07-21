@@ -1,10 +1,10 @@
 package com.bean;
 
+import com.base.BaseModel;
 import com.config.ModelBind;
-import com.jfinal.plugin.activerecord.Model;
 
 @ModelBind(table = "applymoney")
-public class ApplyMoney extends Model<ApplyMoney>{
+public class ApplyMoney extends BaseModel<ApplyMoney>{
 	private static final long serialVersionUID = 1L;
 	public static final ApplyMoney dao = new ApplyMoney();
 }

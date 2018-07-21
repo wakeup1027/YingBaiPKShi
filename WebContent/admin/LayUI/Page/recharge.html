@@ -75,7 +75,7 @@ body{padding:0px; margin:0px; font-size:13px; font-family:'微软雅黑'}
 
 <script>
 $(function(){
-	<%if(rechar.fd_status==-1||rechar.fd_status=="-1"){}else{%>
+	<%if(rechar.fd_status==-1||rechar.fd_status=="-1"||rechar.fd_status=="1"||rechar.fd_status==1){}else{%>
 		$("#saomaBox").hide();
 		$("#writeBox").hide();
 		$("#mesBox").show();

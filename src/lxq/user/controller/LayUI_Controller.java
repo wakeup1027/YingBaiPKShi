@@ -53,9 +53,9 @@ public class LayUI_Controller extends BaseController{
 	//会员充值
 	public void recharge(){
 		String userid = getSessionAttr("UserId");
-		RechargeNow rechar = RechargeNow.dao.findFirst("SELECT * FROM rechargenow WHERE fd_userid = '"+userid+"'");
+		Recharge rechar = Recharge.dao.findFirst("SELECT * FROM recharge WHERE fd_userid = '"+userid+"'");
 		if(null==rechar){
-			RechargeNow rch = new RechargeNow();
+			Recharge rch = new Recharge();
 			rch.set("fd_status", "-1");
 			setAttr("rechar",rch);
 		}else{
@@ -82,8 +82,8 @@ public class LayUI_Controller extends BaseController{
 		String uuid = UUID.randomUUID().toString().replace("-", "").toLowerCase();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		Date now = new Date();
-		RechargeNow recge = new RechargeNow();
-		recge.set("fd_id", uuid);
+		Recharge recge = new Recharge();
+		recge.set("id", uuid);
 		recge.set("fd_money", money);
 		recge.set("fd_userid", userid);
 		recge.set("fd_username", username);
@@ -288,14 +288,14 @@ public class LayUI_Controller extends BaseController{
 				if(iceingm==0){
 					//用账户余额里面的现金减去提现金额当成是冻结金额
 					uifo.set("fd_money", yuem-getm);
-					uifo.set("fd_icemoney",getm);
+					uifo.set("fd_applymoney",getm);
 					uifo.update();
 					//保存提现申请
 					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 					Date now = new Date();
 					ApplyMoney model = new ApplyMoney();
 					String uuid = UUID.randomUUID().toString().replace("-", "").toLowerCase();
-					model.set("fd_id", uuid);
+					model.set("id", uuid);
 					model.set("fd_money", getm);
 					model.set("fd_userid", userid);
 					model.set("fd_username", getSessionAttr("loginUser"));
@@ -323,12 +323,12 @@ public class LayUI_Controller extends BaseController{
 	
 	//充值记录数据
 	public void RechargeLog(){
-		String userid = getPara("fd_userid");
+		String userid = getSessionAttr("UserId");
 		List<Recharge> list = Recharge.dao.find("SELECT * FROM recharge WHERE fd_userid = '"+userid+"' ORDER BY fd_creatime DESC LIMIT "+(getParaToInt("page")-1)*getParaToInt("limit")+","+getParaToInt("limit"));
 		List<Recharge_Bean> newPer = new ArrayList<Recharge_Bean>();
 		for(Recharge pr : list){
 			Recharge_Bean ll = new Recharge_Bean();
-			ll.setFd_id(pr.getStr("fd_id"));
+			ll.setFd_id(pr.getStr("id"));
 			ll.setFd_money(pr.getInt("fd_money"));
 			ll.setFd_userid(pr.getStr("fd_userid"));
 			ll.setFd_username(pr.getStr("fd_username"));
@@ -376,12 +376,12 @@ public class LayUI_Controller extends BaseController{
 	
 	//提现记录
 	public void ApplyMoneyLog(){
-		String userid = getPara("fd_userid");
-		List<ApplyMoneyLog> list = ApplyMoneyLog.dao.find("SELECT * FROM applymoneylog WHERE fd_userid = '"+userid+"' ORDER BY fd_creatime DESC LIMIT "+(getParaToInt("page")-1)*getParaToInt("limit")+","+getParaToInt("limit"));
+		String userid = getSessionAttr("UserId");
+		List<ApplyMoney> list = ApplyMoney.dao.find("SELECT * FROM applymoney WHERE fd_userid = '"+userid+"' ORDER BY fd_creatime DESC LIMIT "+(getParaToInt("page")-1)*getParaToInt("limit")+","+getParaToInt("limit"));
 		List<ApplyMoneyLog_Bean> newPer = new ArrayList<ApplyMoneyLog_Bean>();
-		for(ApplyMoneyLog pr : list){
+		for(ApplyMoney pr : list){
 			ApplyMoneyLog_Bean ll = new ApplyMoneyLog_Bean();
-			ll.setFd_id(pr.getStr("fd_id"));
+			ll.setFd_id(pr.getStr("id"));
 			ll.setFd_money(pr.getInt("fd_money"));
 			ll.setFd_userid(pr.getStr("fd_userid"));
 			ll.setFd_username(pr.getStr("fd_username"));
@@ -392,7 +392,7 @@ public class LayUI_Controller extends BaseController{
 		JSONObject json = new JSONObject();
 		json.put("code", 0);
 		json.put("msg", "");
-		json.put("count", Db.queryLong("SELECT count(*) FROM applymoneylog WHERE fd_userid = '"+userid+"'"));
+		json.put("count", Db.queryLong("SELECT count(*) FROM applymoney WHERE fd_userid = '"+userid+"'"));
 		json.put("data", newPer);
 		renderJson(json.toJSONString());
 	}
