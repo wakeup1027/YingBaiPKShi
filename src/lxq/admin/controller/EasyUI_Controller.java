@@ -9,6 +9,7 @@ import java.util.Map;
 import com.alibaba.fastjson.JSONObject;
 import com.base.BaseController;
 import com.bean.ApplyMoney;
+import com.bean.BetsDataLog;
 import com.bean.Recharge;
 import com.bean.UserInfo;
 import com.config.ControllerBind;
@@ -40,7 +41,7 @@ public class EasyUI_Controller extends BaseController{
 		render("/admin/EasyUI/userwin_page.html");
 	}
 	
-	//历史下注记录
+	//输赢查看
 	public void historyPage(){
 		render("/admin/EasyUI/history_page.html");
 	}
@@ -48,6 +49,11 @@ public class EasyUI_Controller extends BaseController{
 	//用户管理
 	public void userInfoPage(){
 		render("/admin/EasyUI/userInfo_page.html");
+	}
+	
+	//用户管理
+	public void systemSet(){
+		render("/admin/EasyUI/system_set.html");
 	}
 	
 	//充值管理加载数据
@@ -98,8 +104,52 @@ public class EasyUI_Controller extends BaseController{
 		Map<String, Object> map = new HashMap<String, Object>();
 		int page = getParaToInt("page");
 		int rows = getParaToInt("rows");
-		List<ApplyMoney> UI = ApplyMoney.dao.findByPage(page, rows, "");
+		List<ApplyMoney> UI = ApplyMoney.dao.findByPage(page, rows, "ORDER BY fd_status ASC");
 		Long total = ApplyMoney.dao.count("SELECT * FROM applymoney");
+		map.put("rows", UI);
+	    map.put("total", total); 
+		renderJson(map);
+	}
+	
+	//修改提现状态
+	public void upstatus(){
+		JSONObject json = new JSONObject();
+		String orderStr = getPara("onu");
+		String upStutas = getPara("upStutas");
+		String[] ords = orderStr.split(",");
+		boolean doUp = false;
+		for(String sd : ords){
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			Date now = new Date();
+			ApplyMoney uif = ApplyMoney.dao.findById(sd);
+			String usid = uif.getStr("fd_userid");
+			UserInfo useif = UserInfo.dao.findById(usid);
+			useif.set("fd_applymoney", 0);
+			uif.set("fd_arraytime", sdf.format(now));
+			uif.set("fd_status", upStutas);
+			try {
+				if(useif.update()){
+					uif.update();
+				}
+			} catch (Exception e) {
+				doUp = true;
+			}
+		}
+		if(doUp){
+			json.put("status", 0);
+		}else{
+			json.put("status", 1);
+		}
+		renderJson(json.toJSONString());
+	}
+	
+	//加载用户下注信息
+	public void loadwindate(){
+		Map<String, Object> map = new HashMap<String, Object>();
+		int page = getParaToInt("page");
+		int rows = getParaToInt("rows");
+		List<BetsDataLog> UI = BetsDataLog.dao.findByPage(page, rows, "ORDER BY fd_iswin DESC");
+		Long total = BetsDataLog.dao.count("SELECT * FROM betsdatalog");
 		map.put("rows", UI);
 	    map.put("total", total); 
 		renderJson(map);

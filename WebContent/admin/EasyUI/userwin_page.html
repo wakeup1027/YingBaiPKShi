@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>中奖情况查看</title>
+<title>用户下注记录</title>
 <link rel="stylesheet" type="text/css"href="${BASE_PATH}easyui/themes/gray/easyui.css"/>
 <link rel="stylesheet" type="text/css"href="${BASE_PATH}easyui/themes/icon.css"/>
 <link rel="stylesheet" type="text/css"href="${BASE_PATH}easyui/themes/gray/datagrid.css"/>
@@ -33,11 +33,11 @@ $(function(){
 	$('#dg').datagrid({
 	    height: '100%',
 	    fit:true,
-	    url: '',
+	    url: '${BASE_PATH}AdminStrUrl/loadwindate.html',
 	    method: 'POST',
 	    striped: true,
 	    nowrap: true,
-	    pageSize: 10,
+	    pageSize: 20,
 	    pageNumber:1, 
 	    pageList: [10, 20, 50, 100, 150, 200],
 		pagination : true,
@@ -48,17 +48,55 @@ $(function(){
 		rownumbers:true,
 		columns: [[
 				    {field: 'ck', checkbox:true},
-				    {field: 'Num', title:'期号', width:'10%'},
-				    {field: 'qiNum', title:'会员名', width:'8%'},
-				    {field: 'Num', title:'下注类型', width:'5%'},
-				    {field: 'Num', title:'下注号码', width:'10%'},
-				    {field: 'Num', title:'注数', width:'5%'},
-				    {field: 'Num', title:'总价', width:'5%'},
-				    {field: 'Num', title:'是否中奖', width:'10%'},
-				    {field: 'creantime', title:'下注时间', width:'27%',formatter:fotmateDate}
+				    {field: 'fd_qishu', title:'期号', width:'15%'},
+				    {field: 'fd_username', title:'会员名', width:'17%'},
+				    {field: 'fd_type', title:'下注类型', width:'10%',formatter:xzType},
+				    {field: 'fd_num', title:'下注号码', width:'10%',formatter:function(value){  
+				    	return value+"号";
+					}},
+				    {field: 'fd_tatol', title:'总价', width:'15%'},
+				    {field: 'fd_iswin', title:'是否中奖', width:'10%',formatter:function(value){  
+		            	if(value == '0' || value == 0){
+							return "输";
+						}else if(value == '1' || value == 1){
+							return "赢";
+						}else if(value == '2' || value == 2){
+							return "未开奖";
+						}else{
+							return "未知结果";
+						}
+					}},
+				    {field: 'fd_creatime', title:'下注时间', width:'20%',formatter:fotmateDate}
 	    ]]
 	});
 });
+
+//格式化下注类型
+function xzType(value){
+	if(value==1||value=="1"){
+	   return "冠军";
+	}else if(value==2||value=="2"){
+	   return "亚军";
+	}else if(value==3||value=="3"){
+	   return "季军";
+	}else if(value==4||value=="4"){
+	   return "第四名";
+	}else if(value==5||value=="5"){
+	   return "第五名";
+	}else if(value==6||value=="6"){
+	   return "第六名";
+	}else if(value==7||value=="7"){
+	   return "第7名";
+	}else if(value==8||value=="8"){
+	   return "第8名";
+	}else if(value==9||value=="9"){
+	   return "第9名";
+	}else if(value==10||value=="10"){
+	   return "第10名";
+	}else{
+	  return "未知类型";
+	}
+}
 
 //格式化的方法
 function fotmateDate(value){

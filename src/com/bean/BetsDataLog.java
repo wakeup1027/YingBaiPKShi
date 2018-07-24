@@ -1,7 +1,7 @@
 package com.bean;
 
+import com.base.BaseModel;
 import com.config.ModelBind;
-import com.jfinal.plugin.activerecord.Model;
 
 /**
  * ÏÂ×¢¼ÇÂ¼
@@ -9,7 +9,7 @@ import com.jfinal.plugin.activerecord.Model;
  *
  */
 @ModelBind(table = "betsdatalog")
-public class BetsDataLog extends Model<BetsDataLog>{
+public class BetsDataLog extends BaseModel<BetsDataLog>{
 	private static final long serialVersionUID = 1L;
 	public static final BetsDataLog dao = new BetsDataLog();
 }

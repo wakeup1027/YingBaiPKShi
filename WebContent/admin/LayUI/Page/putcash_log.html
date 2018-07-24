@@ -34,7 +34,9 @@ layui.use(['table'], function(){
 	   	 		if(d.fd_status=="0"||d.fd_status==0){
 	   	 			return "审核中";
 	   	 		}else if(d.fd_status=="1"||d.fd_status==1){
-	   	 			return "提现成功";
+	   	 			return "已受理";
+	   	 		}else if(d.fd_status=="2"||d.fd_status==2){
+	   	 			return "提现完成";
 	   	 		}
 	   	 	}},
 	   	    {field: 'fd_creatime', title: '提现时间', width:390, templet:fotmateDate}

@@ -5,34 +5,50 @@
 <title>注册界面</title>
 <script src="${BASE_PATH}js/jquery-1.8.3.min.js"></script>
 </head>
+<style>
+body{padding:0px; margin:0px; font-size:13px; font-family:'微软雅黑'; background:#fff;}
+input{height:30px; width:270px; border:#e1e1e1 solid 1px; border-radius:5px; outline:none; padding-left:10px;}
+</style>
 <body>
-<table>
+<div style="background:#707089; height:37px; line-height:37px; color:#fff; padding-left:15px; border-radius:5px 5px 0px 0px; font-size:13px;">用户注册</div>
+<table cellspacing="10" cellpadding="0" style="margin:50px auto;">
 	<tr>
 		<td>用户名：</td>
 		<td><input id="username" type="text"/></td>
+		<td style="color:#ff0000;">用户名已存在</td>
 	</tr>
 	<tr>
 		<td>密码：</td>
 		<td><input id="userpass" type="password"/></td>
+		<td style="color:#ff0000;">用户名已存在</td>
 	</tr>
 	<tr>
 		<td>确认密码：</td>
 		<td><input id="userpassagen" type="password"/></td>
+		<td style="color:#ff0000;">用户名已存在</td>
 	</tr>
 	<tr>
 		<td>手机号码：</td>
 		<td><input id="userphone" type="text"/></td>
+		<td style="color:#ff0000;">用户名已存在</td>
 	</tr>
 	<tr>
 		<td>真实姓名：</td>
 		<td><input id="truename" type="text"/></td>
+		<td style="color:#ff0000;">用户名已存在</td>
 	</tr>
 	<tr>
 		<td>身份证：</td>
 		<td><input id="useridcare" type="text"/></td>
+		<td style="color:#ff0000;">用户名已存在</td>
 	</tr>
 	<tr>
-		<td><a href="javascript:submitbtn()" style="display:block; padding:10px 30px;border:1px solid #e1e1e1;">提交</a></td>
+		<td>银行卡：</td>
+		<td><input id="bankidcare" type="text"/></td>
+		<td style="color:#ff0000;">用户名已存在</td>
+	</tr>
+	<tr>
+		<td colspan="3"><a href="javascript:submitbtn()" style="margin-top:10px; display:block; padding:8px 30px; text-align:center; background:#1094D0; color:#fff; border-radius:5px; text-decoration:none;">提交</a></td>
 	</tr>
 </table>
 <script>
@@ -45,7 +61,8 @@ function submitbtn(){
         	"userInfo.fd_password":$("#userpass").val(),
         	"userInfo.fd_phone":$("#userphone").val(),
         	"userInfo.fd_truename":$("#truename").val(),
-        	"userInfo.fd_IDcase":$("#useridcare").val()
+        	"userInfo.fd_IDcase":$("#useridcare").val(),
+        	"fd_bank.fd_IDcase":$("#bankidcare").val()
         },
         dataType: "json",
         success: function(data){

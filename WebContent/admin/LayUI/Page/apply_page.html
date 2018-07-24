@@ -131,7 +131,7 @@ function submitbtn(){
         success: function(data){
         	alert(data.mes);
         	if(data.code=="200"||data.code==200){
-        		location.reload();
+        		parent.location.reload();
         	}
         }
     });	
