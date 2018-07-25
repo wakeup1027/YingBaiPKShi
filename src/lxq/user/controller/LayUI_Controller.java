@@ -13,12 +13,9 @@ import com.base.BaseController;
 import com.bean.BetsDataLog_Bean;
 import com.bean.OpenNumber;
 import com.bean.ApplyMoneyLog_Bean;
-import com.bean.BetsData;
 import com.bean.ApplyMoney;
-import com.bean.ApplyMoneyLog;
 import com.bean.BetsDataLog;
 import com.bean.Recharge;
-import com.bean.RechargeNow;
 import com.bean.Recharge_Bean;
 import com.bean.SecondTable;
 import com.bean.UserInfo;
@@ -27,6 +24,7 @@ import com.jfinal.aop.Before;
 import com.jfinal.plugin.activerecord.Db;
 
 import demo.UserInterceptor;
+import lxq.util.MD5Util;
 
 @Before(UserInterceptor.class)
 @ControllerBind(controllerKey = "/VipCustomer")
@@ -387,6 +385,7 @@ public class LayUI_Controller extends BaseController{
 			ll.setFd_username(pr.getStr("fd_username"));
 			ll.setFd_status(pr.getStr("fd_status"));
 			ll.setFd_creatime(pr.getDate("fd_creatime")+"");
+			ll.setFd_arraytime(pr.getDate("fd_arraytime")+"");
 			newPer.add(ll);
 		}
 		JSONObject json = new JSONObject();
@@ -398,29 +397,43 @@ public class LayUI_Controller extends BaseController{
 	}
 	
 	//申请注册界面
-		public void regit(){
-			render("/admin/LayUI/regit.html");
+	public void regit(){
+		render("/admin/LayUI/regit.html");
+	}
+	
+	//校验用户名是否存在
+	public void CheckUsn(){
+		String usn = getPara("usn");
+		UserInfo model = UserInfo.dao.findFirst("SELECT * FROM userinfo WHERE fd_username = '"+usn+"'");
+		JSONObject json = new JSONObject();
+		if(null==model){
+			json.put("status", "200");
+		}else{
+			json.put("status", "500");
 		}
+		renderJson(json.toJSONString());
+	}
 		
-		//保存用户申请信息
-		public void ApplyRegit(){
-			String uuid = UUID.randomUUID().toString().replace("-", "").toLowerCase();
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			Date now = new Date();
-			UserInfo model = getModel(UserInfo.class,"userInfo");
-			model.set("id", uuid);
-			model.set("fd_creatime",sdf.format(now));
-			model.set("fd_status","0");
-			model.set("fd_tjUser",getSessionAttr("loginUser"));
-			boolean res = model.save();
-			JSONObject json = new JSONObject();
-			if(res){
-				json.put("status", "200");
-			}else{
-				json.put("status", "500");
-			}
-			renderJson(json.toJSONString());
+	//保存用户申请信息
+	public void ApplyRegit(){
+		String uuid = UUID.randomUUID().toString().replace("-", "").toLowerCase();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		Date now = new Date();
+		UserInfo model = getModel(UserInfo.class,"userInfo");
+		model.set("fd_password", MD5Util.md5(model.getStr("fd_password")));
+		model.set("id", uuid);
+		model.set("fd_creatime",sdf.format(now));
+		model.set("fd_status","0");
+		model.set("fd_tjUser",getSessionAttr("loginUser"));
+		boolean res = model.save();
+		JSONObject json = new JSONObject();
+		if(res){
+			json.put("status", "200");
+		}else{
+			json.put("status", "500");
 		}
+		renderJson(json.toJSONString());
+	}
 	
 	//加载已开过的数据
 	public void findmswe(){

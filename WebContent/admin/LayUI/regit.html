@@ -15,40 +15,41 @@ input{height:30px; width:270px; border:#e1e1e1 solid 1px; border-radius:5px; out
 	<tr>
 		<td>用户名：</td>
 		<td><input id="username" type="text"/></td>
-		<td style="color:#ff0000;">用户名已存在</td>
+		<td id="usmes" style="color:#ff0000; width:150px;"></td>
 	</tr>
 	<tr>
 		<td>密码：</td>
 		<td><input id="userpass" type="password"/></td>
-		<td style="color:#ff0000;">用户名已存在</td>
+		<td></td>
 	</tr>
 	<tr>
 		<td>确认密码：</td>
 		<td><input id="userpassagen" type="password"/></td>
-		<td style="color:#ff0000;">用户名已存在</td>
+		<td id="agenpass" style="color:#ff0000;"></td>
 	</tr>
 	<tr>
 		<td>手机号码：</td>
 		<td><input id="userphone" type="text"/></td>
-		<td style="color:#ff0000;">用户名已存在</td>
+		<td id="phmes" style="color:#ff0000;"></td>
 	</tr>
 	<tr>
 		<td>真实姓名：</td>
 		<td><input id="truename" type="text"/></td>
-		<td style="color:#ff0000;">用户名已存在</td>
+		<td></td>
 	</tr>
 	<tr>
 		<td>身份证：</td>
 		<td><input id="useridcare" type="text"/></td>
-		<td style="color:#ff0000;">用户名已存在</td>
+		<td id="icmes" style="color:#ff0000;"></td>
 	</tr>
 	<tr>
 		<td>银行卡：</td>
 		<td><input id="bankidcare" type="text"/></td>
-		<td style="color:#ff0000;">用户名已存在</td>
+		<td></td>
 	</tr>
 	<tr>
-		<td colspan="3"><a href="javascript:submitbtn()" style="margin-top:10px; display:block; padding:8px 30px; text-align:center; background:#1094D0; color:#fff; border-radius:5px; text-decoration:none;">提交</a></td>
+		<td colspan="2"><a href="javascript:submitbtn()" style="margin-top:10px; display:block; padding:8px 30px; text-align:center; background:#1094D0; color:#fff; border-radius:5px; text-decoration:none;">提交</a></td>
+		<td></td>
 	</tr>
 </table>
 <script>
@@ -74,6 +75,52 @@ function submitbtn(){
         }
     });	
 }
+
+$(function(){
+	$("#username").change(function(){
+		var nowVal = $(this).val();
+		$.ajax({
+	        url: "${BASE_PATH}VipCustomer/CheckUsn.html",
+	        type: "POST",
+	        data:{"usn":nowVal},
+	        dataType: "json",
+	        success: function(data){
+	        	if(data.status=="500"||data.status==500){
+	        		$("#usmes").text("用户名已存在");
+				}else{
+					$("#usmes").text("");
+				}
+	        }
+	    });
+	});
+	$("#userpassagen").change(function(){
+		var trpas = $("#userpass").val();
+		var agepas = $(this).val();
+		if(trpas!=agepas){
+			$("#agenpass").text("两次密码不一致");
+		}else{
+			$("#agenpass").text("");
+		}
+	});
+	$("#userphone").change(function(){
+		var obj = $(this).val();
+		var reg = new RegExp(/^1\d{10}$/);
+		if(!reg.test(obj)){
+			$("#phmes").text("手机号格式错误");
+		}else{
+			$("#phmes").text("");
+		}
+	});
+	$("#useridcare").change(function(){
+		var identity = $(this).val();
+		var reg = /^[1-9]{1}[0-9]{14}$|^[1-9]{1}[0-9]{16}([0-9]|[xX])$/;
+        if(!reg.test(identity)){
+            $("#icmes").text("身份证号码格式错误");
+        }else{
+        	$("#icmes").text("");
+        }
+	});
+});
 </script>
 </body>
 </html>

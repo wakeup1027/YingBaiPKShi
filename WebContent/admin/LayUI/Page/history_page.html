@@ -2,17 +2,17 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>下注历史记录</title>
+<title>下注记录</title>
 <link rel="stylesheet" href="${BASE_PATH}css/layui.css" media="all">
 <script src="${BASE_PATH}js/jquery-1.8.3.min.js"></script>
 <script type="text/javascript" src="${BASE_PATH}js/layui.js"></script>
 <style>
-body{padding:none; margin:0px;}
+body{padding:none; margin:0px; background:#fff;}
 </style>
 </head>
 <body>
 <div>
-	<div style="background:#707089; height:37px; line-height:37px; color:#fff; padding-left:15px;">下注历史记录</div>
+	<div style="background:#707089; height:37px; line-height:37px; color:#fff; padding-left:15px; border-radius:5px 5px 0px 0px;">下注记录</div>
 	<table class="layui-hide" id="dateBox" lay-filter="demo"></table>
 	<script type="text/html" id="barDemo">
   		<a class="layui-btn layui-btn-danger layui-btn-sm" lay-event="del">删除</a>
@@ -28,8 +28,8 @@ layui.use(['table'], function(){
 	    url: "${BASE_PATH}VipCustomer/BetsDataLog.html", //数据接口
 	    page: true, //开启分页
 	    cols: [[ //表头
-	   	    {field: 'fd_username', title: '会员名', width:100},
-	    	{field: 'fd_qishu', title: '期号', width:200},
+	   	    {field: 'fd_username', title: '会员名', width:150},
+	    	{field: 'fd_qishu', title: '期号', width:100},
 	   	 	{field: 'fd_type', title: '类型', width:100, templet:xzType},
 	   	 	{field: 'fd_num', title: '下注号码', width:100},
 	   	 	{field: 'fd_zhushu', title: '注数', width:100},

@@ -7,12 +7,12 @@
 <script src="${BASE_PATH}js/jquery-1.8.3.min.js"></script>
 <script type="text/javascript" src="${BASE_PATH}js/layui.js"></script>
 <style>
-body{padding:none; margin:0px;}
+body{padding:none; margin:0px; background:#fff;}
 </style>
 </head>
 <body>
 <div>
-	<div style="background:#707089; height:37px; line-height:37px; color:#fff; padding-left:15px;">充值记录</div>
+	<div style="background:#707089; height:37px; line-height:37px; color:#fff; border-radius:5px 5px 0px 0px; padding-left:15px;">充值记录</div>
 	<table class="layui-hide" id="dateBox" lay-filter="demo"></table>
 	<script type="text/html" id="barDemo">
   		<a class="layui-btn layui-btn-danger layui-btn-sm" lay-event="del">删除</a>
@@ -28,9 +28,17 @@ layui.use(['table'], function(){
 	    url: "${BASE_PATH}VipCustomer/RechargeLog.html", //数据接口
 	    page: true, //开启分页
 	    cols: [[ //表头
-	        {field: 'fd_username', title: '会员名', width:100},
+	        {field: 'fd_username', title: '会员名', width:130},
 	   	    {field: 'fd_money', title: '金额', width:100},
-	   	 	{field: 'fd_ordertype', title: '支付平台', width:100},
+	   	 	{field: 'fd_ordertype', title: '支付平台', width:100, templet:function(d){
+	   	    	if(d.fd_status==1||d.fd_status=="1"){
+	   	    		return "微信";
+	   	    	}else if(d.fd_status==2||d.fd_status=="2"){
+	   	    		return "支付宝";
+	   	    	}else{
+	   	    		return "未知平台";
+	   	    	}
+	   	    }},
 	   		{field: 'fd_ordernum', title: '支付订单号', width:200},
 	   	 	{field: 'fd_status', title: '状态', width:90, templet:function(d){
 	   	    	if(d.fd_status==0||d.fd_status=="0"){
@@ -41,7 +49,7 @@ layui.use(['table'], function(){
 	   	    		return "未知状态";
 	   	    	}
 	   	    }},
-	   	    {field: 'fd_creatime', title: '充值时间', width:200, templet:fotmateDate},
+	   	    {field: 'fd_creatime', title: '充值时间', width:170, templet:fotmateDate},
 	   	 	{field: 'fd_arraytime', title: '到账时间', width:200, templet:fotmateDateArray}
 	    ]],
 	    done:function(res){

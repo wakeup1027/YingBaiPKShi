@@ -7,12 +7,12 @@
 <script src="${BASE_PATH}js/jquery-1.8.3.min.js"></script>
 <script type="text/javascript" src="${BASE_PATH}js/layui.js"></script>
 <style>
-body{padding:none; margin:0px;}
+body{padding:none; margin:0px; background:#fff;}
 </style>
 </head>
 <body>
 <div>
-	<div style="background:#707089; height:37px; line-height:37px; color:#fff; padding-left:15px;">提现记录</div>
+	<div style="background:#707089; height:37px; line-height:37px; color:#fff; border-radius:5px 5px 0px 0px; padding-left:15px;">提现记录</div>
 	<table class="layui-hide" id="dateBox" lay-filter="demo"></table>
 	<script type="text/html" id="barDemo">
   		<a class="layui-btn layui-btn-danger layui-btn-sm" lay-event="del">删除</a>
@@ -39,7 +39,8 @@ layui.use(['table'], function(){
 	   	 			return "提现完成";
 	   	 		}
 	   	 	}},
-	   	    {field: 'fd_creatime', title: '提现时间', width:390, templet:fotmateDate}
+	   	    {field: 'fd_creatime', title: '提现时间', width:190, templet:fotmateDate},
+	   	 	{field: 'fd_arraytime', title: '完成时间', width:190, templet:fotmateDatess}
 	    ]],
 	    done:function(res){
 			//console.log(res);
@@ -68,9 +69,18 @@ layui.use(['table'], function(){
 	});
 });
 
-//格式化的方法（到账时间）
 function fotmateDate(value){
 	value = value.fd_creatime;
+	var dateStr = "";
+	if(value=="undefined"||value=="null"||value==null){}else{
+		var date = new Date(value);
+		dateStr = date.format("yyyy-MM-dd HH:mm:ss");
+	}
+    return dateStr;    
+}
+
+function fotmateDatess(value){
+	value = value.fd_arraytime;
 	var dateStr = "";
 	if(value=="undefined"||value=="null"||value==null){}else{
 		var date = new Date(value);

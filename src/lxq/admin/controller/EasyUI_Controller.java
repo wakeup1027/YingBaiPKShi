@@ -51,7 +51,7 @@ public class EasyUI_Controller extends BaseController{
 		render("/admin/EasyUI/userInfo_page.html");
 	}
 	
-	//用户管理
+	//系统设置
 	public void systemSet(){
 		render("/admin/EasyUI/system_set.html");
 	}
@@ -223,7 +223,7 @@ public class EasyUI_Controller extends BaseController{
 		String[] ords = orderStr.split(",");
 		boolean doUp = false;
 		for(String sd : ords){
-			UserInfo uif = new UserInfo(); //UserInfo.dao.findById(sd);
+			UserInfo uif = new UserInfo();
 			uif.set("id", sd);
 			try {
 				uif.delete();
@@ -241,10 +241,10 @@ public class EasyUI_Controller extends BaseController{
 	}
 	
 	//开始定时器
-	public void startTest(){
+	/*public void startTest(){
 		JSONObject json = new JSONObject();
 		QuzarTimer.getInstance().Quzar();
 		json.put("status", 1);
 		renderJson(json.toJSONString());
-	}
+	}*/
 }

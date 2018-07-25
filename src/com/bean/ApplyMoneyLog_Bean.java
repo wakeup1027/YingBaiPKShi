@@ -12,6 +12,7 @@ public class ApplyMoneyLog_Bean {
 	private String fd_username;
 	private String fd_status;
 	private String fd_creatime;
+	private String fd_arraytime;
 	
 	public String getFd_id() {
 		return fd_id;
@@ -48,6 +49,12 @@ public class ApplyMoneyLog_Bean {
 	}
 	public void setFd_creatime(String fd_creatime) {
 		this.fd_creatime = fd_creatime;
+	}
+	public String getFd_arraytime() {
+		return fd_arraytime;
+	}
+	public void setFd_arraytime(String fd_arraytime) {
+		this.fd_arraytime = fd_arraytime;
 	}
 	
 }
