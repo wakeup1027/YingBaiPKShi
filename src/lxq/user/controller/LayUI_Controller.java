@@ -141,7 +141,7 @@ public class LayUI_Controller extends BaseController{
             String uuid = UUID.randomUUID().toString().replace("-", "").toLowerCase();
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			Date now = new Date();
-            btd.set("fd_id", uuid);
+            btd.set("id", uuid);
             btd.set("fd_userid", userid);
             btd.set("fd_username", uinfo.get("fd_username"));
             btd.set("fd_type", type);

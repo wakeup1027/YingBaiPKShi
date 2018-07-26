@@ -15,7 +15,6 @@ import com.bean.UserInfo;
 import com.config.ControllerBind;
 import com.jfinal.aop.Before;
 import demo.AdminInterceptor;
-import lxq.util.QuzarTimer;
 
 @Before(AdminInterceptor.class)
 @ControllerBind(controllerKey = "/AdminStrUrl")

@@ -31,9 +31,9 @@ layui.use(['table'], function(){
 	        {field: 'fd_username', title: '会员名', width:130},
 	   	    {field: 'fd_money', title: '金额', width:100},
 	   	 	{field: 'fd_ordertype', title: '支付平台', width:100, templet:function(d){
-	   	    	if(d.fd_status==1||d.fd_status=="1"){
+	   	    	if(d.fd_ordertype==1||d.fd_ordertype=="1"){
 	   	    		return "微信";
-	   	    	}else if(d.fd_status==2||d.fd_status=="2"){
+	   	    	}else if(d.fd_ordertype==2||d.fd_ordertype=="2"){
 	   	    		return "支付宝";
 	   	    	}else{
 	   	    		return "未知平台";

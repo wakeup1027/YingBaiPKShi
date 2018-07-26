@@ -1,5 +1,6 @@
 package lxq.util;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.quartz.Job;
@@ -9,6 +10,7 @@ import org.quartz.JobExecutionException;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.bean.BetsDataLog;
 import com.bean.OpenNumber;
 import com.bean.SecondTable;
 
@@ -34,7 +36,7 @@ public class QuzarTimerJob implements Job{
 		for(int i=0; i<jsonArray.size(); i++){
 			JSONObject obj = jsonArray.getJSONObject(i);
 			OpenNumber on = OpenNumber.dao.findFirst("SELECT fd_id FROM opennumber WHERE fd_qishu = "+obj.getString("expect"));
-			if(null==on){
+			if(null==on){ //如果这个为空，就说明还没开过的号码
 				OpenNumber openNum = new OpenNumber();
 				String uuid = UUID.randomUUID().toString().replace("-", "").toLowerCase();
 				openNum.set("fd_id", uuid);
@@ -47,8 +49,29 @@ public class QuzarTimerJob implements Job{
 					SecondTable st = SecondTable.dao.findById("857bef8a26ba4e97aa5550c4072fdebe");
 					st.set("second", 300);
 					st.update();
+					
+					//开始统计中奖号码
+					IsWin(obj.getString("expect"),obj.getString("opencode"));
 				}
 			}
+		}
+	}
+	
+	
+	//验证下注号码中是否有中奖
+	public static void IsWin(String qiNum,String openumber){
+		List<BetsDataLog> blog = BetsDataLog.dao.find("SELECT * FROM betsdatalog WHERE fd_qishu = '"+qiNum+"'");
+		String openum[] = openumber.split(",");
+		for(BetsDataLog bd : blog){
+			int s = Integer.parseInt(bd.getStr("fd_type"));
+			String sd = openum[s-1];
+			String sds = bd.getStr("fd_num");
+			if(sd.equals(sds)){
+				bd.set("fd_iswin", "1");  //赢
+			}else{
+				bd.set("fd_iswin", "0");  //输
+			}
+			bd.update();
 		}
 	}
 

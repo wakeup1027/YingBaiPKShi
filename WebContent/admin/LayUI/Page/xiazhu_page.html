@@ -193,6 +193,9 @@ function addAutoNum(){
 			var zhus = $(this).find(".num").text();
 			var monshu = $(this).find(".inptStyle").val();
 			if(parseInt(monshu)>0){
+				if(zhus.length==1){
+					zhus="0"+zhus;
+				}
 				s.push(formsj(typeNum,zhus,parseInt(monshu)));
 			}
 		});
@@ -303,6 +306,7 @@ function BuildHtml(){
 		var paret = '<li><div class="titleClass" atyn="'+i+'">'+forname(i+"")+'</div><div class="numContent">';
 		htmlstring.push(paret);
 		for(var j=1; j<=10; j++){
+			if((j+"").length==1) j="0"+j;
 			var chhtml = '<div class="numContentList"><div class="conteStype num">'+j+'</div><div class="conteStype zhu">10</div><div class="conteStype money"><input class="inptStyle" type="text" value="0"/><div class="jiaJianBtnBox"><div class="jiaBtn">▲</div><div class="jianBtn">▼</div></div><div style="clear:both;"></div></div><div style="clear:both;"></div></div>';
 			if(num==0||num=="0"){
 				chhtml = '<div class="numContentList"><div class="conteStype num">'+j+'</div><div class="conteStype zhu">10</div><div class="conteStype money"><input class="inptStyleClose" type="text" readonly placeholder="封盘"/><div class="jiaJianBtnBox"><div class="jiaBtn">▲</div><div class="jianBtn">▼</div></div><div style="clear:both;"></div></div><div style="clear:both;"></div></div>';

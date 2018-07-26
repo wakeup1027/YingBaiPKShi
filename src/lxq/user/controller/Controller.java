@@ -1,17 +1,10 @@
 package lxq.user.controller;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.UUID;
-
-import com.alibaba.fastjson.JSONObject;
 import com.base.BaseController;
 import com.bean.UserInfo;
 import com.config.ControllerBind;
-import com.jfinal.plugin.activerecord.Db;
 
 import demo.GetUserInfo;
-import lxq.util.FormString;
 
 @ControllerBind(controllerKey = "/")
 public class Controller extends BaseController {
