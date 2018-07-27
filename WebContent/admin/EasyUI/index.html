@@ -91,11 +91,92 @@
 	<!--主页面-->
     <div id="mainPanle" region="center" style="background: #eee; overflow-y:hidden">
         <div id="tabs" class="easyui-tabs"  fit="true" border="false" style="background:#fff;">
-			<div id="FirstTitle" title="最新下注信息" style="padding:20px;overflow:hidden;" id="home">
-				<div id="main" style="width:800px; height:500px;"></div>
+			<div id="FirstTitle" title="最新下注信息" style="padding:20px; overflow: scroll;" id="home">
+				<div id="main" style="width:1000px; height:500px; float:left;"></div>
+				<div id="main2" style="width:1000px; height:500px; float:left;"></div>
+				<div style="clear:both;"></div>
 				<script>
 				var myChart = echarts.init(document.getElementById('main'));
-				var guanjun = [
+				var myChart2 = echarts.init(document.getElementById('main2'));
+				option = {
+						title: {
+					        text: '第688747期会员下注总金额数据展示',
+					        subtext: '本期下注总金额：1502300',
+					        left: 'center'
+					    },
+					    xAxis: {
+					        type: 'category',
+					        data: ['冠军', '亚军', '季军', '第四名', '第五名', '第六名', '第七名', '第八名', '第九名', '第十名']
+					    },
+					    yAxis: {
+					        type: 'value',
+					        axisLabel:{
+					        	formatter:'{value}（元）'
+					        },textStyle:{
+					            fontSize: 12,
+					            fontWeight: 'bolder'
+					        }
+					    },
+					    series: [{
+					        data: [120, 200, 150, 80, 70, 110, 130, 90, 190, 270],
+					        type: 'bar',
+					        itemStyle:{
+					        	color: function(params) {
+			                        var colorList = [
+			                          '#C1232B','#0092DC','#FCCE10','#E87C25','#27727B',
+			                           '#FE8463','#9BCA63','#FAD860','#F3A43B','#60C0DD'
+			                        ];
+			                        return colorList[params.dataIndex]
+			                    }
+					        }
+					    }],
+					    label: {
+					        show: true,
+					        position: 'top'
+					    }
+				};
+				option2 = {
+						title: {
+					        text: '第688747期会员下注总金额前十排名',
+					        left: 'center'
+					    },
+					    legend: {
+					    	bottom: 10,
+					        left: 'center',
+					        data: ['wake', 'KK', '24K纯帅', 'YY归档', '尿床专家', 'yuanjx', 'JSONMAN', 'OITEXT', 'RIZHI', 'QIANZHI']
+					    },
+					    xAxis: {
+					        type: 'category',
+					        data: ['wake', 'KK', '24K纯帅', 'YY归档', '尿床专家', 'yuanjx', 'JSONMAN', 'OITEXT', 'RIZHI', 'QIANZHI']
+					    },
+					    yAxis: {
+					        type: 'value',
+					        axisLabel:{
+					        	formatter:'{value}（元）'
+					        },textStyle:{
+					            fontSize: 12,
+					            fontWeight: 'bolder'
+					        }
+					    },
+					    series: [{
+					        data: [120, 200, 150, 80, 70, 110, 130, 90, 190, 270],
+					        type: 'bar',
+					        itemStyle:{
+					        	color: function(params) {
+			                        var colorList = [
+			                          '#C1232B','#0092DC','#FCCE10','#E87C25','#27727B',
+			                           '#FE8463','#9BCA63','#FAD860','#F3A43B','#60C0DD'
+			                        ];
+			                        return colorList[params.dataIndex]
+			                    }
+					        }
+					    }],
+					    label: {
+					        show: true,
+					        position: 'top'
+					    }
+				};
+				/*var guanjun = [
 								{
 									'number':'1',
 									'person':'50',
@@ -363,8 +444,9 @@
 				            }
 				        }
 				    ]
-				};
+				};*/
 				myChart.setOption(option);
+				myChart2.setOption(option2);
 				</script>
 			</div>
 		</div>

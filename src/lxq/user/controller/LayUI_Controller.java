@@ -348,7 +348,7 @@ public class LayUI_Controller extends BaseController{
 	//ÏÂ×¢¼ÇÂ¼
 	public void BetsDataLog(){
 		String userid = getSessionAttr("UserId");
-		List<BetsDataLog> list = BetsDataLog.dao.find("SELECT * FROM betsdatalog WHERE fd_userid = '"+userid+"' ORDER BY fd_creatime DESC LIMIT "+(getParaToInt("page")-1)*getParaToInt("limit")+","+getParaToInt("limit"));
+		List<BetsDataLog> list = BetsDataLog.dao.find("SELECT * FROM betsdatalog WHERE fd_userid = '"+userid+"' ORDER BY fd_iswin DESC LIMIT "+(getParaToInt("page")-1)*getParaToInt("limit")+","+getParaToInt("limit"));
 		List<BetsDataLog_Bean> newPer = new ArrayList<BetsDataLog_Bean>();
 		for(BetsDataLog pr : list){
 			BetsDataLog_Bean ll = new BetsDataLog_Bean();

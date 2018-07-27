@@ -13,6 +13,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.bean.BetsDataLog;
 import com.bean.OpenNumber;
 import com.bean.SecondTable;
+import com.bean.UserInfo;
 
 public class QuzarTimerJob implements Job{
 	private static final String token = "t10e9c565ded1e473k";
@@ -63,15 +64,20 @@ public class QuzarTimerJob implements Job{
 		List<BetsDataLog> blog = BetsDataLog.dao.find("SELECT * FROM betsdatalog WHERE fd_qishu = '"+qiNum+"'");
 		String openum[] = openumber.split(",");
 		for(BetsDataLog bd : blog){
+			UserInfo uif = UserInfo.dao.findById(bd.getStr("fd_userid"));
 			int s = Integer.parseInt(bd.getStr("fd_type"));
 			String sd = openum[s-1];
 			String sds = bd.getStr("fd_num");
 			if(sd.equals(sds)){
 				bd.set("fd_iswin", "1");  //赢
+				uif.set("fd_money", uif.getInt("fd_money")+(bd.getInt("fd_tatol")*10)); //倍率
 			}else{
 				bd.set("fd_iswin", "0");  //输
+				uif.set("fd_money", uif.getInt("fd_money")-bd.getInt("fd_tatol")); //输没有倍率
 			}
-			bd.update();
+			if(bd.update()){
+				uif.update();
+			}
 		}
 	}
 
