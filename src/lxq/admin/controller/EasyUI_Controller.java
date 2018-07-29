@@ -10,6 +10,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.base.BaseController;
 import com.bean.ApplyMoney;
 import com.bean.BetsDataLog;
+import com.bean.OpenNumber;
 import com.bean.Recharge;
 import com.bean.UserInfo;
 import com.config.ControllerBind;
@@ -22,6 +23,12 @@ public class EasyUI_Controller extends BaseController{
 	
 	//首页
 	public void index(){
+		//查看开到多少期了
+		OpenNumber onum = OpenNumber.dao.findFirst("SELECT * FROM opennumber ORDER BY fd_qishu DESC");
+		List<BetsDataLog> btlist = BetsDataLog.dao.find("SELECT * FROM betsdatalog WHERE fd_qishu = '"+(onum.getInt("fd_qishu")+1)+"'");
+		setAttr("btlist",btlist);
+		setAttr("opennum",onum.getInt("fd_qishu")+1);
+		setAttr("montotal",BetsDataLog.dao.findFirst("SELECT SUM(fd_tatol) AS total FROM betsdatalog WHERE fd_qishu = '"+(onum.getInt("fd_qishu")+1)+"'"));
 		render("/admin/EasyUI/index.html");
 	}
 	
@@ -147,11 +154,17 @@ public class EasyUI_Controller extends BaseController{
 		Map<String, Object> map = new HashMap<String, Object>();
 		int page = getParaToInt("page");
 		int rows = getParaToInt("rows");
-		List<BetsDataLog> UI = BetsDataLog.dao.findByPage(page, rows, "ORDER BY fd_iswin DESC");
+		List<BetsDataLog> UI = BetsDataLog.dao.findByPage(page, rows, "ORDER BY fd_qishu DESC");
 		Long total = BetsDataLog.dao.count("SELECT * FROM betsdatalog");
 		map.put("rows", UI);
 	    map.put("total", total); 
-		renderJson(map);
+	    //获取用户赢的记录
+	    map.put("win", BetsDataLog.dao.findFirst("SELECT SUM(fd_tatol) AS total FROM betsdatalog WHERE fd_iswin = '1'"));
+	    //输
+	    map.put("fualt", BetsDataLog.dao.findFirst("SELECT SUM(fd_tatol) AS total FROM betsdatalog WHERE fd_iswin = '0'"));
+	    //未开奖
+	    map.put("onopen", BetsDataLog.dao.findFirst("SELECT SUM(fd_tatol) AS total FROM betsdatalog WHERE fd_iswin = '2'"));
+	    renderJson(map);
 	}
 	
 	//用户界面操作动作
