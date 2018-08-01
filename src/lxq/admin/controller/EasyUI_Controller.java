@@ -69,8 +69,23 @@ public class EasyUI_Controller extends BaseController{
 		int rows = getParaToInt("rows");
 		List<Recharge> UI = Recharge.dao.findByPage(page, rows, "");
 		Long total = Recharge.dao.count("SELECT * FROM recharge");
+		map.put("taoslm", Recharge.dao.findFirst("SELECT SUM(fd_money) AS total FROM recharge"));
 		map.put("rows", UI);
 	    map.put("total", total); 
+		renderJson(map);
+	}
+	
+	//充值查找加载数据
+	public void findrecherge(){
+		Map<String, Object> map = new HashMap<String, Object>();
+		String keyWord = getPara("keyowl");
+		int page = getParaToInt("page");
+		int rows = getParaToInt("rows");
+		List<Recharge> UI = Recharge.dao.findByPage("WHERE fd_username='"+keyWord+"'", page, rows,"fd_creatime");
+		Long total = Recharge.dao.count("SELECT * FROM recharge WHERE fd_username='"+keyWord+"'");
+		map.put("taoslm", Recharge.dao.findFirst("SELECT SUM(fd_money) AS total FROM recharge WHERE fd_username='"+keyWord+"'"));
+		map.put("rows", UI);
+		map.put("total", total); 
 		renderJson(map);
 	}
 	
@@ -112,8 +127,24 @@ public class EasyUI_Controller extends BaseController{
 		int rows = getParaToInt("rows");
 		List<ApplyMoney> UI = ApplyMoney.dao.findByPage(page, rows, "ORDER BY fd_status ASC");
 		Long total = ApplyMoney.dao.count("SELECT * FROM applymoney");
+		map.put("taoslm", ApplyMoney.dao.findFirst("SELECT SUM(fd_money) AS total FROM applymoney"));
 		map.put("rows", UI);
 	    map.put("total", total); 
+		renderJson(map);
+	}
+	
+	//加载查找提现记录数据
+	public void findpucashPage(){
+		Map<String, Object> map = new HashMap<String, Object>();
+		String keyWord = getPara("keyowl");
+		int page = getParaToInt("page");
+		int rows = getParaToInt("rows");
+		List<ApplyMoney> UI = ApplyMoney.dao.findByPage("WHERE fd_username='"+keyWord+"'", page, rows,"fd_status");
+		Long total = ApplyMoney.dao.count("SELECT * FROM applymoney WHERE fd_username='"+keyWord+"'");
+		//获取查找用户的提现总金额
+	    map.put("taoslm", ApplyMoney.dao.findFirst("SELECT SUM(fd_money) AS total FROM applymoney WHERE fd_username='"+keyWord+"'"));
+		map.put("rows", UI);
+		map.put("total", total); 
 		renderJson(map);
 	}
 	
@@ -167,6 +198,33 @@ public class EasyUI_Controller extends BaseController{
 	    renderJson(map);
 	}
 	
+	//加载用户下注信息
+	public void findwindate(){
+		Map<String, Object> map = new HashMap<String, Object>();
+		String keyWordNum = getPara("keyowlnum");
+		String keyWordUsm = getPara("keyowlusm");
+		int page = getParaToInt("page");
+		int rows = getParaToInt("rows");
+		String wherestr = "WHERE 1=1";
+		if(!keyWordNum.equals("")){
+			wherestr+=" AND fd_qishu='"+keyWordNum+"'";
+		}
+		if(!keyWordUsm.equals("")){
+			wherestr+=" AND fd_username='"+keyWordUsm+"'";
+		}
+		List<BetsDataLog> UI = BetsDataLog.dao.findByPage(wherestr, page, rows,"fd_iswin");
+		Long total = BetsDataLog.dao.count("SELECT * FROM betsdatalog "+wherestr);
+		map.put("rows", UI);
+		map.put("total", total); 
+		//获取用户赢的记录
+		map.put("win", BetsDataLog.dao.findFirst("SELECT SUM(fd_tatol) AS total FROM betsdatalog "+wherestr+" AND fd_iswin = '1'"));
+		//输
+		map.put("fualt", BetsDataLog.dao.findFirst("SELECT SUM(fd_tatol) AS total FROM betsdatalog "+wherestr+" AND fd_iswin = '0'"));
+		//未开奖
+		map.put("onopen", BetsDataLog.dao.findFirst("SELECT SUM(fd_tatol) AS total FROM betsdatalog "+wherestr+" AND fd_iswin = '2'"));
+		renderJson(map);
+	}
+	
 	//用户界面操作动作
 	public void loaduserd(){
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -177,7 +235,23 @@ public class EasyUI_Controller extends BaseController{
 		map.put("rows", UI);
 	    map.put("total", total); 
 		renderJson(map);
-		
+	}
+	
+	//用户界面操作动作
+	public void finduserd(){
+		Map<String, Object> map = new HashMap<String, Object>();
+		String keyWordUsm = getPara("keyowl");
+		String wherestr = "WHERE fd_username='"+keyWordUsm+"'";
+		if(keyWordUsm.equals("")){
+			wherestr = "";
+		}
+		int page = getParaToInt("page");
+		int rows = getParaToInt("rows");
+		List<UserInfo> UI = UserInfo.dao.findByPage(wherestr, page, rows, "fd_creatime");
+		Long total = UserInfo.dao.count("SELECT * FROM userinfo "+wherestr);
+		map.put("rows", UI);
+		map.put("total", total); 
+		renderJson(map);
 	}
 	
 	//激活用户

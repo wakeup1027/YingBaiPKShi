@@ -17,12 +17,12 @@
 		<a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-edit',plain:true" onclick="upstatus()">修改状态</a>
 	</div>
 	<div style="float:left; margin-left:50px;">
-		<input id="searchKey" class="easyui-textbox" data-options="prompt:'请输入查找的期号'" style="width:200px; height:26px;"/>
+		<input id="searchKey" class="easyui-textbox" data-options="prompt:'请输入搜索用户名'" style="width:200px; height:26px;"/>
 		<a href="javascript:void(0)" onclick="queryfind()" class="easyui-linkbutton" style="width:70px;">搜 索</a>
 	</div>
 	<div style="clear:both;"></div>
 </div>
-<div id="grigtBox" style="width:100%; height:400px; margin-top:8px;">
+<div id="grigtBox" style="width:100%; height:370px; margin-top:8px;">
 	<div id="dg" style="width:100%; height:100%;"></div>
 </div>
 <div id="user_dlg" class="easyui-dialog" style="width:400px; height:200px;" closed="true" buttons="#user_dlg-buttons" modal="true">
@@ -42,9 +42,21 @@
 	<a href="javascript:void(0)" class="easyui-linkbutton c6" iconCls="icon-ok" onclick="savebx()" style="width: 90px">保存</a> 
 	<a href="javascript:void(0)" class="easyui-linkbutton"	iconCls="icon-cancel" onclick="javascript:$('#user_dlg').dialog('close')" style="width: 90px">取消</a>
 </div>
+<div>
+<table style="font-size:13px; float:right;">
+	<tr>
+		<td colspan="6" style="font-size:15px;font-weight:bold;">提现金额统计</td>
+	</tr>
+	<tr>
+		<td id="win" style="width:80px; text-align:right;">0</td>
+		<td>/元</td>
+	</tr>
+</table>
+<div style="clear:both;"></div>
+</div>
 <script>
 $(function(){
-	$("#grigtBox").css("height",($(window).height()-53)+"px");
+	//$("#grigtBox").css("height",($(window).height()-53)+"px");
 	
 	$('#dg').datagrid({
 	    height: '100%',
@@ -62,6 +74,10 @@ $(function(){
 	    toolbar:"#tb",
 	    singleSelect: true,
 		rownumbers:true,
+		onLoadSuccess:function(data){
+			var sda = data.taoslm;
+			$("#win").text(sda.total);
+		},
 		columns: [[
 				    {field: 'ck', checkbox:true},
 				    {field: 'fd_username', title:'申请会员', width:'10%'},
@@ -125,6 +141,51 @@ function savebx(){
         title: '温馨提示',
         msg: "操作成功"
     });*/
+}
+
+function queryfind(){
+	var usnma = $("#searchKey").textbox("getValue");
+	$('#dg').datagrid({
+	    height: '100%',
+	    fit:true,
+	    url: '${BASE_PATH}AdminStrUrl/findpucashPage.html',
+	    method: 'POST',
+	    striped: true,
+	    nowrap: true,
+	    pageSize: 20,
+	    pageNumber:1, 
+	    pageList: [10, 20, 50, 100, 150, 200],
+		pagination : true,
+	    showFooter: true, 
+		loadMsg : '数据加载中请稍后……',
+	    toolbar: "#tb",
+	    singleSelect: false,
+		rownumbers:true,
+		queryParams:{"keyowl":usnma},
+	    onLoadSuccess:function(data){
+	    	var sda = data.taoslm;
+			$("#win").text(sda.total);
+		},
+		columns: [[
+				    {field: 'ck', checkbox:true},
+				    {field: 'fd_username', title:'申请会员', width:'10%'},
+				    {field: 'fd_money', title:'提现金额', width:'7%'},
+				    {field: 'fd_status', title:'提现状态', width:'7%',formatter:function(value){  
+		            	if(value == '0' || value == 0){
+							return "审核中";
+						}else if(value == '1' || value == 1){
+							return "已受理";
+						}else if(value == '2' || value == 2){
+							return "提现完成";
+						}else{
+							return "未知状态";
+						}
+					}},
+				    {field: 'fd_commit', title:'提现说明', width:'30%'},
+				    {field: 'fd_creatime', title:'申请时间', width:'20%',formatter:fotmateDate},
+				    {field: 'fd_arraytime', title:'完成时间', width:'20%',formatter:fotmateDate}
+	    ]]
+	});
 }
 
 
