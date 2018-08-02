@@ -443,5 +443,10 @@ public class LayUI_Controller extends BaseController{
 		renderJson(json.toJSONString());
 	}
 	
+	//加载信息记录
+	public void getMessage(){
+		render(HomePathPage+"sysmessage.html");
+	}
+	
 	
 }

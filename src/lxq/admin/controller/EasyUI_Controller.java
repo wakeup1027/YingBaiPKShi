@@ -203,6 +203,8 @@ public class EasyUI_Controller extends BaseController{
 		Map<String, Object> map = new HashMap<String, Object>();
 		String keyWordNum = getPara("keyowlnum");
 		String keyWordUsm = getPara("keyowlusm");
+		String strtm = getPara("strtm");
+		String overm = getPara("overm");
 		int page = getParaToInt("page");
 		int rows = getParaToInt("rows");
 		String wherestr = "WHERE 1=1";
@@ -211,6 +213,12 @@ public class EasyUI_Controller extends BaseController{
 		}
 		if(!keyWordUsm.equals("")){
 			wherestr+=" AND fd_username='"+keyWordUsm+"'";
+		}
+		if(!strtm.equals("")){
+			wherestr+=" AND fd_creatime>='"+strtm+"'";
+		}
+		if(!overm.equals("")){
+			wherestr+=" AND fd_creatime<='"+overm+"'";
 		}
 		List<BetsDataLog> UI = BetsDataLog.dao.findByPage(wherestr, page, rows,"fd_iswin");
 		Long total = BetsDataLog.dao.count("SELECT * FROM betsdatalog "+wherestr);

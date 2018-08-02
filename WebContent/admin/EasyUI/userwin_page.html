@@ -16,6 +16,8 @@
 	<div style="float:right; margin-left:50px;">
 		<input id="searchKeyNum" class="easyui-textbox" data-options="prompt:'请输入查找的期号'" style="width:200px; height:26px;"/>
 		<input id="searchKeyUsm" class="easyui-textbox" data-options="prompt:'请输入查找用户名'" style="width:200px; height:26px;"/>
+		<input id="startime" class="easyui-datetimebox" data-options="showSeconds:true" style="width:150px">
+		<input id="overtime" class="easyui-datetimebox" data-options="showSeconds:true" style="width:150px">
 		<a href="javascript:void(0)" onclick="queryfind()" class="easyui-linkbutton" style="width:70px;">搜 索</a>
 	</div>
 	<div style="clear:both;"></div>
@@ -103,7 +105,9 @@ $(function(){
 
 function queryfind(){
 	var nums = $("#searchKeyNum").textbox("getValue");
-	var usnma = $("#searchKeyUsm").textbox("getValue"); 
+	var usnma = $("#searchKeyUsm").textbox("getValue");
+	var strtm = $("#startime").datetimebox("getValue");
+	var overm = $("#overtime").datetimebox("getValue");
 	$('#dg').datagrid({
 	    height: '100%',
 	    fit:true,
@@ -120,7 +124,7 @@ function queryfind(){
 	    toolbar: "#tb",
 	    singleSelect: false,
 		rownumbers:true,
-		queryParams:{"keyowlusm":usnma,"keyowlnum":nums},
+		queryParams:{"keyowlusm":usnma,"keyowlnum":nums,"strtm":strtm,"overm":overm},
 	    onLoadSuccess:function(data){
 	    	var w = data.win.total;
 			if(w==null||w=="null"){

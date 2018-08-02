@@ -17,8 +17,8 @@ $(function(){
 body{padding:0px; margin:0px; font-size:13px; color:#666; font-family:'微软雅黑';background:#f1f1f1;}
 .numUlBox{list-style-type:none; padding:0px; margin:0px auto 0px auto; width: 400px;}
 .numUlBox>li{margin-left:10px; background:#FA222D; color:#fff; font-size:15px; font-weight: bold; border-radius:20px; width:30px; height:30px; float:left; text-align:center; line-height:30px;}
-.btnBoxClass{overflow:hidden;}
-.btnBoxClass>div{width:60px; margin-left:5px; padding:5px 15px; background:#2A2B3D; cursor:pointer; border-radius:0px 0px 8px 8px;}
+.btnBoxClass{overflow:hidden; font-size:12px;}
+.btnBoxClass>div{margin-left:5px; padding:5px 15px; background:#2A2B3D; cursor:pointer; border-radius:0px 0px 8px 8px;}
 </style>
 </head>
 <body>
@@ -26,7 +26,7 @@ body{padding:0px; margin:0px; font-size:13px; color:#666; font-family:'微软雅
 	<div style="float:left; height:90px; width:300px;">
 		<img class="imgBox" title="返回下注" date_url="VipCustomer/xiazhuPage.html" src="${BASE_PATH}images/logo.png" style="cursor:pointer;margin-top: 15px; margin-left:30px;"/>
 	</div>
-	<div style="float:left; height:70px; width:800px; background:#2A2B3D; border-radius: 50px; margin-top:10px;">
+	<div style="float:left; height:70px; width:700px; background:#2A2B3D; border-radius: 50px; margin-top:10px;">
 		<div style="text-align:center; line-height:25px;">
 			<span style="color:#EEF613;">北京PK拾</span>
 			<span style="color:#fff;">第</span>
@@ -41,11 +41,15 @@ body{padding:0px; margin:0px; font-size:13px; color:#666; font-family:'微软雅
 		</ul>
 		<div style="clear:both;"></div>
 	</div>
-	<div style="float:right; height:90px; width:190px; color:#fff;">
+	<div style="float:right; height:90px; width:270px; color:#fff;">
 		<div class="btnBoxClass">
-			<div style="float:left;">
+			<div style="float:left;" class="pageurl" date_url="VipCustomer/getMessage.html">
 				<i class="iconfont icon-xinxi"></i>
 				<span>站内信</span>
+			</div>
+			<div style="float:left;" class="pageurl" date_url="VipCustomer/getMessage.html">
+				<i class="iconfont icon-xinxi"></i>
+				<span>联系客服</span>
 			</div>
 			<div style="float:right;">
 				<i class="iconfont icon-tuichu" style="font-size:13px;"></i>
