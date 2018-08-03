@@ -11,6 +11,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.base.BaseController;
 import com.bean.BetsDataLog_Bean;
+import com.bean.Message;
 import com.bean.OpenNumber;
 import com.bean.ApplyMoneyLog_Bean;
 import com.bean.ApplyMoney;
@@ -445,8 +446,10 @@ public class LayUI_Controller extends BaseController{
 	
 	//加载信息记录
 	public void getMessage(){
+		String userid = getSessionAttr("UserId");
+		List<Message> mes = Message.dao.find("SELECT * FROM message WHERE fd_senduser='"+userid+"'");
+		setAttr("systemess",mes);
 		render(HomePathPage+"sysmessage.html");
 	}
-	
 	
 }

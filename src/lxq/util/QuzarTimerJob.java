@@ -1,5 +1,7 @@
 package lxq.util;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -11,11 +13,13 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.bean.BetsDataLog;
+import com.bean.Message;
 import com.bean.OpenNumber;
 import com.bean.SecondTable;
 import com.bean.UserInfo;
 
 public class QuzarTimerJob implements Job{
+	private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	private static final String token = "t10e9c565ded1e473k";
 	private static final String code = "bjpk10";
 	private static final String rows = "1";
@@ -71,6 +75,17 @@ public class QuzarTimerJob implements Job{
 			if(sd.equals(sds)){
 				bd.set("fd_iswin", "1");  //赢
 				uif.set("fd_money", uif.getInt("fd_money")+(bd.getInt("fd_tatol")*10)); //倍率
+				Message ms = new Message();
+				String uuid = UUID.randomUUID().toString().replace("-", "").toLowerCase();
+				Date now = new Date();
+				ms.set("id", uuid);
+				ms.set("fd_title", "【系统消息】恭喜您赢取了第"+bd.getStr("fd_qishu")+"期"+FROMTYPE(bd.getStr("fd_type"))+"号码为"+bd.getStr("fd_num")+"的注数");
+				ms.set("fd_creatime", sdf.format(now));
+				ms.set("fd_connet", "【系统消息】恭喜您赢取了第"+bd.getStr("fd_qishu")+"期"+FROMTYPE(bd.getStr("fd_type"))+"号码为"+bd.getStr("fd_num")+"的注数");
+				ms.set("fd_type", "0");
+				ms.set("fd_ready", "1");
+				ms.set("fd_senduser", bd.getStr("fd_userid"));
+				ms.save();
 			}else{
 				bd.set("fd_iswin", "0");  //输
 				uif.set("fd_money", uif.getInt("fd_money")-bd.getInt("fd_tatol")); //输没有倍率
@@ -78,6 +93,32 @@ public class QuzarTimerJob implements Job{
 			if(bd.update()){
 				uif.update();
 			}
+		}
+	}
+	
+	public static String FROMTYPE(String value){
+		if(value.equals("1")){
+			return "冠军";
+		}else if(value.equals("2")){
+			return "亚军";
+		}else if(value.equals("3")){
+			return "季军";
+		}else if(value.equals("4")){
+			return "第四名";
+		}else if(value.equals("5")){
+			return "第五名";
+		}else if(value.equals("6")){
+			return "第六名";
+		}else if(value.equals("7")){
+			return "第7名";
+		}else if(value.equals("8")){
+			return "第8名";
+		}else if(value.equals("9")){
+			return "第9名";
+		}else if(value.equals("10")){
+			return "第10名";
+		}else{
+			return "未知类型";
 		}
 	}
 
