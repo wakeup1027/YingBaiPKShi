@@ -79,7 +79,7 @@ public class QuzarTimerJob implements Job{
 				String uuid = UUID.randomUUID().toString().replace("-", "").toLowerCase();
 				Date now = new Date();
 				ms.set("id", uuid);
-				ms.set("fd_title", "【系统消息】恭喜您赢取了第"+bd.getStr("fd_qishu")+"期"+FROMTYPE(bd.getStr("fd_type"))+"号码为"+bd.getStr("fd_num")+"的注数");
+				ms.set("fd_title", "恭喜您赢取了第"+bd.getStr("fd_qishu")+"期"+FROMTYPE(bd.getStr("fd_type"))+"号码为"+bd.getStr("fd_num")+"的注数");
 				ms.set("fd_creatime", sdf.format(now));
 				ms.set("fd_connet", "【系统消息】恭喜您赢取了第"+bd.getStr("fd_qishu")+"期"+FROMTYPE(bd.getStr("fd_type"))+"号码为"+bd.getStr("fd_num")+"的注数");
 				ms.set("fd_type", "0");

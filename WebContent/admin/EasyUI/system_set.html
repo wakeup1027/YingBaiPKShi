@@ -3,16 +3,189 @@
 <head>
 <meta charset="UTF-8">
 <title>系统设置</title>
+<link rel="stylesheet" type="text/css"href="${BASE_PATH}easyui/themes/gray/easyui.css"/>
+<link rel="stylesheet" type="text/css"href="${BASE_PATH}easyui/themes/icon.css"/>
+<link rel="stylesheet" type="text/css"href="${BASE_PATH}easyui/themes/gray/datagrid.css"/>
+<script type="text/javascript" src="${BASE_PATH}easyui/jquery.min.js"></script>
+<script type="text/javascript" src="${BASE_PATH}js/jquery.form.js"></script>
+<script type="text/javascript" src="${BASE_PATH}easyui/jquery.easyui.min.js"></script>
+<script type="text/javascript" src="${BASE_PATH}easyui/locale/easyui-lang-zh_CN.js"></script>
 <style>
 body{font-size:13px; color:#666; font-family:'微软雅黑';}
+tr{height:35px; line-height:35px;}
 </style>
 </head>
 <body>
-<table style="margin:30px auto; width:150px;">
+<table style="margin:30px auto; width:450px;">
 	<tr>
-		<td>封盘时间</td>
-		<td><a href="javascript:void(0)">修改</a></td>
+		<td style="width:100px;">赔率</td>
+		<td>${st.lostnum}</td>
+		<td><a href="javascript:void(0)" onclick="_show(this)" wit="0">修改</a></td>
+	</tr>
+	<tr>
+		<td>封盘倒计时</td>
+		<td>${st.closetime}</td>
+		<td><a href="javascript:void(0)" onclick="_show(this)" wit="1">修改</a></td>
+	</tr>
+	<tr>
+		<td>微信二维码</td>
+		<td><img src="${BASE_PATH+st.wachat}" style="width:20px; height:20px; cursor:pointer;"/></td>
+		<td><a href="javascript:void(0)" onclick="_showuis(this)" wit="0">修改</a></td>
+	</tr>
+	<tr>
+		<td>支付宝二维码</td>
+		<td><img src="${BASE_PATH+st.zhifb}" style="width:20px; height:20px; cursor:pointer;"/></td>
+		<td><a href="javascript:void(0)" onclick="_showuis(this)" wit="1">修改</a></td>
 	</tr>
 </table>
+<div id="divbox" style="position:absolute; width:121px; height:121px; top:100px; left:100px; display:none;">
+	<img id="divimgbox" src="${BASE_PATH}images/zhifubao.jpg" style="width:121px; height:121px;"/>
+</div>
+<div id="user_dlg" class="easyui-dialog" style="width:400px; height:200px;" closed="true" buttons="#user_dlg-buttons" modal="true">
+	<table style="margin:40px;">
+		<tr>
+			<td id="uptitoe">输入赔率</td>
+			<td><input id="losnmj" class="easyui-textbox"/></td>
+		</tr>
+	</table>
+</div>
+<div id="user_dlg-buttons">
+	<a href="javascript:void(0)" class="easyui-linkbutton c6" iconCls="icon-ok" onclick="_p()" style="width: 90px">保存</a> 
+	<a href="javascript:void(0)" class="easyui-linkbutton"	iconCls="icon-cancel" onclick="javascript:$('#user_dlg').dialog('close')" style="width: 90px">取消</a>
+</div>
+<div id="user_dlg2" class="easyui-dialog" style="width:400px; height:200px;" closed="true" buttons="#user_dlg-buttons2" modal="true">
+	<form id="importfm" method="post"  enctype="multipart/form-data" novalidate >
+	<table style="margin:40px 10px;">
+		<tr>
+			<td id="uptitle">修改微信二维码</td>
+			<td>
+				<!-- <input class="easyui-filebox" id="importfile" name="Filedata" data-options="prompt:'选择文件路径'" buttonText="选择二维码" style="width:200px"> -->
+				<input type="file" id="importfile" name="Filedata" style="width:200px"/>
+			</td>
+		</tr>
+	</table>
+	</form>
+</div>
+<div id="user_dlg-buttons2">
+	<a href="javascript:void(0)" class="easyui-linkbutton c6" iconCls="icon-ok" onclick="_importupian()" style="width: 90px">保存</a> 
+	<a href="javascript:void(0)" class="easyui-linkbutton"	iconCls="icon-cancel" onclick="javascript:$('#user_dlg2').dialog('close')" style="width: 90px">取消</a>
+</div>
+<script>
+$(function(){
+	$("img").mouseover(function(){
+		$("#divimgbox").attr("src",$(this).attr("src"));
+		$("#divbox").css("top",$(this).offset().top-50);
+		$("#divbox").css("left",$(this).offset().left+35);
+		$("#divbox").show();
+	});
+	$("img").mouseout(function(){
+		$("#divimgbox").attr("src",$(this).attr("src"));
+		$("#divbox").css("top",-300);
+		$("#divbox").css("left",-300);
+		$("#divbox").hide();
+	});
+})
+var jki = "0";
+var jkttil = "";
+function _show(nic){
+	var _skl = $(nic).attr("wit");
+	if(_skl=="0"||_skl==0){
+		$("#uptitoe").text("输入赔率");
+		$('#user_dlg').dialog('open').dialog('setTitle','修改赔率');
+		jki = "0";
+		jkttil = "赔率";
+	}else if(_skl=="1"||_skl==1){
+		$("#uptitoe").text("输入封盘倒计时");
+		$('#user_dlg').dialog('open').dialog('setTitle','修改封盘倒计时');
+		jki = "1";
+		jkttil = "封盘倒计时";
+	}
+}
+
+var jki2 = "0";
+var jkttil2 = "";
+function _showuis(nic){
+	var _skl = $(nic).attr("wit");
+	if(_skl=="0"||_skl==0){
+		$("#uptitle").text("请选择微信二维码");
+		$('#user_dlg2').dialog('open').dialog('setTitle','修改微信二维码');
+		jki2 = "0";
+	}else if(_skl=="1"||_skl==1){
+		$("#uptitle").text("请选择支付宝二维码");
+		$('#user_dlg2').dialog('open').dialog('setTitle','修改支付宝二维码');
+		jki2 = "1";
+	}
+}
+
+function _p(){
+	var losk = $("#losnmj").textbox("getValue");
+	var jkl = "${BASE_PATH}AdminStrUrl/uplost.html";
+	if(losk==""){
+		$.messager.alert('警告', '你还没输入'+jkttil);
+		return;
+	}
+	if(jki==0||jki=="0"){
+		jkl = "${BASE_PATH}AdminStrUrl/uplost.html";
+	}else if(jki==1||jki=="1"){
+		jkl = "${BASE_PATH}AdminStrUrl/updlk.html";
+	}
+	$.ajax({
+        url: jkl,
+        type: "POST",
+        data:{
+        	"nom":losk
+        },
+        dataType: "json",
+        success: function(data){
+        	if(data.state=="success"){
+        		window.location.reload();
+        	}
+        }
+    });
+}
+
+//导入
+function _importupian(){
+	if(checkData()){
+		var yuil = "";
+		if(jki2=="0"||jki2==0){
+			yuil = "${BASE_PATH}AdminStrUrl/uperjlimg.html";
+		}else if(jki2=="1"||jki2==1){
+			yuil = "${BASE_PATH}AdminStrUrl/uperjlzhifimg.html";
+		}
+		$('#importfm').ajaxSubmit({
+			url: yuil,
+			dataType: 'json',
+			success: resutlMsg,
+			error: errorMsg
+		}); 
+		function resutlMsg(msg){
+			if(msg.state=="success"){
+				window.location.reload();
+			}else{
+				$.messager.alert('操作提示', "修改二维码出错！", 'warning');
+			}
+		}
+		function errorMsg(){
+			$.messager.alert('操作提示', "修改二维码出错！", 'warning');
+		}
+	}
+}
+
+//JS校验form表单信息
+function checkData(){
+	var fileDir = $("#importfile").val();
+	var suffix = fileDir.substr(fileDir.lastIndexOf("."));
+	if("" == fileDir){
+		$.messager.alert('操作提示', "选择需要修改的二维码文件！", 'warning');
+		return false;
+	}
+	if(".png" != suffix && ".jpg" != suffix && ".jpeg" != suffix && ".bmp" != suffix){
+		$.messager.alert('操作提示', "只支持格式为png，jpg，jpeg，bmp的图片！", 'warning');
+		return false;
+	}
+	return true;
+}
+</script>
 </body>
 </html>

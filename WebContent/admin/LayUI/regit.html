@@ -54,6 +54,24 @@ input{height:30px; width:270px; border:#e1e1e1 solid 1px; border-radius:5px; out
 </table>
 <script>
 function submitbtn(){
+	if($("#username").val()==""){
+		return;
+	}
+	if($("#userpass").val()==""){
+		return;
+	}
+	if($("#userphone").val()==""){
+		return;
+	}
+	if($("#truename").val()==""){
+		return;
+	}
+	if($("#useridcare").val()==""){
+		return;
+	}
+	if($("#bankidcare").val()==""){
+		return;
+	}
 	$.ajax({
         url: "${BASE_PATH}VipCustomer/ApplyRegit.html",
         type: "POST",

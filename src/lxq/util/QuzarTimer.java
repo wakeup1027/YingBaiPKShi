@@ -41,7 +41,7 @@ public class QuzarTimer {
 
 			Trigger TimeTrigger = newTrigger()
             	    .withIdentity(TimeTriggerStr, TimeTriggerWithIdentityStr)
-            	    .withSchedule(CronScheduleBuilder.cronSchedule("0/3 * * * * ?")
+            	    .withSchedule(CronScheduleBuilder.cronSchedule("0/5 * * * * ?")
             	    		.withMisfireHandlingInstructionDoNothing())  //0 2 10 23 4 ? 2018
             	    .build();
 			
