@@ -1,5 +1,6 @@
 package lxq.admin.controller;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -12,9 +13,12 @@ import com.bean.ApplyMoney;
 import com.bean.BetsDataLog;
 import com.bean.OpenNumber;
 import com.bean.Recharge;
+import com.bean.SecondTable;
 import com.bean.UserInfo;
 import com.config.ControllerBind;
 import com.jfinal.aop.Before;
+import com.jfinal.upload.UploadFile;
+
 import demo.AdminInterceptor;
 
 @Before(AdminInterceptor.class)
@@ -59,7 +63,81 @@ public class EasyUI_Controller extends BaseController{
 	
 	//系统设置
 	public void systemSet(){
+		SecondTable st = SecondTable.dao.findById("857bef8a26ba4e97aa5550c4072fdebe");
+		setAttr("st",st);
 		render("/admin/EasyUI/system_set.html");
+	}
+	
+	//修改赔率
+	public void uplost(){
+		JSONObject json = new JSONObject();
+		double s = getParaToInt("nom");
+		SecondTable st = SecondTable.dao.findById("857bef8a26ba4e97aa5550c4072fdebe");
+		st.set("lostnum", s);
+		if(st.update()){
+			json.put("state", "success");
+		}else{
+			json.put("state", "error");
+		}
+		renderJson(json);
+	}
+	
+	//修改倒计时
+	public void updlk(){
+		JSONObject json = new JSONObject();
+		double s = getParaToInt("nom");
+		SecondTable st = SecondTable.dao.findById("857bef8a26ba4e97aa5550c4072fdebe");
+		st.set("closetime", s);
+		if(st.update()){
+			json.put("state", "success");
+		}else{
+			json.put("state", "error");
+		}
+		renderJson(json);
+	}
+	
+	//接收微信二维码
+	public void uperjlimg(){
+		JSONObject json = new JSONObject();
+		UploadFile uf = getFile("Filedata", "");
+		String filename = uf.getFileName();
+		int typeNum = filename.lastIndexOf(".");
+		String type = filename.substring(typeNum, filename.length());
+		String mHttpUrl = getSession().getServletContext().getRealPath("/")+"upload/";
+		File f = uf.getFile();
+		String newfilename = System.currentTimeMillis()+type;
+		f.renameTo(new File(mHttpUrl+newfilename));
+		//记录图片路径写库
+		SecondTable st = SecondTable.dao.findById("857bef8a26ba4e97aa5550c4072fdebe");
+		st.set("wachat", "upload/"+newfilename);
+		if(st.update()){
+			json.put("state", "success");
+		}else{
+			json.put("state", "error");
+		}
+		renderJson(json);
+	}
+	
+	//接收支付宝二维码
+	public void uperjlzhifimg(){
+		JSONObject json = new JSONObject();
+		UploadFile uf = getFile("Filedata", "");
+		String filename = uf.getFileName();
+		int typeNum = filename.lastIndexOf(".");
+		String type = filename.substring(typeNum, filename.length());
+		String mHttpUrl = getSession().getServletContext().getRealPath("/")+"upload/";
+		File f = uf.getFile();
+		String newfilename = System.currentTimeMillis()+type;
+		f.renameTo(new File(mHttpUrl+newfilename));
+		//记录图片路径写库
+		SecondTable st = SecondTable.dao.findById("857bef8a26ba4e97aa5550c4072fdebe");
+		st.set("zhifb", "upload/"+newfilename);
+		if(st.update()){
+			json.put("state", "success");
+		}else{
+			json.put("state", "error");
+		}
+		renderJson(json);
 	}
 	
 	//充值管理加载数据

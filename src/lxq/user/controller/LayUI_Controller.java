@@ -52,6 +52,7 @@ public class LayUI_Controller extends BaseController{
 	//会员充值
 	public void recharge(){
 		String userid = getSessionAttr("UserId");
+		SecondTable st = SecondTable.dao.findById("857bef8a26ba4e97aa5550c4072fdebe");
 		Recharge rechar = Recharge.dao.findFirst("SELECT * FROM recharge WHERE fd_userid = '"+userid+"'");
 		if(null==rechar){
 			Recharge rch = new Recharge();
@@ -60,6 +61,7 @@ public class LayUI_Controller extends BaseController{
 		}else{
 			setAttr("rechar",rechar);
 		}
+		setAttr("st",st);
 		render(HomePathPage+"recharge.html");
 	}
 	
@@ -447,9 +449,38 @@ public class LayUI_Controller extends BaseController{
 	//加载信息记录
 	public void getMessage(){
 		String userid = getSessionAttr("UserId");
-		List<Message> mes = Message.dao.find("SELECT * FROM message WHERE fd_senduser='"+userid+"'");
+		List<Message> mes = Message.dao.find("SELECT * FROM message WHERE fd_senduser='"+userid+"' ORDER BY fd_ready ASC LIMIT 0,10");
+		Long total = Recharge.dao.count("SELECT * FROM message WHERE fd_senduser='"+userid+"'");
 		setAttr("systemess",mes);
+		setAttr("total", total);
 		render(HomePathPage+"sysmessage.html");
+	}
+	
+	//加载信息记录分页
+	public void Messagefypahe(){
+		String userid = getSessionAttr("UserId");
+		int page = getParaToInt("page");
+		int rows = getParaToInt("rows");
+		List<Message> mes = Message.dao.find("SELECT * FROM message WHERE fd_senduser='"+userid+"' ORDER BY fd_ready ASC LIMIT "+((page-1)*rows)+", "+rows);
+		JSONObject json = new JSONObject();
+		json.put("rows", mes);
+		renderJson(json);
+	}
+	
+	//加载信息记录分页
+	public void overready(){
+		String psdid = getPara("numid");
+		Message mes = Message.dao.findById(psdid);
+		mes.set("fd_ready", 1);
+		JSONObject json = new JSONObject();
+		if(mes.update()){
+			json.put("mes",mes);
+			json.put("status", 200);
+		}else{
+			json.put("mes","");
+			json.put("status", 500);
+		}
+		renderJson(json);
 	}
 	
 }
