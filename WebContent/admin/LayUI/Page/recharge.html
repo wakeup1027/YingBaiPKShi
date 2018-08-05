@@ -61,12 +61,35 @@ body{padding:0px; margin:0px; font-size:13px; font-family:'微软雅黑'}
 				<td>${rechar.fd_username}</td>
 			</tr>
 			<tr>
+				<td>充值平台：</td>
+				<td>
+				<%if(rechar.fd_ordertype=="1"){%>
+					微信
+				<%}else{%>
+					支付宝
+				<%}%>
+				</td>
+			</tr>
+			<tr>
+				<td>
+				<%if(rechar.fd_ordertype=="1"){%>
+					微信转账单号：
+				<%}else{%>
+					支付宝转账单号：
+				<%}%>
+				</td>
+				<td>${rechar.fd_ordernum}</td>
+			</tr>
+			<tr>
 				<td>充值金额：</td>
 				<td>${rechar.fd_money}</td>
 			</tr>
 			<tr>
 				<td>充值状态：</td>
 				<td style="color:#ff0000;">客服审核中...</td>
+			</tr>
+			<tr>
+				<td colspan="2" style="color:#ff0000; font-weight:bold;">${rechar.fd_commit}</td>
 			</tr>
 		</table>
 	</div>	
@@ -75,7 +98,11 @@ body{padding:0px; margin:0px; font-size:13px; font-family:'微软雅黑'}
 
 <script>
 $(function(){
-	<%if(rechar.fd_status==-1||rechar.fd_status=="-1"||rechar.fd_status=="1"||rechar.fd_status==1){}else{%>
+	LoadIMG();
+	//审核通过或者没有记录
+	<%if(rechar.fd_status==-1||rechar.fd_status=="-1"||rechar.fd_status=="1"||rechar.fd_status==1){%>
+		console.log("怎么回事");
+	<%}else{%>
 		$("#saomaBox").hide();
 		$("#writeBox").hide();
 		$("#mesBox").show();
@@ -106,31 +133,34 @@ $(function(){
 		
 	});
 })
-$(".Technological").loadStep({
-	//ystep的外观大小
-	//可选值：small,large
-	size: "small",
-	//ystep配色方案
-	//可选值：green,blue
-	color: "blue",
-	//ystep中包含的步骤
-	steps: [{
-		//步骤名称
-		title: "扫码充值",
-		//步骤内容(鼠标移动到本步骤节点时，会提示该内容)
-		content: "扫码充值"
-	},{
-		title: "填写订单号",
-		content: "填写扫码成功转账之后的订单号"
-	},{
-		title: "审核中",
-		content: "客服审核成功后半小时内充值,请耐心等待"
-	},{
-		title: "充值成功",
-		content: "充值成功！！"
-	}]
-});
-$(".Technological").setStep(1);
+
+function LoadIMG(){
+	$(".Technological").loadStep({
+		//ystep的外观大小
+		//可选值：small,large
+		size: "small",
+		//ystep配色方案
+		//可选值：green,blue
+		color: "blue",
+		//ystep中包含的步骤
+		steps: [{
+			//步骤名称
+			title: "扫码充值",
+			//步骤内容(鼠标移动到本步骤节点时，会提示该内容)
+			content: "扫码充值"
+		},{
+			title: "填写订单号",
+			content: "填写扫码成功转账之后的订单号"
+		},{
+			title: "审核中",
+			content: "客服审核成功后半小时内充值,请耐心等待"
+		},{
+			title: "充值成功",
+			content: "充值成功！！"
+		}]
+	});
+}
+//$(".Technological").setStep(1);
 </script>
 </body>
 </html>

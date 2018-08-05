@@ -19,6 +19,7 @@ import com.bean.BetsDataLog;
 import com.bean.Recharge;
 import com.bean.Recharge_Bean;
 import com.bean.SecondTable;
+import com.bean.SystemMess;
 import com.bean.UserInfo;
 import com.config.ControllerBind;
 import com.jfinal.aop.Before;
@@ -37,7 +38,12 @@ public class LayUI_Controller extends BaseController{
 	public void index(){
 		String userid = getSessionAttr("UserId");
 		UserInfo uinfo = UserInfo.dao.findById(userid);
+		//获取最新的开奖号码
 		OpenNumber opnunew = OpenNumber.dao.findFirst("SELECT fd_number,fd_qishu FROM opennumber ORDER BY fd_creatime DESC");
+		//获取最新的开奖公告
+		SystemMess mjus = SystemMess.dao.findFirst("SELECT * FROM systemmess ORDER BY fd_createtime DESC");
+		//获取未读信息数量
+		Message noread = Message.dao.findFirst("SELECT fd_ready FROM message WHERE fd_senduser='"+userid+"' AND fd_ready='0' ORDER BY fd_creatime DESC");
 		setAttr("userm",uinfo.get("fd_username"));
 		setAttr("money",uinfo.get("fd_money"));
 		setAttr("icemoney",uinfo.get("fd_icemoney"));
@@ -46,6 +52,12 @@ public class LayUI_Controller extends BaseController{
 		String[] howall = fpw.split(",");
 		setAttr("opnum",howall);
 		setAttr("qish",opnunew.get("fd_qishu"));
+		setAttr("mjus",mjus.getStr("fd_connect"));
+		if(null!=noread){
+			setAttr("havs",0);
+		}else{
+			setAttr("havs",1);
+		}
 		render(HomePath+"home.html");
 	}
 	
@@ -53,7 +65,7 @@ public class LayUI_Controller extends BaseController{
 	public void recharge(){
 		String userid = getSessionAttr("UserId");
 		SecondTable st = SecondTable.dao.findById("857bef8a26ba4e97aa5550c4072fdebe");
-		Recharge rechar = Recharge.dao.findFirst("SELECT * FROM recharge WHERE fd_userid = '"+userid+"'");
+		Recharge rechar = Recharge.dao.findFirst("SELECT * FROM recharge WHERE fd_userid = '"+userid+"' AND (fd_status = '0' OR fd_status = '2')");
 		if(null==rechar){
 			Recharge rch = new Recharge();
 			rch.set("fd_status", "-1");
@@ -77,7 +89,7 @@ public class LayUI_Controller extends BaseController{
 			renderJson(json.toJSONString());
 			return;
 		}
-		int money = getParaToInt("nom");
+		double money = Double.parseDouble(getPara("nom"));
 		String userid = getSessionAttr("UserId");
 		String username = getSessionAttr("loginUser");
 		String uuid = UUID.randomUUID().toString().replace("-", "").toLowerCase();
@@ -127,7 +139,7 @@ public class LayUI_Controller extends BaseController{
 			renderJson(json.toJSONString());
 			return;
 		}
-		int sum = 0;
+		double sum = 0;
 		OpenNumber opnunew = OpenNumber.dao.findFirst("SELECT fd_qishu FROM opennumber ORDER BY fd_creatime DESC");
 		int qishunum = opnunew.getInt("fd_qishu");
 		String jsodata = getPara("strj");
@@ -156,7 +168,7 @@ public class LayUI_Controller extends BaseController{
             betli.add(btd);
             sum += dzMoney;
         }
-		if(sum>uinfo.getInt("fd_money")){
+		if(sum>uinfo.getDouble("fd_money")){
 			json.put("state", "error");
 			json.put("mes", "余额不足！");
 			renderJson(json.toJSONString());
@@ -190,8 +202,10 @@ public class LayUI_Controller extends BaseController{
 			setAttr("user",amoney.get("fd_username"));
 			setAttr("money",amoney.get("fd_money"));
 			setAttr("status",amoney.get("fd_status"));
+			setAttr("failyre",amoney.get("fd_failreason"));
 		}else{
 			setAttr("status","2");
+			setAttr("failyre","");
 		}
 		render(HomePathPage+"apply_page.html");
 	}
@@ -279,13 +293,13 @@ public class LayUI_Controller extends BaseController{
 		String agenPass = getPara("fdpassword");
 		String truePass = getSessionAttr("Password");
 		//比较密码是否正确
-		if(agenPass.equals(truePass)){
+		if(MD5Util.md5(agenPass).equals(truePass)){
 			UserInfo uifo = UserInfo.dao.findById(userid);
-			int yuem = uifo.getInt("fd_money");//账户余额
-			int getm = getParaToInt("cash");//申请提现金额
+			double yuem = uifo.getDouble("fd_money");//账户余额
+			double getm = Double.parseDouble(getPara("cash"));//申请提现金额
 			//账户余额必须大于或等于提现余额
 			if(yuem>=getm){
-				int iceingm = uifo.getInt("fd_icemoney");//账户正在冻结的余额
+				double iceingm = uifo.getDouble("fd_icemoney");//账户正在冻结的余额
 				if(iceingm==0){
 					//用账户余额里面的现金减去提现金额当成是冻结金额
 					uifo.set("fd_money", yuem-getm);
@@ -330,7 +344,7 @@ public class LayUI_Controller extends BaseController{
 		for(Recharge pr : list){
 			Recharge_Bean ll = new Recharge_Bean();
 			ll.setFd_id(pr.getStr("id"));
-			ll.setFd_money(pr.getInt("fd_money"));
+			ll.setFd_money(pr.getDouble("fd_money"));
 			ll.setFd_userid(pr.getStr("fd_userid"));
 			ll.setFd_username(pr.getStr("fd_username"));
 			ll.setFd_status(pr.getStr("fd_status"));
@@ -362,7 +376,7 @@ public class LayUI_Controller extends BaseController{
 			ll.setFd_num(pr.getStr("fd_num"));
 			ll.setFd_zhushu(pr.getStr("fd_zhushu"));
 			ll.setFd_qishu(pr.getStr("fd_qishu"));
-			ll.setFd_tatol(pr.getInt("fd_tatol"));
+			ll.setFd_tatol(pr.getDouble("fd_tatol"));
 			ll.setFd_iswin(pr.getStr("fd_iswin"));
 			ll.setFd_creatime(pr.getDate("fd_creatime")+"");
 			newPer.add(ll);
@@ -378,17 +392,18 @@ public class LayUI_Controller extends BaseController{
 	//提现记录
 	public void ApplyMoneyLog(){
 		String userid = getSessionAttr("UserId");
-		List<ApplyMoney> list = ApplyMoney.dao.find("SELECT * FROM applymoney WHERE fd_userid = '"+userid+"' ORDER BY fd_creatime DESC LIMIT "+(getParaToInt("page")-1)*getParaToInt("limit")+","+getParaToInt("limit"));
+		List<ApplyMoney> list = ApplyMoney.dao.find("SELECT * FROM applymoney WHERE fd_userid = '"+userid+"' ORDER BY fd_status ASC LIMIT "+(getParaToInt("page")-1)*getParaToInt("limit")+","+getParaToInt("limit"));
 		List<ApplyMoneyLog_Bean> newPer = new ArrayList<ApplyMoneyLog_Bean>();
 		for(ApplyMoney pr : list){
 			ApplyMoneyLog_Bean ll = new ApplyMoneyLog_Bean();
 			ll.setFd_id(pr.getStr("id"));
-			ll.setFd_money(pr.getInt("fd_money"));
+			ll.setFd_money(pr.getDouble("fd_money"));
 			ll.setFd_userid(pr.getStr("fd_userid"));
 			ll.setFd_username(pr.getStr("fd_username"));
 			ll.setFd_status(pr.getStr("fd_status"));
 			ll.setFd_creatime(pr.getDate("fd_creatime")+"");
 			ll.setFd_arraytime(pr.getDate("fd_arraytime")+"");
+			ll.setFd_failreason(pr.getStr("fd_failreason")+"");
 			newPer.add(ll);
 		}
 		JSONObject json = new JSONObject();
@@ -408,6 +423,58 @@ public class LayUI_Controller extends BaseController{
 	public void CheckUsn(){
 		String usn = getPara("usn");
 		UserInfo model = UserInfo.dao.findFirst("SELECT * FROM userinfo WHERE fd_username = '"+usn+"'");
+		JSONObject json = new JSONObject();
+		if(null==model){
+			json.put("status", "200");
+		}else{
+			json.put("status", "500");
+		}
+		renderJson(json.toJSONString());
+	}
+	
+	//校验身份证是否存在
+	public void CheckIdcare(){
+		String usn = getPara("usn");
+		UserInfo model = UserInfo.dao.findFirst("SELECT * FROM userinfo WHERE fd_IDcase = '"+usn+"'");
+		JSONObject json = new JSONObject();
+		if(null==model){
+			json.put("status", "200");
+		}else{
+			json.put("status", "500");
+		}
+		renderJson(json.toJSONString());
+	}
+	
+	//校验手机号码是否存在
+	public void CheckPhone(){
+		String usn = getPara("usn");
+		UserInfo model = UserInfo.dao.findFirst("SELECT * FROM userinfo WHERE fd_phone = '"+usn+"'");
+		JSONObject json = new JSONObject();
+		if(null==model){
+			json.put("status", "200");
+		}else{
+			json.put("status", "500");
+		}
+		renderJson(json.toJSONString());
+	}
+	
+	//校验真实姓名是否存在
+	public void CheckTrueName(){
+		String usn = getPara("usn");
+		UserInfo model = UserInfo.dao.findFirst("SELECT * FROM userinfo WHERE fd_truename = '"+usn+"'");
+		JSONObject json = new JSONObject();
+		if(null==model){
+			json.put("status", "200");
+		}else{
+			json.put("status", "500");
+		}
+		renderJson(json.toJSONString());
+	}
+	
+	//校验银行卡是否存在
+	public void CheckBank(){
+		String usn = getPara("usn");
+		UserInfo model = UserInfo.dao.findFirst("SELECT * FROM userinfo WHERE fd_bank = '"+usn+"'");
 		JSONObject json = new JSONObject();
 		if(null==model){
 			json.put("status", "200");
@@ -451,9 +518,16 @@ public class LayUI_Controller extends BaseController{
 		String userid = getSessionAttr("UserId");
 		List<Message> mes = Message.dao.find("SELECT * FROM message WHERE fd_senduser='"+userid+"' ORDER BY fd_ready ASC LIMIT 0,10");
 		Long total = Recharge.dao.count("SELECT * FROM message WHERE fd_senduser='"+userid+"'");
+		Long noreadtotal = Recharge.dao.count("SELECT * FROM message WHERE fd_senduser='"+userid+"' AND fd_ready='0'");
 		setAttr("systemess",mes);
 		setAttr("total", total);
+		setAttr("noreadtotal", noreadtotal);
 		render(HomePathPage+"sysmessage.html");
+	}
+	
+	//联系客服界面
+	public void htpkfmes(){
+		render(HomePathPage+"callkefu.html");
 	}
 	
 	//加载信息记录分页

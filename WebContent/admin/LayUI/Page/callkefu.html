@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>系统消息</title>
+<title>客服消息</title>
 <script src="${BASE_PATH}js/jquery-1.8.3.min.js"></script>
 <script src="http://www.lanrenzhijia.com/ajaxjs/jquery.page.js"></script>
 <style>
@@ -26,88 +26,27 @@ a:hover{ text-decoration:none;}
 </head>
 
 <body>
-<!--您赢了第36589期冠军4号50元的奖金-->
-<div style="background:#707089; height:37px; line-height:37px; color:#fff; padding-left:15px; border-radius:5px 5px 0px 0px; font-size:13px;">系统消息【未读(${noreadtotal})】</div>
-<table id="databoxtable">
-	<% if( systemess != null && systemess.~size > 0 ){%>
-	<% for(item in systemess){%>
-	<tr class="trttlexx" onclick="lookseefunc(this)"  wit="${item.id}">
+<div style="background:#707089; height:37px; line-height:37px; color:#fff; padding-left:15px; border-radius:5px 5px 0px 0px; font-size:13px;">联系客服</div>
+&nbsp;&nbsp;&nbsp;&nbsp;功能正在开发中...
+<!-- <table id="databoxtable">
+	<tr class="trttlexx" onclick="lookseefunc(this)"  wit="">
 		<td style="color:#ff0000;">
-			<%if(item.fd_ready=="0"){%>
-				<div style="width:5px; height:5px; background:#ff0000; border-radius:5px; margin-right:0px"></div>
-			<%}%>
+			<div style="width:5px; height:5px; background:#ff0000; border-radius:5px; margin-right:0px"></div>
 		</td>
-		<td class="tdtitlecon">${item.fd_title}</td>
-		<td>${item.fd_creatime}</td>
+		<td class="tdtitlecon"></td>
+		<td></td>
 	</tr>
-	<%}}%>
-</table>
-<div class="tcdPageCode"></div>
+</table>-->
+<!--<div class="tcdPageCode"></div>
 <div id="boxshow">
 	<div style="background:#707089; height:37px; line-height:37px; color:#fff; padding-left:15px; border-radius:5px 5px 0px 0px; font-size:13px;">系统消息</div>
 	<div class="closebox">X</div>
 	<div id="boxshow_t" style="font-size:14px; text-align:center; line-height:35px; font-weight:bold;">恭贺中国人民共和国中国中央人民政府于1949年10月01日成立了</div>
 	<div style="font-size:12px; text-align:center; line-height:20px;"><span>来源：</span><span>系统</span>&nbsp;&nbsp;&nbsp;&nbsp;<span id="boxshow_i">2018-08-03 15:35:30</span></div>
 	<div id="boxshow_c" style="width:360px; padding:15px 40px; line-height:30px; text-indent:2em; color:#999;">客户的客户可会和为首的客服回复阿萨德可继续烘烤好打扫房间宽敞巨大恐惧凯撒的街坊邻居卢卡斯的路附近客户的客户可会和为首的客服回复阿萨德可继续烘烤好打扫房间宽敞巨大恐惧凯撒的街坊邻居卢卡斯的路附近客户的客户可会和为首的客服回复阿萨德可继续烘烤好打扫房间宽敞巨大恐惧凯撒的街坊邻居卢卡斯的路附近客户的客户可会和为首的客服回复阿萨德可继续烘烤好打扫房间宽敞巨大恐惧凯撒的街坊邻居卢卡斯的路附近</div>
-</div>
+</div> -->
 <script>
-$(function(){
-	$("#boxshow").css("left",300);
-	$("#boxshow").css("top",50);
-});
-function lookseefunc(nic){
-	
-	$.ajax({
-        type: "POST",
-        data:{"numid":$(nic).attr("wit")},
-        dataType: 'json',
-        url: "${BASE_PATH}VipCustomer/overready.html",
-        success:function(data) {
-        	if(data.status==200){
-        		$("#boxshow_t").text(data.mes.fd_title);
-        		$("#boxshow_i").text(data.mes.fd_creatime);
-        		$("#boxshow_c").text(data.mes.fd_connet);
-        		$("#boxshow").show();
-        	}else{
-        		alert("系统繁忙，请稍后...");
-        	}
-        },error:function(error){
-        	alert("系统繁忙，请稍后...");
-        }
-	});
-}
-$(function(){
-	var row = 10;
-	$(".closebox").click(function(){
-		$("#boxshow").hide();
-		location.reload();
-	});
-	$(".tcdPageCode").createPage({
-        pageCount:(${total}%row)==0?parseInt(${total}/row):parseInt(${total}/row)+1,
-        current:1,
-        backFn:function(p){
-        	$.ajax({
-                type: "POST",
-                data:{"page":p,"rows":row},
-                dataType: 'json',
-                url: "${BASE_PATH}VipCustomer/Messagefypahe.html",
-                success:function(data) {
-                	data = data.rows;
-                    $("#databoxtable").empty();
-                    for(var i=0; i<data.length; i++){
-                    	var trstr = '<tr class="trttlexx" onclick="lookseefunc(this)" wit="'+data[i].id+'"><td style="color:#ff0000;"></div></td><td class="tdtitlecon">'+data[i].fd_title+'</td><td>'+data[i].fd_creatime+'</td></tr>';
-                    	if(data[i].fd_ready=="0"||data[i].fd_ready==0){
-                    		trstr = '<tr class="trttlexx" onclick="lookseefunc(this)" wit="'+data[i].id+'"><td style="color:#ff0000;"><div style="width:5px; height:5px; background:#ff0000; border-radius:5px; margin-right:0px"></div></td><td class="tdtitlecon">'+data[i].fd_title+'</td><td>'+data[i].fd_creatime+'</td></tr>';
-                    	}
-                    	$("#databoxtable").append(trstr);
-                    }
-                },error:function(error){
-                	console.log("系统繁忙，请稍后...");
-                }
-        	});
-        }
-    });
-})
+
 </script>
 </body>
 </html>

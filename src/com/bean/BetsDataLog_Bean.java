@@ -14,7 +14,7 @@ public class BetsDataLog_Bean {
 	private String fd_zhushu;
 	private String fd_qishu;
 	private String fd_creatime;
-	private Integer fd_tatol;
+	private Double fd_tatol;
 	private String fd_iswin;
 	
 	public String getFd_id() {
@@ -65,10 +65,10 @@ public class BetsDataLog_Bean {
 	public void setFd_creatime(String fd_creatime) {
 		this.fd_creatime = fd_creatime;
 	}
-	public Integer getFd_tatol() {
+	public Double getFd_tatol() {
 		return fd_tatol;
 	}
-	public void setFd_tatol(Integer fd_tatol) {
+	public void setFd_tatol(Double fd_tatol) {
 		this.fd_tatol = fd_tatol;
 	}
 	public String getFd_iswin() {

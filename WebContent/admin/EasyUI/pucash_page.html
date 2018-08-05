@@ -18,6 +18,13 @@
 	</div>
 	<div style="float:left; margin-left:50px;">
 		<input id="searchKey" class="easyui-textbox" data-options="prompt:'请输入搜索用户名'" style="width:200px; height:26px;"/>
+		<select class="easyui-combobox" id="upStutastx" style="width:130px;" panelHeight="115">
+			<option value="">==状态选择==</option>
+			<option value="0">审核中</option>
+			<option value="1">已受理</option>
+			<option value="2">提现完成</option>
+			<option value="3">提现失败</option>
+		</select>
 		<a href="javascript:void(0)" onclick="queryfind()" class="easyui-linkbutton" style="width:70px;">搜 索</a>
 	</div>
 	<div style="clear:both;"></div>
@@ -25,16 +32,21 @@
 <div id="grigtBox" style="width:100%; height:370px; margin-top:8px;">
 	<div id="dg" style="width:100%; height:100%;"></div>
 </div>
-<div id="user_dlg" class="easyui-dialog" style="width:400px; height:200px;" closed="true" buttons="#user_dlg-buttons" modal="true">
-	<table style="margin:40px;">
+<div id="user_dlg" class="easyui-dialog" style="width:450px; height:400px;" closed="true" buttons="#user_dlg-buttons" modal="true">
+	<table style="margin:15px;">
 		<tr>
 			<td>修改状态</td>
 			<td>
-				<select class="easyui-combobox" id="upStutas" style="width:150px;" panelHeight="46">
+				<select class="easyui-combobox" id="upStutas" style="width:150px;" panelHeight="70">
 					<option value="1">已受理</option>
+					<option value="3">提现失败</option>
 					<option value="2">完成提现</option>
 				</select>
 			</td>
+		</tr>
+		<tr>
+			<td>失败备注</td>
+			<td><input class="easyui-textbox" id="failreason" data-options="multiline:true,prompt:'失败原因，非必填'" style="width:300px;height:140px"/></td>
 		</tr>
 	</table>
 </div>
@@ -89,6 +101,8 @@ $(function(){
 							return "已受理";
 						}else if(value == '2' || value == 2){
 							return "提现完成";
+						}else if(value == '3' || value == 3){
+							return "提现失败";
 						}else{
 							return "未知状态";
 						}
@@ -115,13 +129,14 @@ function savebx(){
         if (r) {
         	var onu="";
         	var upStutas = $("#upStutas").combobox('getValue');
+        	var failreason = $("#failreason").textbox('getValue');
         	for(var i=0; i<rows.length; i++){
         		onu+=rows[i].id+",";
         	}
         	onu = onu.substring(0,onu.length-1);
         	$.ajax({
                 type: "POST",
-                data:{"onu":onu,"upStutas":upStutas},
+                data:{"onu":onu,"upStutas":upStutas,"failreason":failreason},
                 dataType: 'json',
                 url: "${BASE_PATH}AdminStrUrl/upstatus.html",
                 success:function(data) {
@@ -145,6 +160,7 @@ function savebx(){
 
 function queryfind(){
 	var usnma = $("#searchKey").textbox("getValue");
+	var upStutastx = $("#upStutastx").combobox('getValue');
 	$('#dg').datagrid({
 	    height: '100%',
 	    fit:true,
@@ -161,7 +177,7 @@ function queryfind(){
 	    toolbar: "#tb",
 	    singleSelect: false,
 		rownumbers:true,
-		queryParams:{"keyowl":usnma},
+		queryParams:{"keyowl":usnma,"upStutas":upStutastx},
 	    onLoadSuccess:function(data){
 	    	var sda = data.taoslm;
 			$("#win").text(sda.total);
@@ -177,6 +193,8 @@ function queryfind(){
 							return "已受理";
 						}else if(value == '2' || value == 2){
 							return "提现完成";
+						}else if(value == '3' || value == 3){
+							return "提现失败";
 						}else{
 							return "未知状态";
 						}

@@ -37,6 +37,15 @@ layui.use(['table'], function(){
 	   	 			return "已受理";
 	   	 		}else if(d.fd_status=="2"||d.fd_status==2){
 	   	 			return "提现完成";
+	   	 		}else if(d.fd_status=="3"||d.fd_status==3){
+	   	 			return "<span style='color:#ff0000;'>提现失败</span>";
+	   	 		}
+	   	 	}},
+	   	 	{field: 'fd_failreason', title: '客服备注', width:200, templet:function(fd){
+	   	 		if(fd.fd_failreason=="null"||fd.fd_failreason==null){
+	   	 			return "";
+	   	 		}else{
+	   	 			return fd.fd_failreason;
 	   	 		}
 	   	 	}},
 	   	    {field: 'fd_creatime', title: '提现时间', width:200, templet:fotmateDate},

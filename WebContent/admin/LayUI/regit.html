@@ -15,7 +15,7 @@ input{height:30px; width:270px; border:#e1e1e1 solid 1px; border-radius:5px; out
 	<tr>
 		<td>用户名：</td>
 		<td><input id="username" type="text"/></td>
-		<td id="usmes" style="color:#ff0000; width:150px;"></td>
+		<td id="usmes" class="yespskal" style="color:#ff0000; width:150px;"></td>
 	</tr>
 	<tr>
 		<td>密码：</td>
@@ -25,27 +25,27 @@ input{height:30px; width:270px; border:#e1e1e1 solid 1px; border-radius:5px; out
 	<tr>
 		<td>确认密码：</td>
 		<td><input id="userpassagen" type="password"/></td>
-		<td id="agenpass" style="color:#ff0000;"></td>
+		<td id="agenpass" class="yespskal" style="color:#ff0000;"></td>
 	</tr>
 	<tr>
 		<td>手机号码：</td>
 		<td><input id="userphone" type="text"/></td>
-		<td id="phmes" style="color:#ff0000;"></td>
+		<td id="phmes" class="yespskal" style="color:#ff0000;"></td>
 	</tr>
 	<tr>
 		<td>真实姓名：</td>
 		<td><input id="truename" type="text"/></td>
-		<td></td>
+		<td id="truenames" class="yespskal" style="color:#ff0000;"></td>
 	</tr>
 	<tr>
 		<td>身份证：</td>
 		<td><input id="useridcare" type="text"/></td>
-		<td id="icmes" style="color:#ff0000;"></td>
+		<td id="icmes" class="yespskal" style="color:#ff0000;"></td>
 	</tr>
 	<tr>
 		<td>银行卡：</td>
 		<td><input id="bankidcare" type="text"/></td>
-		<td></td>
+		<td id="bankmess" class="yespskal" style="color:#ff0000;"></td>
 	</tr>
 	<tr>
 		<td colspan="2"><a href="javascript:submitbtn()" style="margin-top:10px; display:block; padding:8px 30px; text-align:center; background:#1094D0; color:#fff; border-radius:5px; text-decoration:none;">提交</a></td>
@@ -55,21 +55,31 @@ input{height:30px; width:270px; border:#e1e1e1 solid 1px; border-radius:5px; out
 <script>
 function submitbtn(){
 	if($("#username").val()==""){
+		alert("请输入用户名！");
 		return;
 	}
 	if($("#userpass").val()==""){
+		alert("请填写登录密码！");
 		return;
 	}
 	if($("#userphone").val()==""){
+		alert("请填写手机号码！");
 		return;
 	}
 	if($("#truename").val()==""){
+		alert("请填写真实姓名！");
 		return;
 	}
 	if($("#useridcare").val()==""){
+		alert("请填写身份证！");
 		return;
 	}
 	if($("#bankidcare").val()==""){
+		alert("请绑定银行卡！");
+		return;
+	}
+	if($(".yespskal").text()!=""){
+		alert("请填写的注册信息有误！");
 		return;
 	}
 	$.ajax({
@@ -85,7 +95,6 @@ function submitbtn(){
         },
         dataType: "json",
         success: function(data){
-        	console.log(data);
 			if(data.status=="200"||data.status==200){
 				alert("注册成功！等待客服审核");
 				history.go(-1);
@@ -127,6 +136,19 @@ $(function(){
 			$("#phmes").text("手机号格式错误");
 		}else{
 			$("#phmes").text("");
+			$.ajax({
+    	        url: "${BASE_PATH}VipCustomer/CheckPhone.html",
+    	        type: "POST",
+    	        data:{"usn":obj},
+    	        dataType: "json",
+    	        success: function(data){
+    	        	if(data.status=="500"||data.status==500){
+    	        		$("#phmes").text("手机号码已存在，请更换");
+    				}else{
+    					$("#phmes").text("");
+    				}
+    	        }
+    	    });
 		}
 	});
 	$("#useridcare").change(function(){
@@ -136,7 +158,52 @@ $(function(){
             $("#icmes").text("身份证号码格式错误");
         }else{
         	$("#icmes").text("");
+        	$.ajax({
+    	        url: "${BASE_PATH}VipCustomer/CheckIdcare.html",
+    	        type: "POST",
+    	        data:{"usn":identity},
+    	        dataType: "json",
+    	        success: function(data){
+    	        	if(data.status=="500"||data.status==500){
+    	        		$("#icmes").text("身份证号码已存在，请更换");
+    				}else{
+    					$("#icmes").text("");
+    				}
+    	        }
+    	    });
         }
+	});
+	$("#truename").change(function(){
+		var identity = $(this).val();
+		$.ajax({
+	        url: "${BASE_PATH}VipCustomer/CheckTrueName.html",
+	        type: "POST",
+	        data:{"usn":identity},
+	        dataType: "json",
+	        success: function(data){
+	        	if(data.status=="500"||data.status==500){
+	        		$("#truenames").text("真实姓名已存在，请更换");
+				}else{
+					$("#truenames").text("");
+				}
+	        }
+	    });
+	});
+	$("#bankidcare").change(function(){
+		var identity = $(this).val();
+		$.ajax({
+	        url: "${BASE_PATH}VipCustomer/CheckBank.html",
+	        type: "POST",
+	        data:{"usn":identity},
+	        dataType: "json",
+	        success: function(data){
+	        	if(data.status=="500"||data.status==500){
+	        		$("#bankmess").text("银行卡已存在，请更换");
+				}else{
+					$("#bankmess").text("");
+				}
+	        }
+	    });
 	});
 });
 </script>

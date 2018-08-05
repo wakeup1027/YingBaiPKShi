@@ -66,6 +66,7 @@ public class QuzarTimerJob implements Job{
 	//验证下注号码中是否有中奖
 	public static void IsWin(String qiNum,String openumber){
 		List<BetsDataLog> blog = BetsDataLog.dao.find("SELECT * FROM betsdatalog WHERE fd_qishu = '"+qiNum+"'");
+		SecondTable stabl = SecondTable.dao.findById("857bef8a26ba4e97aa5550c4072fdebe");
 		String openum[] = openumber.split(",");
 		for(BetsDataLog bd : blog){
 			UserInfo uif = UserInfo.dao.findById(bd.getStr("fd_userid"));
@@ -74,7 +75,7 @@ public class QuzarTimerJob implements Job{
 			String sds = bd.getStr("fd_num");
 			if(sd.equals(sds)){
 				bd.set("fd_iswin", "1");  //赢
-				uif.set("fd_money", uif.getInt("fd_money")+(bd.getInt("fd_tatol")*10)); //倍率
+				uif.set("fd_money", uif.getDouble("fd_money")+(bd.getDouble("fd_tatol")*stabl.getDouble("lostnum"))); //倍率
 				Message ms = new Message();
 				String uuid = UUID.randomUUID().toString().replace("-", "").toLowerCase();
 				Date now = new Date();
@@ -83,12 +84,12 @@ public class QuzarTimerJob implements Job{
 				ms.set("fd_creatime", sdf.format(now));
 				ms.set("fd_connet", "【系统消息】恭喜您赢取了第"+bd.getStr("fd_qishu")+"期"+FROMTYPE(bd.getStr("fd_type"))+"号码为"+bd.getStr("fd_num")+"的注数");
 				ms.set("fd_type", "0");
-				ms.set("fd_ready", "1");
+				ms.set("fd_ready", "0");
 				ms.set("fd_senduser", bd.getStr("fd_userid"));
 				ms.save();
 			}else{
 				bd.set("fd_iswin", "0");  //输
-				uif.set("fd_money", uif.getInt("fd_money")-bd.getInt("fd_tatol")); //输没有倍率
+				uif.set("fd_money", uif.getDouble("fd_money")-bd.getDouble("fd_tatol")); //输没有倍率
 			}
 			if(bd.update()){
 				uif.update();

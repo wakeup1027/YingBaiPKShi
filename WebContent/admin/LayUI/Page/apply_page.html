@@ -18,7 +18,7 @@ table>tbody>tr{height:40px;}
 	<div class="Technological" style="width:250px; margin: 25px auto 10px auto;"></div>
 	<div style="margin-top:30px;">
 		<div style="margin:10px auto; width:300px; height:400px; background:#fff; padding:20px; border-radius:5px;">
-		<%if(status==0||status=="0"){%>
+		<%if(status=="0"){%>
 			<script>
 				var settepNum = 2;
 			</script>
@@ -30,15 +30,15 @@ table>tbody>tr{height:40px;}
 					</tr>
 					<tr>
 						<td>提现金额：</td>
-						<td>${money}</td> 
+						<td>${money}</td>
 					</tr>
 					<tr>
 						<td>提现状态：</td>
-						<td style="color:#ff0000">请耐心等待！客服审核中...</td>
+						<td style="color:#ff0000">审核中...</td>
 					</tr>
 				</table>
 			</div>
-		<%}else if(status==1||status=="1"){%>
+		<%}else if(status=="1"){%>
 			<script>
 				var settepNum = 3;
 			</script>
@@ -131,7 +131,7 @@ function submitbtn(){
         success: function(data){
         	alert(data.mes);
         	if(data.code=="200"||data.code==200){
-        		parent.location.reload();
+        		window.location.reload();
         	}
         }
     });	

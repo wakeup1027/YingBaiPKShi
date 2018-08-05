@@ -6,7 +6,7 @@ package com.bean;
  */
 public class Recharge_Bean {
 	private String fd_id;
-	private Integer fd_money;
+	private Double fd_money;
 	private String fd_userid;
 	private String fd_username;
 	private String fd_status;
@@ -19,12 +19,6 @@ public class Recharge_Bean {
 	}
 	public void setFd_id(String fd_id) {
 		this.fd_id = fd_id;
-	}
-	public Integer getFd_money() {
-		return fd_money;
-	}
-	public void setFd_money(Integer fd_money) {
-		this.fd_money = fd_money;
 	}
 	public String getFd_userid() {
 		return fd_userid;
@@ -67,6 +61,12 @@ public class Recharge_Bean {
 	}
 	public void setFd_ordertype(String fd_ordertype) {
 		this.fd_ordertype = fd_ordertype;
+	}
+	public Double getFd_money() {
+		return fd_money;
+	}
+	public void setFd_money(Double fd_money) {
+		this.fd_money = fd_money;
 	}
 	
 }

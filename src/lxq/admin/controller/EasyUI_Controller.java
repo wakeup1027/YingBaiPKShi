@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import com.alibaba.fastjson.JSONObject;
 import com.base.BaseController;
@@ -14,6 +15,7 @@ import com.bean.BetsDataLog;
 import com.bean.OpenNumber;
 import com.bean.Recharge;
 import com.bean.SecondTable;
+import com.bean.SystemMess;
 import com.bean.UserInfo;
 import com.config.ControllerBind;
 import com.jfinal.aop.Before;
@@ -51,7 +53,7 @@ public class EasyUI_Controller extends BaseController{
 		render("/admin/EasyUI/userwin_page.html");
 	}
 	
-	//输赢查看
+	//公告管理
 	public void historyPage(){
 		render("/admin/EasyUI/history_page.html");
 	}
@@ -71,7 +73,7 @@ public class EasyUI_Controller extends BaseController{
 	//修改赔率
 	public void uplost(){
 		JSONObject json = new JSONObject();
-		double s = getParaToInt("nom");
+		double s = Double.parseDouble(getPara("nom"));
 		SecondTable st = SecondTable.dao.findById("857bef8a26ba4e97aa5550c4072fdebe");
 		st.set("lostnum", s);
 		if(st.update()){
@@ -140,6 +142,75 @@ public class EasyUI_Controller extends BaseController{
 		renderJson(json);
 	}
 	
+	//公告管理加载数据
+	public void loadtongzhi(){
+		Map<String, Object> map = new HashMap<String, Object>();
+		int page = getParaToInt("page");
+		int rows = getParaToInt("rows");
+		List<SystemMess> UI = SystemMess.dao.findByPage(page, rows, "ORDER BY fd_createtime DESC");
+		Long total = Recharge.dao.count("SELECT * FROM systemmess");
+		map.put("rows", UI);
+		map.put("total", total); 
+		renderJson(map);
+	}
+	
+	//新增公告管理加载数据
+	public void adtongzhi(){
+		JSONObject json = new JSONObject();
+		String orderStr = getPara("onu");
+		String uuid = UUID.randomUUID().toString().replace("-", "").toLowerCase();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		Date now = new Date();
+		SystemMess smes = new SystemMess();
+		smes.set("id", uuid);
+		smes.set("fd_connect", orderStr);
+		smes.set("fd_createtime", sdf.format(now));
+		if(smes.save()){
+			json.put("status", 1);
+		}else{
+			json.put("status", 0);
+		}
+		renderJson(json.toJSONString());
+	}
+	
+	//修改公告管理加载数据
+	public void uptongzhi(){
+		JSONObject json = new JSONObject();
+		String uinum = getPara("uinum");
+		String orderStr = getPara("onu");
+		SystemMess smes = SystemMess.dao.findById(uinum);
+		smes.set("fd_connect", orderStr);
+		if(smes.update()){
+			json.put("status", 1);
+		}else{
+			json.put("status", 0);
+		}
+		renderJson(json.toJSONString());
+	}
+	
+	//删除公告管理
+	public void detettongzhi(){
+		JSONObject json = new JSONObject();
+		String orderStr = getPara("onu");
+		String[] ords = orderStr.split(",");
+		boolean doUp = false;
+		for(String sd : ords){
+			SystemMess uif = new SystemMess();
+			uif.set("id", sd);
+			try {
+				uif.delete();
+			} catch (Exception e) {
+				doUp = true;
+			}
+		}
+		if(doUp){
+			json.put("status", 0);
+		}else{
+			json.put("status", 1);
+		}
+		renderJson(json.toJSONString());
+	}
+		
 	//充值管理加载数据
 	public void loadrecherge(){
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -157,17 +228,25 @@ public class EasyUI_Controller extends BaseController{
 	public void findrecherge(){
 		Map<String, Object> map = new HashMap<String, Object>();
 		String keyWord = getPara("keyowl");
+		String upStutas = getPara("upStutas");
 		int page = getParaToInt("page");
 		int rows = getParaToInt("rows");
-		List<Recharge> UI = Recharge.dao.findByPage("WHERE fd_username='"+keyWord+"'", page, rows,"fd_creatime");
-		Long total = Recharge.dao.count("SELECT * FROM recharge WHERE fd_username='"+keyWord+"'");
-		map.put("taoslm", Recharge.dao.findFirst("SELECT SUM(fd_money) AS total FROM recharge WHERE fd_username='"+keyWord+"'"));
+		String wherestr = "WHERE 1=1";
+		if(!keyWord.equals("")){
+			wherestr+=" AND fd_username='"+keyWord+"'";
+		}
+		if(!upStutas.equals("")){
+			wherestr+=" AND fd_status='"+upStutas+"'";
+		}
+		List<Recharge> UI = Recharge.dao.findByPage(wherestr, page, rows,"fd_creatime");
+		Long total = Recharge.dao.count("SELECT * FROM recharge "+wherestr);
+		map.put("taoslm", Recharge.dao.findFirst("SELECT SUM(fd_money) AS total FROM recharge "+wherestr));
 		map.put("rows", UI);
 		map.put("total", total); 
 		renderJson(map);
 	}
 	
-	//修改充值状态
+	//修改充值状态成功
 	public void cliksrecha(){
 		JSONObject json = new JSONObject();
 		String orderStr = getPara("onu");
@@ -179,13 +258,40 @@ public class EasyUI_Controller extends BaseController{
 			Recharge uif = Recharge.dao.findById(sd);
 			String usid = uif.getStr("fd_userid");
 			UserInfo useif = UserInfo.dao.findById(usid);
-			useif.set("fd_money", useif.getInt("fd_money")+uif.getInt("fd_money"));
+			useif.set("fd_money", useif.getDouble("fd_money")+uif.getDouble("fd_money"));
 			uif.set("fd_arraytime", sdf.format(now));
 			uif.set("fd_status", "1");
 			try {
 				if(useif.update()){
 					uif.update();
 				}
+			} catch (Exception e) {
+				doUp = true;
+			}
+		}
+		if(doUp){
+			json.put("status", 0);
+		}else{
+			json.put("status", 1);
+		}
+		renderJson(json.toJSONString());
+	}
+	
+	//修改充值状态成功
+	public void upsrecha(){
+		JSONObject json = new JSONObject();
+		String orderStr = getPara("onu");
+		String[] ords = orderStr.split(",");
+		boolean doUp = false;
+		for(String sd : ords){
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			Date now = new Date();
+			Recharge uif = Recharge.dao.findById(sd);
+			uif.set("fd_arraytime", sdf.format(now));
+			uif.set("fd_status", "2");
+			uif.set("fd_commit", "系统暂未收到付款，请认真核对支付单号再重新发起一遍，如果有误，请联系客服通过其他方式确认！");
+			try {
+				uif.update();
 			} catch (Exception e) {
 				doUp = true;
 			}
@@ -215,12 +321,20 @@ public class EasyUI_Controller extends BaseController{
 	public void findpucashPage(){
 		Map<String, Object> map = new HashMap<String, Object>();
 		String keyWord = getPara("keyowl");
+		String upStutas = getPara("upStutas");
 		int page = getParaToInt("page");
 		int rows = getParaToInt("rows");
-		List<ApplyMoney> UI = ApplyMoney.dao.findByPage("WHERE fd_username='"+keyWord+"'", page, rows,"fd_status");
-		Long total = ApplyMoney.dao.count("SELECT * FROM applymoney WHERE fd_username='"+keyWord+"'");
+		String wherestr = "WHERE 1=1";
+		if(!keyWord.equals("")){
+			wherestr+=" AND fd_username='"+keyWord+"'";
+		}
+		if(!upStutas.equals("")){
+			wherestr+=" AND fd_status='"+upStutas+"'";
+		}
+		List<ApplyMoney> UI = ApplyMoney.dao.findByPage(wherestr, page, rows,"fd_status");
+		Long total = ApplyMoney.dao.count("SELECT * FROM applymoney "+wherestr);
 		//获取查找用户的提现总金额
-	    map.put("taoslm", ApplyMoney.dao.findFirst("SELECT SUM(fd_money) AS total FROM applymoney WHERE fd_username='"+keyWord+"'"));
+	    map.put("taoslm", ApplyMoney.dao.findFirst("SELECT SUM(fd_money) AS total FROM applymoney "+wherestr));
 		map.put("rows", UI);
 		map.put("total", total); 
 		renderJson(map);
@@ -231,6 +345,7 @@ public class EasyUI_Controller extends BaseController{
 		JSONObject json = new JSONObject();
 		String orderStr = getPara("onu");
 		String upStutas = getPara("upStutas");
+		String failreason = getPara("failreason");
 		String[] ords = orderStr.split(",");
 		boolean doUp = false;
 		for(String sd : ords){
@@ -238,13 +353,20 @@ public class EasyUI_Controller extends BaseController{
 			Date now = new Date();
 			ApplyMoney uif = ApplyMoney.dao.findById(sd);
 			String usid = uif.getStr("fd_userid");
-			UserInfo useif = UserInfo.dao.findById(usid);
-			useif.set("fd_applymoney", 0);
 			uif.set("fd_arraytime", sdf.format(now));
 			uif.set("fd_status", upStutas);
+			uif.set("fd_failreason", failreason);
 			try {
-				if(useif.update()){
-					uif.update();
+				boolean yesavs = uif.update();
+				if(yesavs&&upStutas.equals("2")){//提现完成才要把用户信息中的提现金额清空
+					UserInfo useif = UserInfo.dao.findById(usid);
+					useif.set("fd_applymoney", 0);
+					useif.update();
+				}else if(yesavs&&upStutas.equals("3")){//如果提现失败，则退回提现金额到账户余额里面
+					UserInfo useif = UserInfo.dao.findById(usid);
+					useif.set("fd_money", useif.getDouble("fd_money")+useif.getDouble("fd_applymoney"));
+					useif.set("fd_applymoney", 0);
+					useif.update();
 				}
 			} catch (Exception e) {
 				doUp = true;
@@ -283,6 +405,7 @@ public class EasyUI_Controller extends BaseController{
 		String keyWordUsm = getPara("keyowlusm");
 		String strtm = getPara("strtm");
 		String overm = getPara("overm");
+		String upStutast = getPara("upStutast");
 		int page = getParaToInt("page");
 		int rows = getParaToInt("rows");
 		String wherestr = "WHERE 1=1";
@@ -297,6 +420,9 @@ public class EasyUI_Controller extends BaseController{
 		}
 		if(!overm.equals("")){
 			wherestr+=" AND fd_creatime<='"+overm+"'";
+		}
+		if(!upStutast.equals("")){
+			wherestr+=" AND fd_iswin='"+upStutast+"'";
 		}
 		List<BetsDataLog> UI = BetsDataLog.dao.findByPage(wherestr, page, rows,"fd_iswin");
 		Long total = BetsDataLog.dao.count("SELECT * FROM betsdatalog "+wherestr);
@@ -327,9 +453,13 @@ public class EasyUI_Controller extends BaseController{
 	public void finduserd(){
 		Map<String, Object> map = new HashMap<String, Object>();
 		String keyWordUsm = getPara("keyowl");
-		String wherestr = "WHERE fd_username='"+keyWordUsm+"'";
-		if(keyWordUsm.equals("")){
-			wherestr = "";
+		String upStutas = getPara("upStutas");
+		String wherestr = "WHERE 1=1";
+		if(!keyWordUsm.equals("")){
+			wherestr+=" AND fd_username='"+keyWordUsm+"'";
+		}
+		if(!upStutas.equals("")){
+			wherestr+=" AND fd_status='"+upStutas+"'";
 		}
 		int page = getParaToInt("page");
 		int rows = getParaToInt("rows");

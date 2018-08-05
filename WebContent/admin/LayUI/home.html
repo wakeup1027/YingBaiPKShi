@@ -5,14 +5,6 @@
 <title>北京PK拾</title>
 <link rel="stylesheet" type="text/css" href="${BASE_PATH}css/iconfont.css"/>
 <script src="${BASE_PATH}js/jquery-1.8.3.min.js"></script>
-<script>
-$(function(){
-	$(".pageurl,.imgBox").click(function(){
-		var tzUrl = $(this).attr("date_url");
-		$("#iframeBox>iframe").attr("src",tzUrl);
-	});	
-});
-</script>
 <style>
 body{padding:0px; margin:0px; font-size:13px; color:#666; font-family:'微软雅黑';background:#f1f1f1;}
 .numUlBox{list-style-type:none; padding:0px; margin:0px auto 0px auto; width: 400px;}
@@ -43,23 +35,31 @@ body{padding:0px; margin:0px; font-size:13px; color:#666; font-family:'微软雅
 	</div>
 	<div style="float:right; height:90px; width:270px; color:#fff;">
 		<div class="btnBoxClass">
-			<div style="float:left;" class="pageurl" date_url="VipCustomer/getMessage.html">
+			<div id="sysmes" style="float:left;" class="pageurl" date_url="VipCustomer/getMessage.html">
 				<i class="iconfont icon-xinxi"></i>
 				<span>站内信</span>
 			</div>
-			<div style="float:left;" class="pageurl" date_url="VipCustomer/getMessage.html">
+			<div id="callkf" style="float:left;" class="pageurl" date_url="VipCustomer/htpkfmes.html">
 				<i class="iconfont icon-xinxi"></i>
 				<span>联系客服</span>
 			</div>
 			<div style="float:right;">
-				<i class="iconfont icon-tuichu" style="font-size:13px;"></i>
-				<span>退出</span>
+				<a style="float:right; color:#fff; text-decoration:none;" href="${BASE_PATH}loginout.html">
+					<i class="iconfont icon-tuichu" style="font-size:13px;"></i>
+					<span>退出</span>
+				</a>
 			</div>
 			<span style="clear:both;"></span>		
 		</div>
 	</div>
 	<div style="clear:both;"></div>
 </div>
+<%if(havs==0){%>
+<div id="mesboxred" style="position:absolute; top:0px; left:0px; width:7px; height:7px; color:#fff; background:#ff0000; border-radius:10px; text-align:center; line-height:15px;"></div>
+<%}else{%>
+<div id="mesboxred" style="position:absolute; top:0px; left:0px; width:0px; height:0px; color:#fff; border-radius:10px; text-align:center; line-height:15px;"></div>
+<%}%>
+
 <div style="margin-top:10px; width:100%; margin:10px auto;">
 	<div style="width:200px; height:600px; float:left; padding: 0px 5px;">
 		<div style="background:#fff; border-radius:5px;">
@@ -100,9 +100,68 @@ body{padding:0px; margin:0px; font-size:13px; color:#666; font-family:'微软雅
 	</div>
 	<div style="clear:both;"></div>
 </div>
+<div id="skkbox" style="position:absolute; top:0px; left:0px; width:100%; background:rgba(0,0,0,0.5); display:none;">
+	<div id="Notice" style="position:absolute; top:0px; left:0px; background:#fff; border:3px solid #707089; border-radius:10px; width:260px; height:500px;">
+		<div style="background:#707089; height:37px; line-height:37px; color:#fff; padding-left:15px; border-radius:5px 5px 0px 0px; font-size:13px;">系统公告</div>
+		<div style="padding:15px; line-height:25px; text-indent:2em; height:340px; overflow:hidden;">${mjus}</div>
+		<div id="coloses" style="padding:10px 15px; color:#fff; width:100px; text-align:center; background:#3589EB; margin:30px auto 10px auto; border-radius:5px; cursor:pointer;">确定</div>
+	</div>
+</div>
 <div style="text-align:center; height:100px; border-top:1px solid #E1E1F2;">
 	<div style="height:30px; line-height:30px; margin-top:15px;">©ALIMAMA MUX, powered by alimama THX.法律声明</div>
 	<div style="height:30px; line-height:30px;">转载内容版权归作者及来源网站所有，本站原创内容转载请注明来源，商业媒体及纸媒请先联系：sangxing@xiangqian.com</div>
 </div>
 </body>
+<script>
+$(function(){
+	$(".pageurl,.imgBox").click(function(){
+		var tzUrl = $(this).attr("date_url");
+		$("#iframeBox>iframe").attr("src",tzUrl);
+	});	
+	$("#coloses").click(function(){
+		$("#skkbox").hide();
+	});
+	//这是有设定过期时间的使用示例：
+	//s20是代表20秒
+	//h是指小时，如12小时则是：h12
+	//d是天数，30天则：d30
+	if(getCookie("name")==null){
+		$("#skkbox").css("height",document.body.offsetHeight);
+		$("#Notice").css("left",(window.screen.width/2)-130);
+		$("#Notice").css("top",(window.screen.height/2)-250);
+		$("#skkbox").show();
+		setCookie("name","hayden","s100");
+	}
+	$("#mesboxred").css("top",$("#sysmes").offset().top+10);
+	$("#mesboxred").css("left",$("#sysmes").offset().left+75);
+});
+
+function setCookie(name,value,time){
+    var strsec = getsec(time);
+    var exp = new Date();
+    exp.setTime(exp.getTime() + strsec*1);
+    document.cookie = name + "="+ escape (value) + ";expires=" + exp.toGMTString();
+}
+ 
+//读取cookies
+function getCookie(name){
+    var arr,reg=new RegExp("(^| )"+name+"=([^;]*)(;|$)");  
+    if(arr=document.cookie.match(reg))  
+        return (arr[2]);
+    else
+        return null;
+}
+ 
+function getsec(str){
+   var str1=str.substring(1,str.length)*1;
+   var str2=str.substring(0,1);
+   if (str2=="s"){
+        return str1*1000;
+   }else if (str2=="h"){
+       return str1*60*60*1000;
+   }else if (str2=="d"){
+       return str1*24*60*60*1000;
+   }
+}
+</script>
 </html>

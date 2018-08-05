@@ -33,7 +33,8 @@
             $('#loginOut').click(function() {
                 $.messager.confirm('系统提示', '您确定要退出本次登录吗?', function(r) {
                     if (r) {
-                        $.messager.alert("操作提示","已经退出了","info");
+                    	window.location.href="${BASE_PATH}alogin/loginout.html";
+                        //$.messager.alert("操作提示","已经退出了","info");
                     }
                 });
             })
@@ -72,7 +73,7 @@
         <div style="width:100px; float:right;" class="head">
 			<!-- <a class="comeback">欢迎使用快三系统</a>
 			<a href="#" id="editpass" class="comeback">修改密码</a> --> 
-			<a href="${BASE_PATH}loginout.html" style="font-size:13px; margin-top: 35px;">退 出</a>
+			<a id="loginOut" style="font-size:13px; margin-top: 35px;">退 出</a>
 		</div>
     </div>
 	

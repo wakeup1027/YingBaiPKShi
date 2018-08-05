@@ -15,9 +15,16 @@
 <div>
 	<div style="float:left;">
 		<a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-edit',plain:true" onclick="newMajor()">审核通过</a>
+		<a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-cut',plain:true" onclick="notMajor()">审核不通过</a>
 	</div>
 	<div style="float:left; margin-left:50px;">
 		<input id="searchKey" class="easyui-textbox" data-options="prompt:'请输入搜索用户名'" style="width:200px; height:26px;"/>
+		<select class="easyui-combobox" id="upStutas" style="width:130px;" panelHeight="95">
+			<option value="">==状态选择==</option>
+			<option value="0">审核中</option>
+			<option value="1">已到账</option>
+			<option value="2">不通过</option>
+		</select>
 		<a href="javascript:void(0)" onclick="queryfind()" class="easyui-linkbutton" style="width:70px;">搜 索</a>
 	</div>
 	<div style="clear:both;"></div>
@@ -70,6 +77,8 @@ $(function(){
 							return "审核中";
 						}else if(value == '1' || value == 1){
 							return "已到账";
+						}else if(value == '2' || value == 2){
+							return "不通过";
 						}else{
 							return "未知状态";
 						}
@@ -122,8 +131,41 @@ function newMajor(){
     });
 }
 
+function notMajor(){
+	var rows = $('#dg').datagrid('getSelections');
+	if(rows.length==0){
+		$.messager.alert('info', '请选择操作数据！');
+		return;
+	}
+	$.messager.confirm('确认', '修改充值状态?', function (r) {
+        if (r) {
+        	var onu="";
+        	for(var i=0; i<rows.length; i++){
+        		onu+=rows[i].id+",";
+        	}
+        	onu = onu.substring(0,onu.length-1);
+        	$.ajax({
+                type: "POST",
+                data:{"onu":onu},
+                dataType: 'json',
+                url: "${BASE_PATH}AdminStrUrl/upsrecha.html",
+                success:function(data) {
+                    if(data.status=="1"||data.status==1){
+                    	$('#dg').datagrid('reload');
+                    }else{
+                    	$.messager.alert('Warning', '操作失败！建议修改一个或稍后再试');
+                    }
+                },error:function(error){
+                	console.log(error);
+                }
+        	});
+        }
+    });
+}
+
 function queryfind(){
 	var usnma = $("#searchKey").textbox("getValue");
+	var upStutas = $("#upStutas").combobox('getValue');
 	$('#dg').datagrid({
 	    height: '100%',
 	    fit:true,
@@ -140,7 +182,7 @@ function queryfind(){
 	    toolbar: "#tb",
 	    singleSelect: false,
 		rownumbers:true,
-		queryParams:{"keyowl":usnma},
+		queryParams:{"keyowl":usnma,"upStutas":upStutas},
 	    onLoadSuccess:function(data){
 			var sda = data.taoslm;
 			$("#win").text(sda.total);
@@ -154,6 +196,8 @@ function queryfind(){
 							return "审核中";
 						}else if(value == '1' || value == 1){
 							return "已到账";
+						}else if(value == '2' || value == 2){
+							return "不通过";
 						}else{
 							return "未知状态";
 						}
