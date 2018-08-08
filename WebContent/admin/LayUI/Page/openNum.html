@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>开奖号码</title>
+<link rel="stylesheet" href="${BASE_PATH}css/layui.css" media="all">
+<script src="${BASE_PATH}js/jquery-1.8.3.min.js"></script>
+<script type="text/javascript" src="${BASE_PATH}js/layui.js"></script>
+<style>
+body{padding:none; margin:0px; background:#fff;}
+</style>
+</head>
+<body>
+<div>
+	<div style="background:#707089; height:37px; line-height:37px; color:#fff; border-radius:5px 5px 0px 0px; padding-left:15px;">开奖号码</div>
+	<table class="layui-hide" id="dateBox" lay-filter="demo"></table>
+	<script type="text/html" id="barDemo">
+  		<a class="layui-btn layui-btn-danger layui-btn-sm" lay-event="del">删除</a>
+	</script>
+</div>
+<script>
+layui.use(['table'], function(){
+	var table = layui.table; //表格
+	table.render({
+	    elem: '#dateBox',
+	    height: $(window).height()-75,
+	    limit: 20,
+	    url: "${BASE_PATH}VipCustomer/loadopNum.html", //数据接口
+	    page: true, //开启分页
+	    cols: [[ //表头
+	        {field: 'fd_number', title: '开奖号码', width:'50%'},
+	   	    {field: 'fd_qishu', title: '期数', width:'20%'},
+	   	    {field: 'fd_creatime', title: '开奖时间', width:'30%', templet:fotmateDate}
+	    ]],
+	    done:function(res){
+			//console.log(res);
+		}
+	});
+	
+	//监听工具条
+	table.on('tool(demo)', function(obj){
+	    var data = obj.data, //获得当前行数据
+	      	layEvent = obj.event; //获得 lay-event 对应的值
+	    if(layEvent === 'del'){
+	    	$.ajax({
+				url:"${BASE_PATH}VipCustomer/delNum/"+data.id,
+				type:"POST",
+				data:{},
+				dataType:"json",
+				success: function(res) {
+					if(res.state=="success"){
+						location.reload();
+					}
+				},error:function(){
+					alert("请求错误！");
+				}
+			});
+	    }
+	});
+});
+
+//格式化的方法（充值时间）
+function fotmateDate(value){
+	value = value.fd_creatime;
+	var dateStr = "";
+	if(value=="undefined"||value=="null"||value==null){}else{
+		var date = new Date(value);
+		dateStr = date.format("yyyy-MM-dd HH:mm:ss");
+	}
+    return dateStr;    
+}
+
+//格式化的方法（到账时间）
+function fotmateDateArray(value){
+	value = value.fd_arraytime;
+	var dateStr = "";
+	if(value=="undefined"||value=="null"||value==null){}else{
+		var date = new Date(value);
+		dateStr = date.format("yyyy-MM-dd HH:mm:ss");
+	}
+    return dateStr;    
+}
+
+//js格式化日期插件代码
+Date.prototype.format = function (format) {  
+		 var o = {  
+		        "M+": this.getMonth() + 1, // month  
+		        "d+": this.getDate(), // day  
+		        "H+": this.getHours(), // hour  
+		        "m+": this.getMinutes(), // minute  
+		        "s+": this.getSeconds(), // second  
+		        "q+": Math.floor((this.getMonth() + 3) / 3), // quarter  
+		        "S": this.getMilliseconds()  
+		        // millisecond  
+		 }
+		 if (/(y+)/.test(format)){
+		        format = format.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length)); 
+		 } 
+		 for (var k in o){  
+		      if (new RegExp("(" + k + ")").test(format)){
+		            format = format.replace(RegExp.$1, RegExp.$1.length == 1 ? o[k] : ("00" + o[k]).substr(("" + o[k]).length)); 
+		 	  }
+		 } 
+		 return format;  
+}
+</script>
+</body>
+</html>

@@ -13,6 +13,7 @@ import com.base.BaseController;
 import com.bean.BetsDataLog_Bean;
 import com.bean.Message;
 import com.bean.OpenNumber;
+import com.bean.OpenNumber_Bean;
 import com.bean.ApplyMoneyLog_Bean;
 import com.bean.ApplyMoney;
 import com.bean.BetsDataLog;
@@ -65,7 +66,7 @@ public class LayUI_Controller extends BaseController{
 	public void recharge(){
 		String userid = getSessionAttr("UserId");
 		SecondTable st = SecondTable.dao.findById("857bef8a26ba4e97aa5550c4072fdebe");
-		Recharge rechar = Recharge.dao.findFirst("SELECT * FROM recharge WHERE fd_userid = '"+userid+"' AND (fd_status = '0' OR fd_status = '2')");
+		Recharge rechar = Recharge.dao.findFirst("SELECT * FROM recharge WHERE fd_userid = '"+userid+"' AND fd_status = '0'");
 		if(null==rechar){
 			Recharge rch = new Recharge();
 			rch.set("fd_status", "-1");
@@ -283,7 +284,7 @@ public class LayUI_Controller extends BaseController{
 	
 	//未开奖界面跳转
 	public void inpNum(){
-		render(HomePathPage+"kaijianNum.html");
+		render(HomePathPage+"notOpenNum.html");
 	}
 	
 	//申请提现功能
@@ -365,7 +366,7 @@ public class LayUI_Controller extends BaseController{
 	//下注记录
 	public void BetsDataLog(){
 		String userid = getSessionAttr("UserId");
-		List<BetsDataLog> list = BetsDataLog.dao.find("SELECT * FROM betsdatalog WHERE fd_userid = '"+userid+"' ORDER BY fd_iswin DESC LIMIT "+(getParaToInt("page")-1)*getParaToInt("limit")+","+getParaToInt("limit"));
+		List<BetsDataLog> list = BetsDataLog.dao.find("SELECT * FROM betsdatalog WHERE fd_userid = '"+userid+"' AND fd_iswin<>'2' ORDER BY fd_qishu DESC LIMIT "+(getParaToInt("page")-1)*getParaToInt("limit")+","+getParaToInt("limit"));
 		List<BetsDataLog_Bean> newPer = new ArrayList<BetsDataLog_Bean>();
 		for(BetsDataLog pr : list){
 			BetsDataLog_Bean ll = new BetsDataLog_Bean();
@@ -384,7 +385,34 @@ public class LayUI_Controller extends BaseController{
 		JSONObject json = new JSONObject();
 		json.put("code", 0);
 		json.put("msg", "");
-		json.put("count", Db.queryLong("SELECT count(*) FROM betsdatalog WHERE fd_userid = '"+userid+"'"));
+		json.put("count", Db.queryLong("SELECT count(*) FROM betsdatalog WHERE fd_userid = '"+userid+"' AND fd_iswin<>'2'"));
+		json.put("data", newPer);
+		renderJson(json.toJSONString());
+	}
+	
+	//未开奖下注记录
+	public void notBetsDataLog(){
+		String userid = getSessionAttr("UserId");
+		List<BetsDataLog> list = BetsDataLog.dao.find("SELECT * FROM betsdatalog WHERE fd_userid = '"+userid+"' AND fd_iswin='2' ORDER BY fd_qishu DESC LIMIT "+(getParaToInt("page")-1)*getParaToInt("limit")+","+getParaToInt("limit"));
+		List<BetsDataLog_Bean> newPer = new ArrayList<BetsDataLog_Bean>();
+		for(BetsDataLog pr : list){
+			BetsDataLog_Bean ll = new BetsDataLog_Bean();
+			ll.setFd_id(pr.getStr("fd_id"));
+			ll.setFd_userid(pr.getStr("fd_userid"));
+			ll.setFd_username(pr.getStr("fd_username"));
+			ll.setFd_type(pr.getStr("fd_type"));
+			ll.setFd_num(pr.getStr("fd_num"));
+			ll.setFd_zhushu(pr.getStr("fd_zhushu"));
+			ll.setFd_qishu(pr.getStr("fd_qishu"));
+			ll.setFd_tatol(pr.getDouble("fd_tatol"));
+			ll.setFd_iswin(pr.getStr("fd_iswin"));
+			ll.setFd_creatime(pr.getDate("fd_creatime")+"");
+			newPer.add(ll);
+		}
+		JSONObject json = new JSONObject();
+		json.put("code", 0);
+		json.put("msg", "");
+		json.put("count", Db.queryLong("SELECT count(*) FROM betsdatalog WHERE fd_userid = '"+userid+"' AND fd_iswin='2'"));
 		json.put("data", newPer);
 		renderJson(json.toJSONString());
 	}
@@ -417,6 +445,31 @@ public class LayUI_Controller extends BaseController{
 	//申请注册界面
 	public void regit(){
 		render("/admin/LayUI/regit.html");
+	}
+	
+	//开奖号码界面
+	public void openumstr(){
+		render(HomePathPage+"openNum.html");
+	}
+	
+	//加载开奖号码数据
+	public void loadopNum(){
+		List<OpenNumber> list = OpenNumber.dao.find("SELECT * FROM opennumber ORDER BY fd_creatime DESC LIMIT "+(getParaToInt("page")-1)*getParaToInt("limit")+","+getParaToInt("limit"));
+		List<OpenNumber_Bean> newPer = new ArrayList<OpenNumber_Bean>();
+		for(OpenNumber pr : list){
+			OpenNumber_Bean ll = new OpenNumber_Bean();
+			ll.setFd_id(pr.getStr("fd_id"));
+			ll.setFd_number(pr.getStr("fd_number"));
+			ll.setFd_qishu(pr.getInt("fd_qishu")+"");
+			ll.setFd_creatime(pr.getDate("fd_creatime")+"");
+			newPer.add(ll);
+		}
+		JSONObject json = new JSONObject();
+		json.put("code", 0);
+		json.put("msg", "");
+		json.put("count", Db.queryLong("SELECT count(*) FROM opennumber"));
+		json.put("data", newPer);
+		renderJson(json.toJSONString());
 	}
 	
 	//校验用户名是否存在

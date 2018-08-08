@@ -46,7 +46,7 @@ layui.use(['table'], function(){
 	   	    	}else if(d.fd_status==1||d.fd_status=="1"){
 	   	    		return "已到账";
 	   	    	}else if(d.fd_status==2||d.fd_status=="2"){
-	   	    		return "不通过";
+	   	    		return "<span style='color:#ff0000;'>不通过</span>";
 	   	    	}else{
 	   	    		return "未知状态";
 	   	    	}

@@ -42,11 +42,16 @@ body{background:#fff;font-size:13px; color:#666; font-family:'微软雅黑';padd
 				<span>秒</span>&nbsp;&nbsp;&nbsp;&nbsp;
 				<span id="opening"></span>
 			</div>
-			<div class="btnHomeBox">
-				<div id="resetBtn" style="background:#E3E3EB;">重置</div>
-				<div id="trueBtn" onclick="addAutoNum()" style="background:#2161B3; color:#fff;">确认下注</div>
-				<span style="clear:both;"></span>
+			<div>
+				<a id="goseehistory" href="${BASE_PATH}VipCustomer/inpNum.html" style="float:left; padding:7px 20px; border-radius:5px; background:#2161B3; color:#fff; cursor:pointer; margin-top:10px; margin-left:10px;">未开奖下注记录</a>
+				<div class="btnHomeBox">
+					<div id="resetBtn" style="background:#E3E3EB;">重置</div>
+					<div id="trueBtn" onclick="addAutoNum()" style="background:#2161B3; color:#fff;">确认下注</div>
+					<span style="clear:both;"></span>
+				</div>
+				<div style="clear:both;"></div>
 			</div>
+			
 		</div>
 		<ul class="ulBox"></ul>
 	</div>
