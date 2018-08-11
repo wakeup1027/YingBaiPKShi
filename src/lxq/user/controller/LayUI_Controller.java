@@ -472,6 +472,21 @@ public class LayUI_Controller extends BaseController{
 		renderJson(json.toJSONString());
 	}
 	
+	//查找开奖结果号码
+	public void FindSreachNum(){
+		JSONObject json = new JSONObject();
+		int findkey = getParaToInt("newInfodate");
+		OpenNumber onum = OpenNumber.dao.findFirst("SELECT * FROM opennumber WHERE fd_qishu = "+findkey);
+		if(null!=onum){
+			OpenNumber_Bean ll = new OpenNumber_Bean();
+			ll.setFd_number(onum.getStr("fd_number"));
+			ll.setFd_qishu(onum.getInt("fd_qishu")+"");
+			ll.setFd_creatime(onum.getDate("fd_creatime")+"");
+			json.put("data", ll);
+		}
+		renderJson(json.toJSONString());
+	}
+	
 	//校验用户名是否存在
 	public void CheckUsn(){
 		String usn = getPara("usn");

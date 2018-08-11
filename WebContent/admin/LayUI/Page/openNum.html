@@ -13,17 +13,37 @@ body{padding:none; margin:0px; background:#fff;}
 <body>
 <div>
 	<div style="background:#707089; height:37px; line-height:37px; color:#fff; border-radius:5px 5px 0px 0px; padding-left:15px;">开奖号码</div>
+	<input id="sreachput" type="text" name="title" placeholder="请输入查找期号" autocomplete="off" class="layui-input" style="width:260px; float: left; margin-left:15px; margin-top:15px;">
+	<div class="layui-btn-group" style="margin-top:15px;">
+	  <button class="layui-btn" onclick="findsreachkey()">搜索</button>
+	</div>
+	<div style="clear:both;"></div>
 	<table class="layui-hide" id="dateBox" lay-filter="demo"></table>
 	<script type="text/html" id="barDemo">
   		<a class="layui-btn layui-btn-danger layui-btn-sm" lay-event="del">删除</a>
 	</script>
 </div>
+<div id="opendBox" style="display: none;">
+	<table style="width:100%; text-align:center;">
+		<tr>
+			<td style="background:#F8F8F8; height:40px; line-height:40px;">期数</td>
+			<td style="background:#F8F8F8; height:40px; line-height:40px;">开奖号码</td>
+			<td style="background:#F8F8F8; height:40px; line-height:40px;">开奖时间</td>
+		</tr>
+		<tr>
+			<td id="qishu" style="height:40px; line-height:40px; color:#666"></td>
+			<td id="opennum" style="height:40px; line-height:40px; color:#666"></td>
+			<td id="opentime" style="height:40px; line-height:40px; color:#666"></td>
+		</tr>
+	</table>
+</div>
 <script>
+//声明layui下面才能使用layer的方法
 layui.use(['table'], function(){
 	var table = layui.table; //表格
 	table.render({
 	    elem: '#dateBox',
-	    height: $(window).height()-75,
+	    height: $(window).height()-187,
 	    limit: 20,
 	    url: "${BASE_PATH}VipCustomer/loadopNum.html", //数据接口
 	    page: true, //开启分页
@@ -58,6 +78,41 @@ layui.use(['table'], function(){
 	    }
 	});
 });
+
+function findsreachkey(){
+	var typebtn = $("#sreachput").val();
+	if(typebtn==""||typebtn==" "){
+		alert("请输入查找期号");
+		return false;
+	}
+	$.ajax({
+		url:"${BASE_PATH}VipCustomer/FindSreachNum.html",
+		type:"POST",
+		data:{"newInfodate":typebtn},
+		dataType:"json",
+		success: function(res) {
+			var resu = res.data;
+			if(resu!=undefined){
+				$("#qishu").text(resu.fd_qishu);
+				$("#opennum").text(resu.fd_number);
+				$("#opentime").text(resu.fd_creatime);
+			}else{
+				$("#qishu").text("未查找到结果");
+				$("#opennum").text("未查找到结果");
+				$("#opentime").text("未查找到结果");
+			}
+			layer.open({
+				type: 1,
+				title: '查找结果',
+				area: '600px',
+		        shadeClose: true,
+		        content: $("#opendBox")
+		    });
+		},error:function(){
+			alert("请求错误！");
+		}
+	});
+}
 
 //格式化的方法（充值时间）
 function fotmateDate(value){
