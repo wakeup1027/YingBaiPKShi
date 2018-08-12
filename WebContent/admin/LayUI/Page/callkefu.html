@@ -40,9 +40,9 @@ $(function(){
         	for(var i=0; i<answear.length; i++){
         		var htmlsj="";
         		if(answear[i].type=="fuke"){
-        			htmlsj = '<div style="width:900px; height:50px; margin-top:15px;"><div style="float:right;"><img src="haier.png" style="width:50px; height:50px; border-radius:50px;"/></div><div class="answerbox"><div style="float:right;">'+answear[i].connect+'</div></div></div><div style="clear:both;"></div>';
+        			htmlsj = '<div style="width:900px; height:50px; margin-top:15px;"><div style="float:right;"><img src="${BASE_PATH}images/kefu.png" style="width:50px; height:50px; border-radius:50px;"/></div><div class="answerbox"><div style="float:right;">'+answear[i].connect+'</div></div></div><div style="clear:both;"></div>';
         		}else if(answear[i].type=="user"){
-        			htmlsj = '<div style="width:900px; height:50px; margin-top:15px;"><div style="float:left;"><img src="鹅鹅鹅鹅鹅鹅鹅鹅鹅鹅鹅鹅.png" style="width:50px; height:50px; border-radius:50px;"/></div><div class="answerbox">'+answear[i].connect+'</div></div><div style="clear:both;"></div>';
+        			htmlsj = '<div style="width:900px; height:50px; margin-top:15px;"><div style="float:left;"><img src="${BASE_PATH}images/user.png" style="width:50px; height:50px; border-radius:50px;"/></div><div class="answerbox">'+answear[i].connect+'</div></div><div style="clear:both;"></div>';
         		}
         		$("#ansbox").append(htmlsj);
         	}
@@ -56,11 +56,23 @@ $(function(){
 		if(valupe==""||valupe==null){
 			alert("请输入回复内容！");
 			return false;
-		}else{
-			var answes = '<div style="width:900px; height:50px; margin-top:15px;"><div style="float:left;"><img src="鹅鹅鹅鹅鹅鹅鹅鹅鹅鹅鹅鹅.png" style="width:50px; height:50px; border-radius:50px;"/></div><div class="answerbox">'+valupe+'</div></div><div style="clear:both;"></div>';
-			$("#ansbox").append(answes);
-			$("#answearbox").val("");
 		}
+		$.ajax({
+	        type: "POST",
+	        data:{"fdid":"${fdid}","valupe":valupe},
+	        dataType: 'json',
+	        url: "${BASE_PATH}VipCustomer/aginanswear.html",
+	        success:function(data) {
+	        	console.log(data);
+	        	if(data.status=="1"||data.status==1){
+	        		window.location.reload();
+	        	}else{
+	        		alert("系统繁忙，请稍后再试...");
+	        	}
+	        },error:function(error){
+	        	alert("系统繁忙，请稍后再试...");
+	        }
+		});
 	});
 })
 

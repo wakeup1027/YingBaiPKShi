@@ -16,7 +16,7 @@ body{padding:0px; margin:0px; font-size:13px; color:#666; font-family:'微软雅
 <body>
 <div style="height:90px; background:#36374B;">
 	<div style="float:left; height:90px; width:300px;">
-		<img class="imgBox" title="返回下注" date_url="VipCustomer/xiazhuPage.html" src="${BASE_PATH}images/logo.png" style="cursor:pointer;margin-top: 15px; margin-left:30px;"/>
+		<img class="imgBox" title="返回下注" date_url="VipCustomer/allgamepage.html" src="${BASE_PATH}images/logo.png" style="cursor:pointer;margin-top: 15px; margin-left:30px;"/>
 	</div>
 	<div style="float:left; height:70px; width:700px; background:#2A2B3D; border-radius: 50px; margin-top:10px;">
 		<div style="text-align:center; line-height:25px;">
@@ -59,6 +59,11 @@ body{padding:0px; margin:0px; font-size:13px; color:#666; font-family:'微软雅
 <%}else{%>
 <div id="mesboxred" style="position:absolute; top:0px; left:0px; width:0px; height:0px; color:#fff; border-radius:10px; text-align:center; line-height:15px;"></div>
 <%}%>
+<%if(havsS==0){%>
+<div id="mesboxred2" style="position:absolute; top:0px; left:0px; width:7px; height:7px; color:#fff; background:#ff0000; border-radius:10px; text-align:center; line-height:15px;"></div>
+<%}else{%>
+<div id="mesboxred2" style="position:absolute; top:0px; left:0px; width:0px; height:0px; color:#fff; border-radius:10px; text-align:center; line-height:15px;"></div>
+<%}%>
 
 <div style="margin-top:10px; width:100%; margin:10px auto;">
 	<div style="width:200px; height:600px; float:left; padding: 0px 5px;">
@@ -87,17 +92,17 @@ body{padding:0px; margin:0px; font-size:13px; color:#666; font-family:'微软雅
 				</li>
 			</ul>
 		</div>
-		<a class="pageurl" date_url="VipCustomer/recharge.html" style="display:block; background:#707089; color:#fff; padding:10px 0px; cursor:pointer; text-align:center; border-radius:5px; margin-top:10px;">充值</a>
-		<a class="pageurl" date_url="VipCustomer/applyPage.html" style="display:block; background:#707089; color:#fff; padding:10px 0px; cursor:pointer; text-align:center; border-radius:5px; margin-top:10px;">申请提现</a>
-		<a class="pageurl" date_url="VipCustomer/rechargeLog.html" style="display:block; background:#707089; color:#fff; padding:10px 0px; cursor:pointer; text-align:center; border-radius:5px; margin-top:10px;">充值记录</a>
-		<a class="pageurl" date_url="VipCustomer/putCashLog.html" style="display:block; background:#707089; color:#fff; padding:10px 0px; cursor:pointer; text-align:center; border-radius:5px; margin-top:10px;">提现记录</a>
-		<a class="pageurl" date_url="VipCustomer/userCenter.html" style="display:block; background:#707089; color:#fff; padding:10px 0px; cursor:pointer; text-align:center; border-radius:5px; margin-top:10px;">个人中心</a>
-		<a class="pageurl" date_url="VipCustomer/historyPage.html" style="display:block; background:#707089; color:#fff; padding:10px 0px; cursor:pointer; text-align:center; border-radius:5px; margin-top:10px;">下注信息</a>
-		<a class="pageurl" date_url="VipCustomer/regit.html" style="display:block; background:#707089; color:#fff; padding:10px 0px; cursor:pointer; text-align:center; border-radius:5px; margin-top:10px;">用户注册</a>
-		<a class="pageurl" date_url="VipCustomer/openumstr.html" style="display:block; background:#707089; color:#fff; padding:10px 0px; cursor:pointer; text-align:center; border-radius:5px; margin-top:10px;">开奖号码</a>
+		<a class="pageurl" date_url="${BASE_PATH}VipCustomer/recharge.html" style="display:block; background:#707089; color:#fff; padding:10px 0px; cursor:pointer; text-align:center; border-radius:5px; margin-top:10px;">充值</a>
+		<a class="pageurl" date_url="${BASE_PATH}VipCustomer/applyPage.html" style="display:block; background:#707089; color:#fff; padding:10px 0px; cursor:pointer; text-align:center; border-radius:5px; margin-top:10px;">申请提现</a>
+		<a class="pageurl" date_url="${BASE_PATH}VipCustomer/rechargeLog.html" style="display:block; background:#707089; color:#fff; padding:10px 0px; cursor:pointer; text-align:center; border-radius:5px; margin-top:10px;">充值记录</a>
+		<a class="pageurl" date_url="${BASE_PATH}VipCustomer/putCashLog.html" style="display:block; background:#707089; color:#fff; padding:10px 0px; cursor:pointer; text-align:center; border-radius:5px; margin-top:10px;">提现记录</a>
+		<a class="pageurl" date_url="${BASE_PATH}VipCustomer/userCenter.html" style="display:block; background:#707089; color:#fff; padding:10px 0px; cursor:pointer; text-align:center; border-radius:5px; margin-top:10px;">个人中心</a>
+		<a class="pageurl" date_url="${BASE_PATH}VipCustomer/historyPage.html" style="display:block; background:#707089; color:#fff; padding:10px 0px; cursor:pointer; text-align:center; border-radius:5px; margin-top:10px;">下注信息</a>
+		<a class="pageurl" date_url="${BASE_PATH}VipCustomer/regit.html" style="display:block; background:#707089; color:#fff; padding:10px 0px; cursor:pointer; text-align:center; border-radius:5px; margin-top:10px;">用户注册</a>
+		<a class="pageurl" date_url="${BASE_PATH}VipCustomer/openumstr.html" style="display:block; background:#707089; color:#fff; padding:10px 0px; cursor:pointer; text-align:center; border-radius:5px; margin-top:10px;">开奖号码</a>
 	</div>
 	<div id="iframeBox" style="width:1000px; margin-left:6px; float:left;">
-		<iframe src="VipCustomer/xiazhuPage.html" scrolling="no" style="width: 100%; overflow-x:hidden; min-height:1050px; border: none;"></iframe>
+		<iframe src="${BASE_PATH}VipCustomer/allgamepage.html" scrolling="no" style="width: 100%; overflow-x:hidden; min-height:1050px; border: none;"></iframe>
 	</div>
 	<div style="clear:both;"></div>
 </div>
@@ -107,6 +112,18 @@ body{padding:0px; margin:0px; font-size:13px; color:#666; font-family:'微软雅
 		<div style="padding:15px; line-height:25px; text-indent:2em; height:340px; overflow:hidden;">${mjus}</div>
 		<div id="coloses" style="padding:10px 15px; color:#fff; width:100px; text-align:center; background:#3589EB; margin:30px auto 10px auto; border-radius:5px; cursor:pointer;">确定</div>
 	</div>
+</div>
+<div id="divbox" style="position:absolute; width:180px; padding:5px 10px; top:0px; left:0px; background:#fff; border-radius:5px; border:1px solid #e1e1e1; display:none;">
+	<table style="width:100%;">
+		<tr>
+			<td>服务电话：</td>
+			<td>xxxxxxxx</td>
+		</tr>
+		<tr>
+			<td>服务QQ：</td>
+			<td>wwwwwwww</td>
+		</tr>
+	</table>
 </div>
 <div style="text-align:center; height:100px; border-top:1px solid #E1E1F2;">
 	<div style="height:30px; line-height:30px; margin-top:15px;">©ALIMAMA MUX, powered by alimama THX.法律声明</div>
@@ -135,6 +152,19 @@ $(function(){
 	}
 	$("#mesboxred").css("top",$("#sysmes").offset().top+10);
 	$("#mesboxred").css("left",$("#sysmes").offset().left+75);
+	$("#mesboxred2").css("top",$("#sysmes").offset().top+10);
+	$("#mesboxred2").css("left",$("#sysmes").offset().left+175);
+	
+	$("#callkf").mouseover(function(){
+		$("#divbox").css("top",$(this).offset().top+26);
+		$("#divbox").css("left",$(this).offset().left-40);
+		$("#divbox").show();
+	});
+	$("#callkf").mouseout(function(){
+		$("#divbox").css("top",-300);
+		$("#divbox").css("left",-300);
+		$("#divbox").hide();
+	});
 });
 
 function setCookie(name,value,time){

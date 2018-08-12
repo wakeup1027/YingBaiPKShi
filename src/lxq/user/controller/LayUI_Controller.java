@@ -48,6 +48,8 @@ public class LayUI_Controller extends BaseController{
 		SystemMess mjus = SystemMess.dao.findFirst("SELECT * FROM systemmess ORDER BY fd_createtime DESC");
 		//获取未读信息数量
 		Message noread = Message.dao.findFirst("SELECT fd_ready FROM message WHERE fd_senduser='"+userid+"' AND fd_ready='0' ORDER BY fd_creatime DESC");
+		//获取有未读的联系客服信息
+		KefuMes kefu = KefuMes.dao.findFirst("SELECT * FROM kefumes WHERE fd_creater='"+userid+"' AND fd_useread='0'");
 		setAttr("userm",uinfo.get("fd_username"));
 		setAttr("money",uinfo.get("fd_money"));
 		setAttr("icemoney",uinfo.get("fd_icemoney"));
@@ -61,6 +63,11 @@ public class LayUI_Controller extends BaseController{
 			setAttr("havs",0);
 		}else{
 			setAttr("havs",1);
+		}
+		if(null!=kefu){
+			setAttr("havsS",0);
+		}else{
+			setAttr("havsS",1);
 		}
 		render(HomePath+"home.html");
 	}
@@ -131,6 +138,11 @@ public class LayUI_Controller extends BaseController{
 	//下注历史记录界面
 	public void historyPage(){
 		render(HomePathPage+"history_page.html");
+	}
+	
+	//全部游戏图标界面
+	public void allgamepage(){
+		render(HomePathPage+"allGamePage.html");
 	}
 	
 	//下注功能
@@ -616,6 +628,9 @@ public class LayUI_Controller extends BaseController{
 	//用户查看问题结果的界面
 	public void lookseequest(){
 		String sda = getPara("fdid");
+		KefuMes kf = KefuMes.dao.findById(sda);
+		kf.set("fd_useread", "1");
+		kf.update();
 		setAttr("fdid", sda);
 		render(HomePathPage+"callkefu.html");
 	}
@@ -636,6 +651,35 @@ public class LayUI_Controller extends BaseController{
 		}
 		json.put("dates", ansblist);
 		json.put("question", kms.getStr("fd_connect"));
+		renderJson(json);
+	}
+	
+	//用户继续提问
+	public void aginanswear(){
+		String userid = getSessionAttr("UserId");
+		String username = getSessionAttr("loginUser");
+		String fdid = getPara("fdid");
+		String valupe = getPara("valupe");
+		String uuid = UUID.randomUUID().toString().replace("-", "").toLowerCase();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		Date now = new Date();
+		Answear aw = new Answear();
+		aw.set("id", uuid);
+		aw.set("fd_parent_id", fdid);
+		aw.set("fd_connect", valupe);
+		aw.set("fd_createtime", sdf.format(now));
+		aw.set("fd_creater", userid);
+		aw.set("fd_username", username);
+		aw.set("fd_type", "user");
+		JSONObject json = new JSONObject();
+		if(aw.save()){
+			KefuMes kf = KefuMes.dao.findById(fdid);
+			kf.set("fd_kfread", "0");
+			kf.update();
+			json.put("status", "1");
+		}else{
+			json.put("status", "0");
+		}
 		renderJson(json);
 	}
 	
