@@ -11,10 +11,13 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.base.BaseController;
 import com.bean.BetsDataLog_Bean;
+import com.bean.KefuMes;
 import com.bean.Message;
 import com.bean.OpenNumber;
 import com.bean.OpenNumber_Bean;
 import com.bean.ApplyMoneyLog_Bean;
+import com.bean.Answear;
+import com.bean.Answear_Bean;
 import com.bean.ApplyMoney;
 import com.bean.BetsDataLog;
 import com.bean.Recharge;
@@ -595,7 +598,70 @@ public class LayUI_Controller extends BaseController{
 	
 	//联系客服界面
 	public void htpkfmes(){
+		String userid = getSessionAttr("UserId");
+		List<KefuMes> mes = KefuMes.dao.find("SELECT * FROM kefuMes WHERE fd_creater='"+userid+"' ORDER BY fd_useread ASC,fd_createtime DESC LIMIT 0,10");
+		Long total = KefuMes.dao.count("SELECT * FROM kefuMes WHERE fd_creater='"+userid+"'");
+		Long noreadtotal = KefuMes.dao.count("SELECT * FROM kefuMes WHERE fd_creater='"+userid+"' AND fd_useread='0'");
+		setAttr("systemess",mes);
+		setAttr("total", total);
+		setAttr("noreadtotal", noreadtotal);
+		render(HomePathPage+"callkefuList.html");
+	}
+	
+	//用户去提问
+	public void addquesion(){
+		render(HomePathPage+"writequestion.html");
+	}
+	
+	//用户查看问题结果的界面
+	public void lookseequest(){
+		String sda = getPara("fdid");
+		setAttr("fdid", sda);
 		render(HomePathPage+"callkefu.html");
+	}
+	
+	//获取问题的回答
+	public void getanswear(){
+		JSONObject json = new JSONObject();
+		String sda = getPara("fdid");
+		KefuMes kms = KefuMes.dao.findById(sda);
+		List<Answear> ans = Answear.dao.find("SELECT * FROM answear WHERE fd_parent_id='"+sda+"' ORDER BY fd_createtime ASC");
+		List<Answear_Bean> ansblist = new ArrayList<Answear_Bean>();
+		for(Answear anw : ans){
+			Answear_Bean answ = new Answear_Bean();
+			answ.setConnect(anw.getStr("fd_connect"));
+			answ.setCreatetime(anw.getDate("fd_createtime")+"");
+			answ.setType(anw.getStr("fd_type"));
+			ansblist.add(answ);
+		}
+		json.put("dates", ansblist);
+		json.put("question", kms.getStr("fd_connect"));
+		renderJson(json);
+	}
+	
+	//用户提问提交的方法
+	public void addquesionfunc(){
+		String userid = getSessionAttr("UserId");
+		String username = getSessionAttr("loginUser");
+		String sd = getPara("quastion");
+		String uuid = UUID.randomUUID().toString().replace("-", "").toLowerCase();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		Date now = new Date();
+		KefuMes kfm = new KefuMes();
+		kfm.set("id", uuid);
+		kfm.set("fd_connect", sd);
+		kfm.set("fd_createtime", sdf.format(now));
+		kfm.set("fd_creater", userid);
+		kfm.set("fd_name", username);
+		kfm.set("fd_kfread", "0");
+		kfm.set("fd_useread", "1");
+		JSONObject json = new JSONObject();
+		if(kfm.save()){
+			json.put("status", "1");
+		}else{
+			json.put("status", "0");
+		}
+		renderJson(json);
 	}
 	
 	//加载信息记录分页

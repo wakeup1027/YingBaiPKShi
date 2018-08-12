@@ -2,51 +2,74 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>客服消息</title>
+<title>论坛型问答</title>
 <script src="${BASE_PATH}js/jquery-1.8.3.min.js"></script>
-<script src="http://www.lanrenzhijia.com/ajaxjs/jquery.page.js"></script>
 <style>
 body{padding:0px; margin:0px; background:#fff; font-size:13px;}
-table{margin:10px auto; width:950px;}
-table tr{height:25px;}
-.trttlexx{cursor:pointer;}
-.trttlexx:hover{color:#2498EB;}
-.tdtitlecon{width:650px;}
-#boxshow{position:absolute; left:-1000px; top:-1000px; width:450px; height:400px; border:1px solid #eee; background:#fff; box-shadow: 0px 0px 15px #e1e1e1; border-radius:5px; display:none;}
-.closebox{width:37px; height:37px; line-height:37px; text-align:center; color:#999; margin-top:-37px; margin-left:412px; border-radius:0px 5px 0px 0px;}
-.closebox:hover{background:#707072; cursor:pointer;}
-a{ text-decoration:none;}
-a:hover{ text-decoration:none;}
-.tcdPageCode{padding: 15px 20px;text-align: left;color: #ccc;}
-.tcdPageCode a{display: inline-block;color: #428bca;display: inline-block;height: 25px;	line-height: 25px;	padding: 0 10px;border: 1px solid #ddd;	margin: 0 2px;border-radius: 4px;vertical-align: middle;}
-.tcdPageCode a:hover{text-decoration: none;border: 1px solid #428bca;}
-.tcdPageCode span.current{display: inline-block;height: 25px;line-height: 25px;padding: 0 10px;margin: 0 2px;color: #fff;background-color: #428bca;	border: 1px solid #428bca;border-radius: 4px;vertical-align: middle;}
-.tcdPageCode span.disabled{	display: inline-block;height: 25px;line-height: 25px;padding: 0 10px;margin: 0 2px;	color: #bfbfbf;background: #f2f2f2;border: 1px solid #bfbfbf;border-radius: 4px;vertical-align: middle;}
+.answerbox{float:left; width:800px; margin-left:15px; line-height:20px; border-radius:5px; border:1px solid #e1e1e1; padding:5px 10px; min-height:37px;}
+.kils:hover{box-shadow: 1px 1px 10px 2px #CCC; -webkit-box-shadow: 1px 1px 10px 2px #CCC; -moz-box-shadow: 1px 1px 10px 2px #CCC; -webkit-transition: all .4s; border:1px solid #e1e1e1; padding:10px; cursor:pointer;}
 </style>
 </head>
 
 <body>
-<div style="background:#707089; height:37px; line-height:37px; color:#fff; padding-left:15px; border-radius:5px 5px 0px 0px; font-size:13px;">联系客服</div>
-&nbsp;&nbsp;&nbsp;&nbsp;功能正在开发中...
-<!-- <table id="databoxtable">
-	<tr class="trttlexx" onclick="lookseefunc(this)"  wit="">
-		<td style="color:#ff0000;">
-			<div style="width:5px; height:5px; background:#ff0000; border-radius:5px; margin-right:0px"></div>
-		</td>
-		<td class="tdtitlecon"></td>
-		<td></td>
-	</tr>
-</table>-->
-<!--<div class="tcdPageCode"></div>
-<div id="boxshow">
-	<div style="background:#707089; height:37px; line-height:37px; color:#fff; padding-left:15px; border-radius:5px 5px 0px 0px; font-size:13px;">系统消息</div>
-	<div class="closebox">X</div>
-	<div id="boxshow_t" style="font-size:14px; text-align:center; line-height:35px; font-weight:bold;">恭贺中国人民共和国中国中央人民政府于1949年10月01日成立了</div>
-	<div style="font-size:12px; text-align:center; line-height:20px;"><span>来源：</span><span>系统</span>&nbsp;&nbsp;&nbsp;&nbsp;<span id="boxshow_i">2018-08-03 15:35:30</span></div>
-	<div id="boxshow_c" style="width:360px; padding:15px 40px; line-height:30px; text-indent:2em; color:#999;">客户的客户可会和为首的客服回复阿萨德可继续烘烤好打扫房间宽敞巨大恐惧凯撒的街坊邻居卢卡斯的路附近客户的客户可会和为首的客服回复阿萨德可继续烘烤好打扫房间宽敞巨大恐惧凯撒的街坊邻居卢卡斯的路附近客户的客户可会和为首的客服回复阿萨德可继续烘烤好打扫房间宽敞巨大恐惧凯撒的街坊邻居卢卡斯的路附近客户的客户可会和为首的客服回复阿萨德可继续烘烤好打扫房间宽敞巨大恐惧凯撒的街坊邻居卢卡斯的路附近</div>
-</div> -->
+<div style="background:#707089; height:37px; line-height:37px; color:#fff; padding-left:15px; border-radius:5px 5px 0px 0px; font-size:13px;">查看问题详情</div>
+<div style="width:900px; margin:10px auto; font-size:15px; font-weight:bold; color:blue;">问题描述</div>
+<div id="quesionbox" style="width:900px; margin:10px auto; font-size:14px; line-height:35px;"></div>
+<div id="ansbox" style="width:900px; margin:10px auto;"></div>
+<div style="width:900px; margin:30px auto;">
+	<div style="color:blue; font-weight:bold; font-size:15px;">回复</div>
+	<div style="margin-top:10px;">
+		<textarea id="answearbox" placeholder="回复内容..." style="width:880px; height:150px; border-radius:10px; border:1px solid #e1e1e1; outline:none; padding:10px; color:#999; font-family:'微软雅黑'"></textarea>
+	</div>
+	<div style="margin-top:10px;">
+		<div id="submitbtn" style="padding:5px 15px; width:80px; color:blue; color:#fff; background:blue; text-align:center; border-radius:5px; cursor:pointer; float:right; margin-right:5px;">提交</div>
+		<div style="clear:both;"></div>
+	</div>
+</div>
 <script>
+$(function(){
+	$.ajax({
+        type: "POST",
+        data:{"fdid":"${fdid}"},
+        dataType: 'json',
+        url: "${BASE_PATH}VipCustomer/getanswear.html",
+        success:function(data) {
+        	var answear = data.dates;
+        	$("#quesionbox").text(data.question);
+        	$("#ansbox").empty();
+        	for(var i=0; i<answear.length; i++){
+        		var htmlsj="";
+        		if(answear[i].type=="fuke"){
+        			htmlsj = '<div style="width:900px; height:50px; margin-top:15px;"><div style="float:right;"><img src="haier.png" style="width:50px; height:50px; border-radius:50px;"/></div><div class="answerbox"><div style="float:right;">'+answear[i].connect+'</div></div></div><div style="clear:both;"></div>';
+        		}else if(answear[i].type=="user"){
+        			htmlsj = '<div style="width:900px; height:50px; margin-top:15px;"><div style="float:left;"><img src="鹅鹅鹅鹅鹅鹅鹅鹅鹅鹅鹅鹅.png" style="width:50px; height:50px; border-radius:50px;"/></div><div class="answerbox">'+answear[i].connect+'</div></div><div style="clear:both;"></div>';
+        		}
+        		$("#ansbox").append(htmlsj);
+        	}
+        },error:function(error){
+        	alert("系统繁忙，请稍后...");
+        }
+	});
+	
+	$("#submitbtn").click(function(){
+		var valupe = $("#answearbox").val();
+		if(valupe==""||valupe==null){
+			alert("请输入回复内容！");
+			return false;
+		}else{
+			var answes = '<div style="width:900px; height:50px; margin-top:15px;"><div style="float:left;"><img src="鹅鹅鹅鹅鹅鹅鹅鹅鹅鹅鹅鹅.png" style="width:50px; height:50px; border-radius:50px;"/></div><div class="answerbox">'+valupe+'</div></div><div style="clear:both;"></div>';
+			$("#ansbox").append(answes);
+			$("#answearbox").val("");
+		}
+	});
+})
 
+function FORMDATE(t,v){
+	var jsonput = {};
+	jsonput.t=t;
+	jsonput.v=v;
+	return jsonput;
+}
 </script>
 </body>
 </html>

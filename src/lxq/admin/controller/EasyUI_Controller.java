@@ -12,6 +12,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.base.BaseController;
 import com.bean.ApplyMoney;
 import com.bean.BetsDataLog;
+import com.bean.KefuMes;
 import com.bean.OpenNumber;
 import com.bean.Recharge;
 import com.bean.SecondTable;
@@ -19,6 +20,7 @@ import com.bean.SystemMess;
 import com.bean.UserInfo;
 import com.config.ControllerBind;
 import com.jfinal.aop.Before;
+import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.upload.UploadFile;
 
 import demo.AdminInterceptor;
@@ -63,11 +65,91 @@ public class EasyUI_Controller extends BaseController{
 		render("/admin/EasyUI/userInfo_page.html");
 	}
 	
+	//开奖号码界面
+	public void openNums(){
+		render("/admin/EasyUI/kaijiangqi.html");
+	}
+	
+	//客服信息管理
+	public void kefuMess(){
+		render("/admin/EasyUI/kefuxinxi.html");
+	}
+	
 	//系统设置
 	public void systemSet(){
 		SecondTable st = SecondTable.dao.findById("857bef8a26ba4e97aa5550c4072fdebe");
 		setAttr("st",st);
 		render("/admin/EasyUI/system_set.html");
+	}
+	
+	//加载开奖号码
+	public void loadOpenNum(){
+		Map<String, Object> map = new HashMap<String, Object>();
+		int page = getParaToInt("page");
+		int rows = getParaToInt("rows");
+		List<OpenNumber> UI = OpenNumber.dao.findByPage(page, rows, "ORDER BY fd_qishu DESC");
+		Long total = OpenNumber.dao.count("SELECT * FROM opennumber");
+		map.put("rows", UI);
+	    map.put("total", total); 
+		renderJson(map);
+	}
+	
+	//补全号码
+	public void savestatus(){
+		JSONObject json = new JSONObject();
+		int openqishu = getParaToInt("onu");
+		String numbe = getPara("upStutas");
+		String openTime = getPara("failreason");
+		String uuid = UUID.randomUUID().toString().replace("-", "").toLowerCase();
+		OpenNumber opb = new OpenNumber();
+		opb.set("fd_id", uuid);
+		opb.set("fd_qishu", openqishu);
+		opb.set("fd_number", numbe);
+		opb.set("fd_creatime", openTime);
+		if(opb.save()){
+			json.put("state", "success");
+		}else{
+			json.put("state", "error");
+		}
+		renderJson(json);
+	}
+	
+	//删除开奖的号码
+	public void deldate(){
+		JSONObject json = new JSONObject();
+		String orderStr = getPara("onu");
+		String[] ords = orderStr.split(",");
+		boolean doUp = false;
+		for(String sd : ords){
+			try {
+				Db.update("DELETE FROM opennumber WHERE fd_id = '"+sd+"'");
+			} catch (Exception e) {
+				doUp = true;
+			}
+		}
+		if(doUp){
+			json.put("status", 0);
+		}else{
+			json.put("status", 1);
+		}
+		renderJson(json.toJSONString());
+	}
+	
+	//查找开奖结果
+	public void findnum(){
+		JSONObject json = new JSONObject();
+		int qisjh = getParaToInt("onu");
+		OpenNumber opb = OpenNumber.dao.findFirst("SELECT * FROM opennumber WHERE fd_qishu = "+qisjh);
+		if(opb!=null){
+			json.put("openqishu", opb.getInt("fd_qishu"));
+			json.put("opennum", opb.getStr("fd_number"));
+			json.put("opentime", opb.getDate("fd_creatime"));
+		}else{
+			json.put("openqishu", "未找到结果");
+			json.put("opennum", "未找到结果");
+			json.put("opentime", "未找到结果");
+		}
+		renderJson(json.toJSONString());
 	}
 	
 	//修改赔率
@@ -221,6 +303,18 @@ public class EasyUI_Controller extends BaseController{
 		map.put("taoslm", Recharge.dao.findFirst("SELECT SUM(fd_money) AS total FROM recharge"));
 		map.put("rows", UI);
 	    map.put("total", total); 
+		renderJson(map);
+	}
+	
+	//客服管理加载数据
+	public void loadkefuMes(){
+		Map<String, Object> map = new HashMap<String, Object>();
+		int page = getParaToInt("page");
+		int rows = getParaToInt("rows");
+		List<KefuMes> UI = KefuMes.dao.findByPage(page, rows, "");
+		Long total = KefuMes.dao.count("SELECT * FROM kefuMes");
+		map.put("rows", UI);
+		map.put("total", total); 
 		renderJson(map);
 	}
 	

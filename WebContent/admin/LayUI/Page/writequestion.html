@@ -1,0 +1,53 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>论坛型问答</title>
+<script src="${BASE_PATH}js/jquery-1.8.3.min.js"></script>
+<style>
+body{padding:0px; margin:0px; background:#fff; font-size:13px;}
+</style>
+</head>
+
+<body>
+<div style="background:#707089; height:37px; line-height:37px; color:#fff; padding-left:15px; border-radius:5px 5px 0px 0px; font-size:13px;">提问客服</div>
+<div style="width:1000px; margin:15px auto;">
+	<a href="javascript:history.back(-1)" style="font-size:13px; width:70px; text-align:center; line-height:30px; height:30px; cursor:pointer; color:#666; border-radius:5px; border:1px solid #e1e1e1; margin-left:15px;" title="返回">返回</a>
+	<div style="font-size:15px; font-family:'微软雅黑'; margin-top:35px; margin-left: 15px;">问题描述</div>
+	<div style="margin:10px auto auto 15px;">
+		<textarea id="quastion" style="width:900px; height:200px; border:1px solid #e1e1e1; border-radius:10px; outline:none; color:#666; font-family:'微软雅黑'; padding:10px;" placeholder="请输入您遇到的问题！"></textarea>
+	</div>
+	<div style="margin-top:10px;width: 937px;">
+		<div id="submitbtn" style="padding:10px 25px; width:80px; color:#fff; background:blue; text-align:center; border-radius:5px; cursor:pointer; float:right;">提交</div>
+		<div style="clear:both;"></div>
+	</div>
+</div>
+<script>
+$(function(){
+	$("#submitbtn").click(function(){
+		var quastion = $("#quastion").val();
+		if(quastion==""||quastion==null){
+			alert("您还没有输入您的问题！");
+			return false;
+		}
+		$.ajax({
+	        type: "POST",
+	        data:{"quastion":quastion},
+	        dataType: 'json',
+	        url: "${BASE_PATH}VipCustomer/addquesionfunc.html",
+	        success:function(data) {
+	        	if(data.status==1||data.status=="1"){
+	        		alert("已成功提交问题，请等待客服的回复...");
+	        		history.back(-1);
+	        	}else{
+	        		alert("系统繁忙，请稍后...");
+	        	}
+	        },error:function(error){
+	        	alert("系统繁忙，请稍后...");
+	        }
+		});
+	});
+})
+</script>
+</body>
+</html>

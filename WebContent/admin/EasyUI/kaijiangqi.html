@@ -2,88 +2,209 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>定时器状态</title>
-<script src="${BASE_PATH}js/jquery.js"></script>
-<style>
-body{background:#fff;}
-table{border-right:1px solid #e1e1e1; border-bottom:1px solid #e1e1e1;}
-td,th{border-left:1px solid #e1e1e1; border-top:1px solid #e1e1e1;}
-</style>
+<title>开奖管理</title>
+<link rel="stylesheet" type="text/css"href="${BASE_PATH}easyui/themes/gray/easyui.css"/>
+<link rel="stylesheet" type="text/css"href="${BASE_PATH}easyui/themes/icon.css"/>
+<link rel="stylesheet" type="text/css"href="${BASE_PATH}easyui/themes/gray/datagrid.css"/>
+<script type="text/javascript" src="${BASE_PATH}easyui/jquery.min.js"></script>
+<script type="text/javascript" src="${BASE_PATH}js/jquery.form.js"></script>
+<script type="text/javascript" src="${BASE_PATH}easyui/jquery.easyui.min.js"></script>
+<script type="text/javascript" src="${BASE_PATH}easyui/locale/easyui-lang-zh_CN.js"></script>
 </head>
 <body>
-<div style="margin:45px auto auto auto;; width:400px; height:150px;">
-	<table style="width:400px;" border="0" cellpadding="15" cellspacing="0">
+<div>
+	<div style="float:left;">
+		<a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-edit',plain:true" onclick="newstatus()">补全号码</a>
+		<a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-edit',plain:true" onclick="delte()">删除号码</a>
+	</div>
+	<div style="float:left; margin-left:50px;">
+		<input id="searchKey" class="easyui-textbox" data-options="prompt:'请输入搜索期号'" style="width:200px; height:26px;"/>
+		<a href="javascript:void(0)" onclick="queryfind()" class="easyui-linkbutton" style="width:70px;">搜 索</a>
+	</div>
+	<div style="clear:both;"></div>
+</div>
+<div id="grigtBox" style="width:100%; height:370px; margin-top:8px;">
+	<div id="dg" style="width:100%; height:100%;"></div>
+</div>
+<div id="user_dlg" class="easyui-dialog" style="width:430px; height:200px;" closed="true" buttons="#user_dlg-buttons" modal="true">
+	<table style="margin:15px;">
 		<tr>
-			<th style="width:100px; text-align:left;">开奖器状态</th>
-			<td>
-				<%if(tkb.status==1){%>
-					启动中
-				<%}else{%>
-					已停止
-				<%}%>
-			</td>
+			<td>开奖期号</td>
+			<td><input class="easyui-textbox" id="fd_openqishu" data-options="required:true,prompt:'输入开奖期数'" style="width:300px;"/></td>
 		</tr>
 		<tr>
-			<th style="width:100px; text-align:left;">停止原因</th>
-			<td>
-				<%if(tkb.person==1){%>
-					手动停止
-				<%}else if(tkb.person==2){%>
-					开奖号码为空
-				<%}else if(tkb.person==3){%>
-					已超过今天规定的期数
-				<%}else{%>
-					开奖器运行中
-				<%}%>
-			</td>
+			<td>开奖号码</td>
+			<td><input class="easyui-textbox" id="fd_opennum" data-options="required:true,prompt:'输入开奖号码'" style="width:300px;"/></td>
 		</tr>
 		<tr>
-			<td colspan="2">
-				<%if(tkb.status==1){%>
-					<button onclick="stopt()" style="padding:10px 35px; border:none; cursor:pointer; outline:none; background:#E82633; border-radius:5px; color:#fff;">停止开奖器</button>
-				<%}else{%>
-					<button onclick="start()" style="padding:10px 35px; border:none; cursor:pointer; outline:none; background:#3C6CC7; border-radius:5px; color:#fff;">开启开奖器</button>					
-				<%}%>
-			</td>
+			<td>开奖时间</td>
+			<td><input class="easyui-datetimebox" id="fd_opentime" data-options="required:true,prompt:'请选择开奖时间'" style="width:300px;"/></td>
+		</tr>
+	</table>
+</div>
+<div id="user_dlg-buttons">
+	<a href="javascript:void(0)" class="easyui-linkbutton c6" iconCls="icon-ok" onclick="savebtn()" style="width: 90px">保存</a> 
+	<a href="javascript:void(0)" class="easyui-linkbutton"	iconCls="icon-cancel" onclick="javascript:$('#user_dlg').dialog('close')" style="width: 90px">取消</a>
+</div>
+<div id="res_dlg" class="easyui-dialog" style="width:430px; height:200px;" closed="true" modal="true">
+	<table style="text-align:center;width:100%;">
+		<tr>
+			<th style="height:35px;line-height:35px;">开奖期号</th>
+			<th style="height:35px;line-height:35px;">开奖号码</th>
+			<th style="height:35px;line-height:35px;">开奖时间</th>
+		</tr>
+		<tr>
+			<td id="qs"></td>
+			<td id="nop"></td>
+			<td id="tim"></td>
 		</tr>
 	</table>
 </div>
 <script>
-var isstart = true;
-function start(){
+$(function(){
+	$("#grigtBox").css("height",($(window).height()-53)+"px");
+	
+	$('#dg').datagrid({
+	    height: '100%',
+	    fit:true,
+	    url: '${BASE_PATH}AdminStrUrl/loadOpenNum.html',
+	    method: 'POST',
+	    striped: true,
+	    nowrap: true,
+	    pageSize: 10,
+	    pageNumber:1, 
+	    pageList: [10, 20, 50, 100, 150, 200],
+		pagination : true,
+	    showFooter: true, 
+		loadMsg : '数据加载中请稍后……',
+	    toolbar:"#tb",
+	    singleSelect: false,
+		rownumbers:true,
+		columns: [[
+				    {field: 'ck', checkbox:true},
+				    {field: 'fd_qishu', title:'开奖期号', width:'20%'},
+				    {field: 'fd_number', title:'开奖号码', width:'50%'},
+				    {field: 'fd_creatime', title:'开奖时间', width:'30%',formatter:fotmateDate}
+	    ]]
+	});
+});
 
-if(isstart){
-	isstart = false;
+function newstatus(){
+	$("#fd_openqishu").textbox("setValue","");
+	$("#fd_opennum").textbox("setValue","");
+	$("#fd_opentime").datetimebox("setValue","");
+	$('#user_dlg').dialog('open').dialog('setTitle','补全号码');
+}
+
+function savebtn(){
+	var opqish = $("#fd_openqishu").textbox("getValue");
+	var opnumb = $("#fd_opennum").textbox("getValue");
+	var optime = $("#fd_opentime").datetimebox("getValue");
 	$.ajax({
-		url:"${BASE_PATH}adminstrcentent/start",
-		type:"POST",
-		dataType:"json",
-		success: function(res) {
-			location.reload();
-		},error:function(){
-			alert("请求错误！");
-		}
+        type: "POST",
+        data:{"onu":opqish,"upStutas":opnumb,"failreason":optime},
+        dataType: 'json',
+        url: "${BASE_PATH}AdminStrUrl/savestatus.html",
+        success:function(data) {
+            if(data.state=="success"){
+            	$('#user_dlg').dialog('close');
+            	$('#dg').datagrid('reload');
+            }else{
+            	$.messager.alert('Warning', '操作失败！建议稍后再试，或联系开发人员');
+            }
+        },error:function(error){
+        	console.log(error);
+        }
 	});
 }
-	
+
+function delte(){
+	var rows = $('#dg').datagrid('getSelections');
+	$.messager.confirm('确认', '删除选中数据?', function (r) {
+        if (r) {
+        	var onu="";
+        	for(var i=0; i<rows.length; i++){
+        		onu+=rows[i].fd_id+",";
+        	}
+        	onu = onu.substring(0,onu.length-1);
+        	$.ajax({
+                type: "POST",
+                data:{"onu":onu},
+                dataType: 'json',
+                url: "${BASE_PATH}AdminStrUrl/deldate.html",
+                success:function(data) {
+                    if(data.status=="1"||data.status==1){
+                    	$('#user_dlg').dialog('close');
+                    	$('#dg').datagrid('reload');
+                    }else{
+                    	$.messager.alert('Warning', '操作失败！建议删除一个或稍后再试');
+                    }
+                },error:function(error){
+                	console.log(error);
+                }
+        	});
+        }
+    });
+	/*$.messager.show({
+        title: '温馨提示',
+        msg: "操作成功"
+    });*/
 }
 
-var isstops = true;
-function stopt(){
-if(isstops){
-	isstops = false;
+function queryfind(){
+	var usnma = $("#searchKey").textbox("getValue");
 	$.ajax({
-		url:"${BASE_PATH}adminstrcentent/stop",
-		type:"POST",
-		dataType:"json",
-		success: function(res) {
-			location.reload();
-		},error:function(){
-			alert("请求错误！");
-		}
+        type: "POST",
+        data:{"onu":usnma},
+        dataType: 'json',
+        url: "${BASE_PATH}AdminStrUrl/findnum.html",
+        success:function(data) {
+            $("#qs").text(data.openqishu);
+            $("#nop").text(data.opennum);
+            if(data.opentime=="未找到结果"){
+            	$("#tim").text("未找到结果");
+            }else{
+            	$("#tim").text(fotmateDate(data.opentime));
+            }
+            $('#res_dlg').dialog('open').dialog('setTitle','查找结果');
+        },error:function(error){
+        	console.log(error);
+        }
 	});
 }
-	
+
+
+//格式化的方法
+function fotmateDate(value){
+	var dateStr = "";
+	if(value=="undefined"||value=="null"||value==null){}else{
+		var date = new Date(value);
+		dateStr = date.format("yyyy-MM-dd HH:mm:ss");
+	}
+    return dateStr;    
+}
+
+//js格式化日期插件代码
+Date.prototype.format = function (format) {  
+		 var o = {  
+		        "M+": this.getMonth() + 1, // month  
+		        "d+": this.getDate(), // day  
+		        "H+": this.getHours(), // hour  
+		        "m+": this.getMinutes(), // minute  
+		        "s+": this.getSeconds(), // second  
+		        "q+": Math.floor((this.getMonth() + 3) / 3), // quarter  
+		        "S": this.getMilliseconds()  
+		        // millisecond  
+		 }
+		 if (/(y+)/.test(format)){
+		        format = format.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length)); 
+		 } 
+		 for (var k in o){  
+		      if (new RegExp("(" + k + ")").test(format)){
+		            format = format.replace(RegExp.$1, RegExp.$1.length == 1 ? o[k] : ("00" + o[k]).substr(("" + o[k]).length)); 
+		 	  }
+		 } 
+		 return format;  
 }
 </script>
 </body>
