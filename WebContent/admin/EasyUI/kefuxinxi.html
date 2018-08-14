@@ -10,6 +10,9 @@
 <script type="text/javascript" src="${BASE_PATH}js/jquery.form.js"></script>
 <script type="text/javascript" src="${BASE_PATH}easyui/jquery.easyui.min.js"></script>
 <script type="text/javascript" src="${BASE_PATH}easyui/locale/easyui-lang-zh_CN.js"></script>
+<style>
+.answerbox{float:left; width:400px; margin-left:15px; line-height:20px; border-radius:5px; border:1px solid #e1e1e1; padding:5px 10px; min-height:37px;}
+</style>
 </head>
 <body>
 <div>
@@ -19,7 +22,7 @@
 	</div>
 	<div style="float:left; margin-left:50px;">
 		<input id="searchKey" class="easyui-textbox" data-options="prompt:'请输入搜索问题'" style="width:300px; height:26px;"/>
-		<select class="easyui-combobox" id="upStutas" style="width:130px;" panelHeight="95">
+		<select class="easyui-combobox" id="upStutas" style="width:130px;" panelHeight="70">
 			<option value="">==状态选择==</option>
 			<option value="0">未读</option>
 			<option value="1">已读</option>
@@ -31,17 +34,39 @@
 <div id="grigtBox" style="width:100%; height:370px; margin-top:8px;">
 	<div id="dg" style="width:100%; height:100%;"></div>
 </div>
-<div>
-<table style="font-size:13px; float:right;">
-	<tr>
-		<td colspan="6" style="font-size:15px;font-weight:bold;">充值金额统计</td>
-	</tr>
-	<tr>
-		<td id="win" style="width:80px; text-align:right;">0</td>
-		<td>/元</td>
-	</tr>
-</table>
-<div style="clear:both;"></div>
+<div id="res_dlg" class="easyui-dialog" style="width:630px; height:500px;" closed="true" modal="true">
+	<input type="hidden" id="datafd">
+	<div style="width:500px; margin: 10px auto 0px auto; color:blue; font-size:14px; font-weight:bold;">问题描述</div>
+	<div id="questionBox" style="width:500px; margin: 10px auto 0px auto;">今天充值了为什么还没到账呢？订单编号：43630033651312066   支付宝    请赶紧确认</div>
+	<div id="answearBoxBig" style="width:500px; margin:10px auto;">
+		<div style="width:500px; height:50px; margin-top:15px;">
+			<div style="float:right;">
+				<img src="${BASE_PATH}images/kefu.png" style="width:50px; height:50px; border-radius:50px;"/>
+			</div>
+			<div class="answerbox">
+				<div style="float:right;">说什么呢？</div>
+			</div>
+		</div>
+		<div style="clear:both;"></div>
+		
+		<div style="width:500px; height:50px; margin-top:15px;">
+			<div style="float:left;">
+				<img src="${BASE_PATH}images/user.png" style="width:50px; height:50px; border-radius:50px;"/>
+			</div>
+			<div class="answerbox">不知道！</div>
+		</div>
+		<div style="clear:both;"></div>
+	</div>
+	<div style="width:500px; margin: 10px auto 0px auto; color:blue; font-size:14px; font-weight:bold;">回复</div>
+	<div style="width:500px; margin:30px auto;">
+		<div style="margin-top:10px;">
+			<textarea id="answearbox" placeholder="回复内容..." style="width:480px; height:150px; border-radius:10px; border:1px solid #e1e1e1; outline:none; padding:10px; color:#999; font-family:'微软雅黑'"></textarea>
+		</div>
+		<div style="margin-top:10px;">
+			<div id="submitbtn" style="padding:5px 15px; width:80px; color:blue; color:#fff; background:blue; text-align:center; border-radius:5px; cursor:pointer; float:right; margin-right:5px;">提交</div>
+			<div style="clear:both;"></div>
+		</div>
+	</div>
 </div>
 <script>
 $(function(){
@@ -77,47 +102,49 @@ $(function(){
 				    {field: 'fd_createtime', title:'充值时间', width:'20%',formatter:fotmateDate}
 	    ]]
 	});
+	
+	$("#submitbtn").click(function(){
+		var valupe = $("#answearbox").val();
+		if(valupe==""||valupe==null){
+			$.messager.alert('操作提示', '输入回复内容！');
+			return false;
+		}
+		$.ajax({
+	        type: "POST",
+	        data:{"fdid":$("#datafd").val(),"valupe":valupe},
+	        dataType: 'json',
+	        url: "${BASE_PATH}AdminStrUrl/aginanswear.html",
+	        success:function(data) {
+	        	console.log(data);
+	        	if(data.status=="1"||data.status==1){
+	        		//window.location.reload();
+	        	}else{
+	        		alert("系统繁忙，请稍后再试...");
+	        	}
+	        },error:function(error){
+	        	alert("系统繁忙，请稍后再试...");
+	        }
+		});
+	});
 });
-//lookseed deletes
-function newMajor(){
+
+function lookseed(){
 	var rows = $('#dg').datagrid('getSelections');
 	if(rows.length==0){
-		$.messager.alert('info', '请选择操作数据！');
+		$.messager.alert('操作提醒', '请选择一条数据进行查看！');
 		return;
 	}
-	$.messager.confirm('确认', '修改充值状态?', function (r) {
-        if (r) {
-        	var onu="";
-        	for(var i=0; i<rows.length; i++){
-        		onu+=rows[i].id+",";
-        	}
-        	onu = onu.substring(0,onu.length-1);
-        	$.ajax({
-                type: "POST",
-                data:{"onu":onu},
-                dataType: 'json',
-                url: "${BASE_PATH}AdminStrUrl/cliksrecha.html",
-                success:function(data) {
-                    if(data.status=="1"||data.status==1){
-                    	$('#dg').datagrid('reload');
-                    }else{
-                    	$.messager.alert('Warning', '操作失败！建议修改一个或稍后再试');
-                    }
-                },error:function(error){
-                	console.log(error);
-                }
-        	});
-        }
-    });
+	$("#datafd").val(rows[0].id);
+	$('#res_dlg').dialog('open').dialog('setTitle',rows[0].fd_connect);
 }
 
-function notMajor(){
+function deletes(){
 	var rows = $('#dg').datagrid('getSelections');
 	if(rows.length==0){
-		$.messager.alert('info', '请选择操作数据！');
+		$.messager.alert('操作提示', '请选择操作数据！');
 		return;
 	}
-	$.messager.confirm('确认', '修改充值状态?', function (r) {
+	$.messager.confirm('确认', '确认删除选中数据?', function (r) {
         if (r) {
         	var onu="";
         	for(var i=0; i<rows.length; i++){
@@ -128,7 +155,7 @@ function notMajor(){
                 type: "POST",
                 data:{"onu":onu},
                 dataType: 'json',
-                url: "${BASE_PATH}AdminStrUrl/upsrecha.html",
+                url: "${BASE_PATH}AdminStrUrl/deletkefmes.html",
                 success:function(data) {
                     if(data.status=="1"||data.status==1){
                     	$('#dg').datagrid('reload');
@@ -149,7 +176,7 @@ function queryfind(){
 	$('#dg').datagrid({
 	    height: '100%',
 	    fit:true,
-	    url: '${BASE_PATH}AdminStrUrl/findrecherge.html',
+	    url: '${BASE_PATH}AdminStrUrl/findcallkef.html',
 	    method: 'POST',
 	    striped: true,
 	    nowrap: true,
@@ -163,37 +190,18 @@ function queryfind(){
 	    singleSelect: false,
 		rownumbers:true,
 		queryParams:{"keyowl":usnma,"upStutas":upStutas},
-	    onLoadSuccess:function(data){
-			var sda = data.taoslm;
-			$("#win").text(sda.total);
-		},
 		columns: [[
 				    {field: 'ck', checkbox:true},
-				    {field: 'fd_money', title:'充值金额', width:'10%'},
-				    {field: 'fd_username', title:'会员名', width:'10%'},
-				    {field: 'fd_status', title:'充值状态', width:'7%',formatter:function(value){  
+				    {field: 'fd_connect', title:'提问问题', width:'58%'},
+				    {field: 'fd_name', title:'提问人', width:'10%'},
+				    {field: 'fd_kfread', title:'充值状态', width:'7%',formatter:function(value){  
 		            	if(value == '0' || value == 0){
-							return "审核中";
+							return "未读";
 						}else if(value == '1' || value == 1){
-							return "已到账";
-						}else if(value == '2' || value == 2){
-							return "不通过";
-						}else{
-							return "未知状态";
+							return "已读";
 						}
 					}},
-				    {field: 'fd_ordernum', title:'支付订单号', width:'30%'},
-				    {field: 'fd_ordertype', title:'支付平台', width:'10%',formatter:function(value){  
-		            	if(value == '1' || value == 1){
-							return "微信";
-						}else if(value == '2' || value == 2){
-							return "支付宝";
-						}else{
-							return "未知平台";
-						}
-					}},
-				    {field: 'fd_creatime', title:'充值时间', width:'20%'},
-				    {field: 'fd_arraytime', title:'到账时间', width:'20%',formatter:fotmateDate},
+				    {field: 'fd_createtime', title:'充值时间', width:'20%',formatter:fotmateDate}
 	    ]]
 	});
 }

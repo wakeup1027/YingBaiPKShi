@@ -10,6 +10,7 @@ import java.util.UUID;
 
 import com.alibaba.fastjson.JSONObject;
 import com.base.BaseController;
+import com.bean.Answear;
 import com.bean.ApplyMoney;
 import com.bean.BetsDataLog;
 import com.bean.KefuMes;
@@ -316,6 +317,76 @@ public class EasyUI_Controller extends BaseController{
 		map.put("rows", UI);
 		map.put("total", total); 
 		renderJson(map);
+	}
+	
+	//删除客服信息
+	public void deletkefmes(){
+		JSONObject json = new JSONObject();
+		String orderStr = getPara("onu");
+		String[] ords = orderStr.split(",");
+		boolean doUp = false;
+		for(String sd : ords){
+			try {
+				Db.update("DELETE FROM answear WHERE fd_parent_id = '"+sd+"'");
+				KefuMes.dao.deleteById(sd);
+			} catch (Exception e) {
+				doUp = true;
+			}
+		}
+		if(doUp){
+			json.put("status", 0);
+		}else{
+			json.put("status", 1);
+		}
+		renderJson(json.toJSONString());
+	}
+	
+	//联系客服查找加载数据
+	public void findcallkef(){
+		Map<String, Object> map = new HashMap<String, Object>();
+		String keyWord = getPara("keyowl");
+		String upStutas = getPara("upStutas");
+		int page = getParaToInt("page");
+		int rows = getParaToInt("rows");
+		String wherestr = "WHERE 1=1";
+		if(!keyWord.equals("")){
+			wherestr+=" AND fd_connect LIKE '%"+keyWord+"%'";
+		}
+		if(!upStutas.equals("")){
+			wherestr+=" AND fd_kfread='"+upStutas+"'";
+		}
+		List<KefuMes> UI = KefuMes.dao.findByPage(wherestr, page, rows,"fd_createtime");
+		Long total = KefuMes.dao.count("SELECT * FROM kefumes "+wherestr);
+		map.put("rows", UI);
+		map.put("total", total); 
+		renderJson(map);
+	}
+	
+	//用户继续提问
+	public void aginanswear(){
+		String fdid = getPara("fdid");
+		String valupe = getPara("valupe");
+		String uuid = UUID.randomUUID().toString().replace("-", "").toLowerCase();
+	    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		Date now = new Date();
+		Answear aw = new Answear();
+		aw.set("id", uuid);
+		aw.set("fd_parent_id", fdid);
+		aw.set("fd_connect", valupe);
+		aw.set("fd_createtime", sdf.format(now));
+		aw.set("fd_creater", "admin");
+		aw.set("fd_username", "admin");
+		aw.set("fd_type", "fuke");
+		JSONObject json = new JSONObject();
+		if(aw.save()){
+			KefuMes kf = KefuMes.dao.findById(fdid);
+			kf.set("fd_useread", "0");
+			kf.update();
+			json.put("status", "1");
+		}else{
+			json.put("status", "0");
+		}
+		renderJson(json);
 	}
 	
 	//充值查找加载数据
