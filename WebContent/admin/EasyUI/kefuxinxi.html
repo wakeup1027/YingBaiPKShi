@@ -38,25 +38,7 @@
 	<input type="hidden" id="datafd">
 	<div style="width:500px; margin: 10px auto 0px auto; color:blue; font-size:14px; font-weight:bold;">问题描述</div>
 	<div id="questionBox" style="width:500px; margin: 10px auto 0px auto;">今天充值了为什么还没到账呢？订单编号：43630033651312066   支付宝    请赶紧确认</div>
-	<div id="answearBoxBig" style="width:500px; margin:10px auto;">
-		<div style="width:500px; height:50px; margin-top:15px;">
-			<div style="float:right;">
-				<img src="${BASE_PATH}images/kefu.png" style="width:50px; height:50px; border-radius:50px;"/>
-			</div>
-			<div class="answerbox">
-				<div style="float:right;">说什么呢？</div>
-			</div>
-		</div>
-		<div style="clear:both;"></div>
-		
-		<div style="width:500px; height:50px; margin-top:15px;">
-			<div style="float:left;">
-				<img src="${BASE_PATH}images/user.png" style="width:50px; height:50px; border-radius:50px;"/>
-			</div>
-			<div class="answerbox">不知道！</div>
-		</div>
-		<div style="clear:both;"></div>
-	</div>
+	<div id="answearBoxBig" style="width:500px; margin:10px auto;"></div>
 	<div style="width:500px; margin: 10px auto 0px auto; color:blue; font-size:14px; font-weight:bold;">回复</div>
 	<div style="width:500px; margin:30px auto;">
 		<div style="margin-top:10px;">
@@ -117,7 +99,8 @@ $(function(){
 	        success:function(data) {
 	        	console.log(data);
 	        	if(data.status=="1"||data.status==1){
-	        		//window.location.reload();
+	        		$("#answearBoxBig").append('<div style="width:500px; height:50px; margin-top:15px;"><div style="float:right;"><img src="${BASE_PATH}images/kefu.png" style="width:50px; height:50px; border-radius:50px;"/></div><div class="answerbox"><div style="float:right;">'+valupe+'</div></div></div><div style="clear:both;"></div>');
+	        		$("#answearbox").val("");
 	        	}else{
 	        		alert("系统繁忙，请稍后再试...");
 	        	}
@@ -135,7 +118,29 @@ function lookseed(){
 		return;
 	}
 	$("#datafd").val(rows[0].id);
-	$('#res_dlg').dialog('open').dialog('setTitle',rows[0].fd_connect);
+	$.ajax({
+        type: "POST",
+        data:{"onu":rows[0].id},
+        dataType: 'json',
+        url: "${BASE_PATH}AdminStrUrl/loadAnswear.html",
+        success:function(data) {
+        	data = data.datas;
+        	$("#answearBoxBig").empty();
+        	for(var i=0; i<data.length; i++){
+        		var ss = "";
+        		if(data[i].type=="fuke"){
+        			ss = '<div style="width:500px; height:50px; margin-top:15px;"><div style="float:right;"><img src="${BASE_PATH}images/kefu.png" style="width:50px; height:50px; border-radius:50px;"/></div><div class="answerbox"><div style="float:right;">'+data[i].connect+'</div></div></div><div style="clear:both;"></div>';
+        		}else if(data[i].type=="user"){
+        			ss = '<div style="width:500px; height:50px; margin-top:15px;"><div style="float:left;"><img src="${BASE_PATH}images/user.png" style="width:50px; height:50px; border-radius:50px;"/></div><div class="answerbox">'+data[i].connect+'</div></div><div style="clear:both;"></div>';
+        		}
+        		$("#answearBoxBig").append(ss);
+        	}
+        	$('#res_dlg').dialog('open').dialog('setTitle',rows[0].fd_connect);
+        },error:function(error){
+        	console.log(error);
+        }
+	});
+	
 }
 
 function deletes(){

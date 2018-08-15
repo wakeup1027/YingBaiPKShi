@@ -2,6 +2,7 @@ package lxq.admin.controller;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -11,6 +12,7 @@ import java.util.UUID;
 import com.alibaba.fastjson.JSONObject;
 import com.base.BaseController;
 import com.bean.Answear;
+import com.bean.Answear_Bean;
 import com.bean.ApplyMoney;
 import com.bean.BetsDataLog;
 import com.bean.KefuMes;
@@ -317,6 +319,26 @@ public class EasyUI_Controller extends BaseController{
 		map.put("rows", UI);
 		map.put("total", total); 
 		renderJson(map);
+	}
+	
+	//加载问题的回答
+	public void loadAnswear(){
+		JSONObject json = new JSONObject();
+		String orderStr = getPara("onu");
+		KefuMes km = KefuMes.dao.findById(orderStr);
+		km.set("fd_kfread", "1");
+		km.update();
+		List<Answear> aw = Answear.dao.find("SELECT * FROM answear WHERE fd_parent_id = '"+orderStr+"' ORDER BY fd_createtime ASC");
+		List<Answear_Bean> ab = new ArrayList<Answear_Bean>();
+		for(Answear as : aw){
+			Answear_Bean abs = new Answear_Bean();
+			abs.setConnect(as.getStr("fd_connect"));
+			abs.setCreatetime(as.getDate("fd_createtime")+"");
+			abs.setType(as.getStr("fd_type"));
+			ab.add(abs);
+		}
+		json.put("datas", ab);
+		renderJson(json.toJSONString());
 	}
 	
 	//删除客服信息
