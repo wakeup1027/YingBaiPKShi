@@ -14,8 +14,7 @@
 <body>
 <div>
 	<div style="float:left;">
-		<a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-edit',plain:true" onclick="_agen()">正常账号</a>
-		<a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-cut',plain:true" onclick="_djie()">冻结账号</a>
+		<a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-edit',plain:true" onclick="_seemore()">查看</a>
 		<a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-cut',plain:true" onclick="_delet()">废弃账号</a>
 	</div>
 	<div style="float:left; margin-left:50px;">
@@ -32,6 +31,117 @@
 </div>
 <div id="grigtBox" style="width:100%; height:400px; margin-top:8px;">
 	<div id="dg" style="width:100%; height:100%;"></div>
+</div>
+<div id="user_dlg" class="easyui-dialog" style="width:450px; height:400px;" closed="true" buttons="#user_dlg-buttons" modal="true">
+	<table style="margin:15px;">
+		<tr>
+			<td style="width:70px;">会员名</td>
+			<td>
+				<input id="username" class="easyui-textbox" style="padding-left:10px; width:200px; height:26px;"/>
+			</td>
+		</tr>
+		<tr>
+			<td>真实姓名</td>
+			<td>
+				<input id="truename" class="easyui-textbox" style="padding-left:10px; width:200px; height:26px;"/>
+			</td>
+		</tr>
+		<tr>
+			<td>账户余额</td>
+			<td>
+				<input id="money" class="easyui-textbox" style="padding-left:10px; width:200px; height:26px;"/>
+			</td>
+		</tr>
+		<tr>
+			<td>冻结金额</td>
+			<td>
+				<input id="icemoney" class="easyui-textbox" style="padding-left:10px; width:200px; height:26px;"/>
+			</td>
+		</tr>
+		<tr>
+			<td>提现金额</td>
+			<td>
+				<input id="applymoney" class="easyui-textbox" style="padding-left:10px; width:200px; height:26px;"/>
+			</td>
+		</tr>
+		<tr>
+			<td>账号状态</td>
+			<td>
+				<select class="easyui-combobox" id="status" style="padding-left:10px; width:130px;" panelHeight="70">
+					<option value="0">未激活</option>
+					<option value="1">正常</option>
+					<option value="2">冻结</option>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td>手机号码</td>
+			<td>
+				<input id="phone" class="easyui-textbox" style="padding-left:10px; width:200px; height:26px;"/>
+			</td>
+		</tr>
+		<tr>
+			<td>银行卡</td>
+			<td>
+				<input id="bank" class="easyui-textbox" style="padding-left:10px; width:200px; height:26px;"/>
+			</td>
+		</tr>
+		<tr>
+			<td>身份证</td>
+			<td>
+				<input id="IDcase" class="easyui-textbox" style="padding-left:10px; width:200px; height:26px;"/>
+			</td>
+		</tr>
+		<tr>
+			<td>推荐人</td>
+			<td>
+				<input id="tjUser" class="easyui-textbox" style="padding-left:10px; width:200px; height:26px;" disabled="disabled"/>
+			</td>
+		</tr>
+		<tr>
+			<td>注册时间</td>
+			<td>
+				<input id="creatime" class="easyui-textbox" style="padding-left:10px; width:200px; height:26px;" disabled="disabled"/>
+			</td>
+		</tr>
+		<tr>
+			<td>登录密码</td>
+			<td><span style="color:#f00;">已加密</span></td>
+		</tr>
+		<tr>
+			<td>支付密码</td>
+			<td><span style="color:#f00;">已加密</span></td>
+		</tr>
+	</table>
+</div>
+<div id="user_dlg-buttons">
+	<div style="float:left; margin-top:-4px; width:190px;">
+		<a href="javascript:void(0)" onclick="checkloginpas(this)" wit="0" style="width: 90px; font-size:12px; color:#2CA86C; float:left;">验证登录密码</a>
+		<a href="javascript:void(0)" onclick="checkloginpas(this)" wit="1" style="width: 90px; font-size:12px; color:#2CA86C; float:left;">验证支付密码</a>
+		<a href="javascript:void(0)" onclick="resetloginpas(this)" wit="0" style="width: 90px; font-size:12px; color:#ff0000; float:left;">重置登录密码</a>
+		<a href="javascript:void(0)" onclick="resetloginpas(this)" wit="1" style="width: 90px; font-size:12px; color:#ff0000; float:left;">重置支付密码</a>
+		<div style="clear:both;"></div>
+	</div>
+	<a href="javascript:void(0)" class="easyui-linkbutton c6" iconCls="icon-ok" onclick="_savebtninfo()" style="width: 90px">确认修改</a> 
+	<a href="javascript:void(0)" class="easyui-linkbutton"	iconCls="icon-cancel" onclick="javascript:$('#user_dlg').dialog('close')" style="width: 90px">取消</a>
+</div>
+<div style="clear:both;"></div>
+<div id="check_dlg" class="easyui-dialog" style="width:450px; height:180px;" buttons="#check_dlg-buttons" closed="true" modal="true">
+	<input id="hideType" type="hidden">
+	<table style="margin:20px auto;">
+		<tr>
+			<td id="zflgpas">登录密码</td>
+			<td>
+				<input id="checkPass" class="easyui-textbox" data-options="prompt:'请输入要校验的密码'" style="width:200px; height:26px;"/>
+			</td>
+		</tr>
+		<tr>
+			<td id="messbix" colspan="2"></td>
+		</tr>
+	</table>
+</div>
+<div id="check_dlg-buttons">
+	<a href="javascript:void(0)" class="easyui-linkbutton c6" iconCls="icon-ok" onclick="_checkbtninfo()" style="width:90px">校验</a> 
 </div>
 <script>
 $(function(){
@@ -51,7 +161,7 @@ $(function(){
 	    showFooter: true, 
 		loadMsg : '数据加载中请稍后……',
 	    toolbar:"#tb",
-	    singleSelect: false,
+	    singleSelect: true,
 		rownumbers:true,
 		columns: [[
 				    {field: 'ck', checkbox:true},
@@ -60,9 +170,6 @@ $(function(){
 				    {field: 'fd_money', title:'账户余额', width:'10%'},
 				    {field: 'fd_icemoney', title:'冻结金额', width:'10%'},
 				    {field: 'fd_applymoney', title:'提现金额', width:'10%'},
-				    {field: 'fd_phone', title:'手机号码', width:'10%'},
-				    {field: 'fd_IDcase', title:'身份证', width:'10%'},
-				    {field: 'fd_bank', title:'银行卡', width:'10%'},
 				    {field: 'fd_status', title:'账户状态', width:'10%',formatter:function(value){  
 		            	if(value == '1' || value == 1){
 							return "正常";
@@ -72,66 +179,78 @@ $(function(){
 							return "冻结";
 						}
 					}},
-				    {field: 'fd_tjUser', title:'推荐人', width:'10%'},
 				    {field: 'fd_creatime', title:'注册时间', width:'15%',formatter:fotmateDate}
 	    ]]
 	});
 });
 
-function _agen(){
+function _seemore(){
 	var rows = $('#dg').datagrid('getSelections');
 	if(rows.length==0){
-		$.messager.alert('info', '请选择操作数据！');
+		$.messager.alert('操作提示', '请选择操作数据！');
 		return;
 	}
-	$.messager.confirm('确认', '修改所选用户状态?', function (r) {
-        if (r) {
-        	var onu="";
-        	for(var i=0; i<rows.length; i++){
-        		onu+=rows[i].id+",";
-        	}
-        	onu = onu.substring(0,onu.length-1);
-        	$.ajax({
-                type: "POST",
-                data:{"onu":onu},
-                dataType: 'json',
-                url: "${BASE_PATH}AdminStrUrl/clikUser.html",
-                success:function(data) {
-                    if(data.status=="1"||data.status==1){
-                    	$('#dg').datagrid('reload');
-                    }else{
-                    	$.messager.alert('Warning', '操作失败！建议激活一个');
-                    }
-                },error:function(error){
-                	console.log(error);
-                }
-        	});
+	$.ajax({
+        type: "POST",
+        data:{"onu":rows[0].id},
+        dataType: 'json',
+        url: "${BASE_PATH}AdminStrUrl/loadInfoMes.html",
+        success:function(data) {
+            for(var o in data){  
+            	if(o=="status"){
+            		$("#"+o).combobox("setValue",data[o]);
+            	}else if(o=="creatime"){
+            		$("#"+o).textbox("setValue",fotmateDate(data[o]));
+            	}else{
+            		$("#"+o).textbox("setValue",data[o]);
+            	}
+            } 
+            $('#user_dlg').dialog('open').dialog('setTitle','查看用户信息');
+        },error:function(error){
+        	console.log(error);
         }
-    });
+	});
 }
 
-function _djie(){
+function _savebtninfo(){
 	var rows = $('#dg').datagrid('getSelections');
 	if(rows.length==0){
-		$.messager.alert('info', '请选择操作数据！');
+		$.messager.alert('操作提示', '请选择操作数据！');
 		return;
 	}
-	$.messager.confirm('确认', '冻结所选用户?', function (r) {
+	$.messager.confirm('确认', '确认修改用户信息?', function (r) {
         if (r) {
-        	var onu="";
-        	for(var i=0; i<rows.length; i++){
-        		onu+=rows[i].id+",";
-        	}
+        	var IDcase = $("#IDcase").textbox("getValue");
+        	var bank = $("#bank").textbox("getValue");
+        	var phone = $("#phone").textbox("getValue");
+        	var status = $("#status").combobox("getValue");
+        	var applymoney = $("#applymoney").textbox("getValue");
+        	var icemoney = $("#icemoney").textbox("getValue");
+        	var money = $("#money").textbox("getValue");
+        	var truename = $("#truename").textbox("getValue");
+        	var username = $("#username").textbox("getValue");
         	$.ajax({
                 type: "POST",
-                data:{"onu":onu},
+                data:{
+                	"onu":rows[0].id,
+                	"IDcase":IDcase,
+                	"bank":bank,
+                	"phone":phone,
+                	"status":status,
+                	"applymoney":applymoney,
+                	"icemoney":icemoney,
+                	"money":money,
+                	"truename":truename,
+                	"username":username
+                },
                 dataType: 'json',
-                url: "${BASE_PATH}AdminStrUrl/djieUser.html",
+                url: "${BASE_PATH}AdminStrUrl/upinfoMes.html",
                 success:function(data) {
-                    if(data.status=="1"||data.status==1){
+                	if(data.status=="0"||data.status==0){
                     	$('#dg').datagrid('reload');
+                    	$('#user_dlg').dialog('close');
                     }else{
-                    	$.messager.alert('Warning', '激活失败！建议激活一个');
+                    	$.messager.alert('操作提示', '激活失败！建议激活一个','error');
                     }
                 },error:function(error){
                 	console.log(error);
@@ -166,7 +285,7 @@ function _delet(){
                     if(data.status=="1"||data.status==1){
                     	$('#dg').datagrid('reload');
                     }else{
-                    	$.messager.alert('Warning', '激活失败！建议激活一个');
+                    	$.messager.alert('操作提示', '激活失败！建议激活一个','error');
                     }
                 },error:function(error){
                 	console.log(error);
@@ -203,9 +322,6 @@ function queryfind(){
 				    {field: 'fd_money', title:'账户余额', width:'10%'},
 				    {field: 'fd_icemoney', title:'冻结金额', width:'10%'},
 				    {field: 'fd_applymoney', title:'提现金额', width:'10%'},
-				    {field: 'fd_phone', title:'手机号码', width:'10%'},
-				    {field: 'fd_IDcase', title:'身份证', width:'10%'},
-				    {field: 'fd_bank', title:'银行卡', width:'10%'},
 				    {field: 'fd_status', title:'账户状态', width:'10%',formatter:function(value){  
 		            	if(value == '1' || value == 1){
 							return "正常";
@@ -215,10 +331,87 @@ function queryfind(){
 							return "冻结";
 						}
 					}},
-				    {field: 'fd_tjUser', title:'推荐人', width:'10%'},
 				    {field: 'fd_creatime', title:'注册时间', width:'15%',formatter:fotmateDate}
 	    ]]
 	});
+}
+
+function checkloginpas(inc){
+	$("#checkPass").textbox("setValue","");
+	$("#messbix").css("color","#2CA86C").text("");
+	if($(inc).attr("wit")=="0"){
+		$("#hideType").val("0");
+		$("#zflgpas").text("登录密码");
+		$('#check_dlg').dialog('open').dialog('setTitle','校验登录密码');
+	}else if($(inc).attr("wit")=="1"){
+		$("#hideType").val("1");
+		$("#zflgpas").text("支付密码");
+		$('#check_dlg').dialog('open').dialog('setTitle','校验支付密码');
+	}
+}
+
+function _checkbtninfo(){
+	var rows = $('#dg').datagrid('getSelections');
+	var oun = rows[0].id;
+	var checkPass = $("#checkPass").textbox("getValue");
+	if(checkPass==""||checkPass==" "){
+		return;
+	}
+	var typeup = $("#hideType").val();
+	var urlres = "";
+	if(typeup=="0"){
+		urlres = "${BASE_PATH}AdminStrUrl/checklogUser.html";
+	}else if(typeup=="1"){
+		urlres = "${BASE_PATH}AdminStrUrl/checkzhifUser.html";
+	}
+	$.ajax({
+        type: "POST",
+        data:{"onu":oun,"checkPass":checkPass},
+        dataType: 'json',
+        url: urlres,
+        success:function(data) {
+            if(data.status=="1"||data.status==1){
+            	$("#messbix").css("color","#2CA86C").text("校验成功！密码正确");
+            }else{
+            	$("#messbix").css("color","#f00").text("校验失败！密码错误");
+            }
+        },error:function(error){
+        	console.log(error);
+        }
+	});
+}
+
+function resetloginpas(inc){
+	var rows = $('#dg').datagrid('getSelections');
+	var mestishi = "";
+	var urlres = "";
+	if($(inc).attr("wit")=="0"){
+		mestishi="确认要重置该账户的登陆密码？初始密码：123456";
+		urlres = "${BASE_PATH}AdminStrUrl/reslogUser.html";
+	}else if($(inc).attr("wit")=="1"){
+		mestishi="确认要重置该账户的支付密码？初始密码：123456";
+		urlres = "${BASE_PATH}AdminStrUrl/reszhifUser.html";
+	}
+	$.messager.confirm('确认', mestishi, function (r) {
+        if (r) {
+        	var oun = rows[0].id;
+        	$.ajax({
+                type: "POST",
+                data:{"onu":oun},
+                dataType: 'json',
+                url: urlres,
+                success:function(data) {
+                    if(data.status=="1"||data.status==1){
+                    	$.messager.alert('操作提示', '密码重置成功！','info');
+                    }else{
+                    	$.messager.alert('操作提示', '密码重置失败！','error');
+                    }
+                },error:function(error){
+                	console.log(error);
+                }
+        	});
+        }
+    });
 }
 
 //格式化的方法

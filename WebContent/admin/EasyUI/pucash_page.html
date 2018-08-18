@@ -107,7 +107,8 @@ $(function(){
 							return "未知状态";
 						}
 					}},
-				    {field: 'fd_commit', title:'提现说明', width:'30%'},
+				    {field: 'fd_commit', title:'会员说明', width:'30%'},
+				    {field: 'fd_failreason', title:'管理员备注', width:'30%'},
 				    {field: 'fd_creatime', title:'申请时间', width:'20%',formatter:fotmateDate},
 				    {field: 'fd_arraytime', title:'完成时间', width:'20%',formatter:fotmateDate}
 	    ]]
@@ -118,6 +119,10 @@ function upstatus(){
 	var rows = $('#dg').datagrid('getSelections');
 	if(rows.length==0){
 		$.messager.alert('操作提示', '请选择操作数据！');
+		return;
+	}
+	if(rows[0].fd_status=="2"||rows[0].fd_status=="3"){
+		$.messager.alert('操作提示', '只能修改状态为"审核中"或"已受理"的数据！', 'error');
 		return;
 	}
 	$('#user_dlg').dialog('open').dialog('setTitle','修改状态');
@@ -199,7 +204,8 @@ function queryfind(){
 							return "未知状态";
 						}
 					}},
-				    {field: 'fd_commit', title:'提现说明', width:'30%'},
+				    {field: 'fd_commit', title:'会员说明', width:'30%'},
+				    {field: 'fd_failreason', title:'管理员备注', width:'30%'},
 				    {field: 'fd_creatime', title:'申请时间', width:'20%',formatter:fotmateDate},
 				    {field: 'fd_arraytime', title:'完成时间', width:'20%',formatter:fotmateDate}
 	    ]]

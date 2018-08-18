@@ -27,6 +27,7 @@ import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.upload.UploadFile;
 
 import demo.AdminInterceptor;
+import lxq.util.MD5Util;
 
 @Before(AdminInterceptor.class)
 @ControllerBind(controllerKey = "/AdminStrUrl")
@@ -301,7 +302,7 @@ public class EasyUI_Controller extends BaseController{
 		Map<String, Object> map = new HashMap<String, Object>();
 		int page = getParaToInt("page");
 		int rows = getParaToInt("rows");
-		List<Recharge> UI = Recharge.dao.findByPage(page, rows, "");
+		List<Recharge> UI = Recharge.dao.findByPage(page, rows, "ORDER BY fd_status ASC");
 		Long total = Recharge.dao.count("SELECT * FROM recharge");
 		map.put("taoslm", Recharge.dao.findFirst("SELECT SUM(fd_money) AS total FROM recharge"));
 		map.put("rows", UI);
@@ -443,17 +444,19 @@ public class EasyUI_Controller extends BaseController{
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			Date now = new Date();
 			Recharge uif = Recharge.dao.findById(sd);
-			String usid = uif.getStr("fd_userid");
-			UserInfo useif = UserInfo.dao.findById(usid);
-			useif.set("fd_money", useif.getDouble("fd_money")+uif.getDouble("fd_money"));
-			uif.set("fd_arraytime", sdf.format(now));
-			uif.set("fd_status", "1");
-			try {
-				if(useif.update()){
-					uif.update();
+			if(uif.getStr("fd_status").equals("0")){//只有审核中的数据才能修改
+				String usid = uif.getStr("fd_userid");
+				UserInfo useif = UserInfo.dao.findById(usid);
+				useif.set("fd_money", useif.getDouble("fd_money")+uif.getDouble("fd_money"));
+				uif.set("fd_arraytime", sdf.format(now));
+				uif.set("fd_status", "1");
+				try {
+					if(useif.update()){
+						uif.update();
+					}
+				} catch (Exception e) {
+					doUp = true;
 				}
-			} catch (Exception e) {
-				doUp = true;
 			}
 		}
 		if(doUp){
@@ -474,13 +477,15 @@ public class EasyUI_Controller extends BaseController{
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			Date now = new Date();
 			Recharge uif = Recharge.dao.findById(sd);
-			uif.set("fd_arraytime", sdf.format(now));
-			uif.set("fd_status", "2");
-			uif.set("fd_commit", "系统暂未收到付款，请认真核对支付单号再重新发起一遍，如果有误，请联系客服通过其他方式确认！");
-			try {
-				uif.update();
-			} catch (Exception e) {
-				doUp = true;
+			if(uif.getStr("fd_status").equals("0")){//只有审核中的数据才能修改
+				uif.set("fd_arraytime", sdf.format(now));
+				uif.set("fd_status", "2");
+				uif.set("fd_commit", "系统暂未收到付款，请认真核对支付单号再重新发起一遍，如果有误，请联系客服通过其他方式确认！");
+				try {
+					uif.update();
+				} catch (Exception e) {
+					doUp = true;
+				}
 			}
 		}
 		if(doUp){
@@ -539,24 +544,26 @@ public class EasyUI_Controller extends BaseController{
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			Date now = new Date();
 			ApplyMoney uif = ApplyMoney.dao.findById(sd);
-			String usid = uif.getStr("fd_userid");
-			uif.set("fd_arraytime", sdf.format(now));
-			uif.set("fd_status", upStutas);
-			uif.set("fd_failreason", failreason);
-			try {
-				boolean yesavs = uif.update();
-				if(yesavs&&upStutas.equals("2")){//提现完成才要把用户信息中的提现金额清空
-					UserInfo useif = UserInfo.dao.findById(usid);
-					useif.set("fd_applymoney", 0);
-					useif.update();
-				}else if(yesavs&&upStutas.equals("3")){//如果提现失败，则退回提现金额到账户余额里面
-					UserInfo useif = UserInfo.dao.findById(usid);
-					useif.set("fd_money", useif.getDouble("fd_money")+useif.getDouble("fd_applymoney"));
-					useif.set("fd_applymoney", 0);
-					useif.update();
+			if(uif.getStr("fd_status").equals("0")||uif.getStr("fd_status").equals("1")){
+				String usid = uif.getStr("fd_userid");
+				uif.set("fd_arraytime", sdf.format(now));
+				uif.set("fd_status", upStutas);
+				uif.set("fd_failreason", failreason);
+				try {
+					boolean yesavs = uif.update();
+					if(yesavs&&upStutas.equals("2")){//提现完成才要把用户信息中的提现金额清空
+						UserInfo useif = UserInfo.dao.findById(usid);
+						useif.set("fd_applymoney", 0);
+						useif.update();
+					}else if(yesavs&&upStutas.equals("3")){//如果提现失败，则退回提现金额到账户余额里面
+						UserInfo useif = UserInfo.dao.findById(usid);
+						useif.set("fd_money", useif.getDouble("fd_money")+useif.getDouble("fd_applymoney"));
+						useif.set("fd_applymoney", 0);
+						useif.update();
+					}
+				} catch (Exception e) {
+					doUp = true;
 				}
-			} catch (Exception e) {
-				doUp = true;
 			}
 		}
 		if(doUp){
@@ -657,47 +664,48 @@ public class EasyUI_Controller extends BaseController{
 		renderJson(map);
 	}
 	
-	//激活用户
-	public void clikUser(){
+	//加载用户信息
+	public void loadInfoMes(){
 		JSONObject json = new JSONObject();
 		String orderStr = getPara("onu");
-		String[] ords = orderStr.split(",");
-		boolean doUp = false;
-		for(String sd : ords){
-			UserInfo uif = UserInfo.dao.findById(sd);
-			uif.set("fd_status", "1");
-			try {
-				uif.update();
-			} catch (Exception e) {
-				doUp = true;
-				System.out.println("激活用户出现失败！");
-			}
-		}
-		if(doUp){
-			json.put("status", 0);
-		}else{
-			json.put("status", 1);
-		}
+		UserInfo uif = UserInfo.dao.findById(orderStr);
+		json.put("money", uif.getDouble("fd_money"));
+		json.put("icemoney", uif.getDouble("fd_icemoney"));
+		json.put("applymoney", uif.getDouble("fd_applymoney"));
+		json.put("username", uif.getStr("fd_username"));
+		json.put("truename", uif.getStr("fd_truename"));
+		json.put("phone", uif.getStr("fd_phone"));
+		json.put("bank", uif.getStr("fd_bank"));
+		json.put("creatime", uif.getDate("fd_creatime"));
+		json.put("status", uif.getStr("fd_status"));
+		json.put("IDcase", uif.getStr("fd_IDcase"));
+		json.put("tjUser", uif.getStr("fd_tjUser"));
 		renderJson(json.toJSONString());
 	}
 	
-	//激活用户
-	public void djieUser(){
-		JSONObject json = new JSONObject();
+	public void upinfoMes(){
 		String orderStr = getPara("onu");
-		String[] ords = orderStr.split(",");
-		boolean doUp = false;
-		for(String sd : ords){
-			UserInfo uif = UserInfo.dao.findById(sd);
-			uif.set("fd_status", "2");
-			try {
-				uif.update();
-			} catch (Exception e) {
-				doUp = true;
-				System.out.println("冻结用户出现失败！");
-			}
-		}
-		if(doUp){
+		String IDcase = getPara("IDcase");
+		String bank = getPara("bank");
+		String phone = getPara("phone");
+		String status = getPara("status");
+		double applymoney = Double.parseDouble(getPara("applymoney"));
+		double icemoney = Double.parseDouble(getPara("icemoney"));
+		double money = Double.parseDouble(getPara("money"));
+		String truename = getPara("truename");
+		String username = getPara("username");
+		UserInfo uif = UserInfo.dao.findById(orderStr);
+		uif.set("fd_IDcase", IDcase);
+		uif.set("fd_bank", bank);
+		uif.set("fd_phone", phone);
+		uif.set("fd_status", status);
+		uif.set("fd_applymoney", applymoney);
+		uif.set("fd_icemoney", icemoney);
+		uif.set("fd_money", money);
+		uif.set("fd_truename", truename);
+		uif.set("fd_username", username);
+		JSONObject json = new JSONObject();
+		if(uif.update()){
 			json.put("status", 0);
 		}else{
 			json.put("status", 1);
@@ -725,6 +733,64 @@ public class EasyUI_Controller extends BaseController{
 			json.put("status", 0);
 		}else{
 			json.put("status", 1);
+		}
+		renderJson(json.toJSONString());
+	}
+	
+	//校验登录密码
+	public void checklogUser(){
+		JSONObject json = new JSONObject();
+		String orderStr = getPara("onu");
+		String checkPass = getPara("checkPass");
+		checkPass = MD5Util.md5(checkPass);
+		UserInfo uif = UserInfo.dao.findById(orderStr);
+		if(checkPass.equals(uif.getStr("fd_password"))){
+			json.put("status", 1);
+		}else{
+			json.put("status", 0);
+		}
+		renderJson(json.toJSONString());
+	}
+
+	//校验登录密码
+	public void checkzhifUser(){
+		JSONObject json = new JSONObject();
+		String orderStr = getPara("onu");
+		String checkPass = getPara("checkPass");
+		checkPass = MD5Util.md5(checkPass);
+		UserInfo uif = UserInfo.dao.findById(orderStr);
+		if(checkPass.equals(uif.getStr("fd_paypassword"))){
+			json.put("status", 1);
+		}else{
+			json.put("status", 0);
+		}
+		renderJson(json.toJSONString());
+	}
+	
+	//重置登录密码
+	public void reslogUser(){
+		String orderStr = getPara("onu");
+		UserInfo uif = UserInfo.dao.findById(orderStr);
+		uif.set("fd_password", "e10adc3949ba59abbe56e057f20f883e");
+		JSONObject json = new JSONObject();
+		if(uif.update()){
+			json.put("status", 1);
+		}else{
+			json.put("status", 0);
+		}
+		renderJson(json.toJSONString());
+	}
+	
+	//重置支付密码
+	public void reszhifUser(){
+		String orderStr = getPara("onu");
+		UserInfo uif = UserInfo.dao.findById(orderStr);
+		uif.set("fd_paypassword", "e10adc3949ba59abbe56e057f20f883e");
+		JSONObject json = new JSONObject();
+		if(uif.update()){
+			json.put("status", 1);
+		}else{
+			json.put("status", 0);
 		}
 		renderJson(json.toJSONString());
 	}

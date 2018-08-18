@@ -62,7 +62,7 @@ $(function(){
 	    showFooter: true, 
 		loadMsg : '数据加载中请稍后……',
 	    toolbar:"#tb",
-	    singleSelect: false,
+	    singleSelect: true,
 		rownumbers:true,
 		onLoadSuccess:function(data){
 			var sda = data.taoslm;
@@ -76,9 +76,9 @@ $(function(){
 		            	if(value == '0' || value == 0){
 							return "审核中";
 						}else if(value == '1' || value == 1){
-							return "已到账";
+							return "审核通过";
 						}else if(value == '2' || value == 2){
-							return "不通过";
+							return "审核不通过";
 						}else{
 							return "未知状态";
 						}
@@ -93,8 +93,9 @@ $(function(){
 							return "未知平台";
 						}
 					}},
-				    {field: 'fd_creatime', title:'充值时间', width:'20%'},
-				    {field: 'fd_arraytime', title:'到账时间', width:'20%',formatter:fotmateDate},
+					{field: 'fd_commit', title:'管理员备注', width:'10%'},
+				    {field: 'fd_creatime', title:'充值时间', width:'15%'},
+				    {field: 'fd_arraytime', title:'到账时间', width:'15%',formatter:fotmateDate},
 	    ]]
 	});
 });
@@ -102,10 +103,14 @@ $(function(){
 function newMajor(){
 	var rows = $('#dg').datagrid('getSelections');
 	if(rows.length==0){
-		$.messager.alert('info', '请选择操作数据！');
+		$.messager.alert('操作提示', '请选择操作数据！');
 		return;
 	}
-	$.messager.confirm('确认', '修改充值状态?', function (r) {
+	if(rows[0].fd_status!="0"){
+		$.messager.alert('操作提示', '只能修改状态为"审核中"的数据！', 'error');
+		return;
+	}
+	$.messager.confirm('确认', '确认审核通过该充值状态?', function (r) {
         if (r) {
         	var onu="";
         	for(var i=0; i<rows.length; i++){
@@ -134,10 +139,14 @@ function newMajor(){
 function notMajor(){
 	var rows = $('#dg').datagrid('getSelections');
 	if(rows.length==0){
-		$.messager.alert('info', '请选择操作数据！');
+		$.messager.alert('操作提示', '请选择操作数据！');
 		return;
 	}
-	$.messager.confirm('确认', '修改充值状态?', function (r) {
+	if(rows[0].fd_status!="0"){
+		$.messager.alert('操作提示', '只能修改状态为"审核中"的数据！', 'error');
+		return;
+	}
+	$.messager.confirm('确认', '确认审核不通过该充值状态?', function (r) {
         if (r) {
         	var onu="";
         	for(var i=0; i<rows.length; i++){
@@ -195,9 +204,9 @@ function queryfind(){
 		            	if(value == '0' || value == 0){
 							return "审核中";
 						}else if(value == '1' || value == 1){
-							return "已到账";
+							return "审核通过";
 						}else if(value == '2' || value == 2){
-							return "不通过";
+							return "审核不通过";
 						}else{
 							return "未知状态";
 						}
@@ -212,8 +221,9 @@ function queryfind(){
 							return "未知平台";
 						}
 					}},
-				    {field: 'fd_creatime', title:'充值时间', width:'20%'},
-				    {field: 'fd_arraytime', title:'到账时间', width:'20%',formatter:fotmateDate},
+					{field: 'fd_commit', title:'管理员备注', width:'10%'},
+				    {field: 'fd_creatime', title:'充值时间', width:'15%'},
+				    {field: 'fd_arraytime', title:'到账时间', width:'15%',formatter:fotmateDate},
 	    ]]
 	});
 }

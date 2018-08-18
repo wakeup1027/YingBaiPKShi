@@ -97,7 +97,6 @@ $(function(){
 	        dataType: 'json',
 	        url: "${BASE_PATH}AdminStrUrl/aginanswear.html",
 	        success:function(data) {
-	        	console.log(data);
 	        	if(data.status=="1"||data.status==1){
 	        		$("#answearBoxBig").append('<div style="width:500px; height:50px; margin-top:15px;"><div style="float:right;"><img src="${BASE_PATH}images/kefu.png" style="width:50px; height:50px; border-radius:50px;"/></div><div class="answerbox"><div style="float:right;">'+valupe+'</div></div></div><div style="clear:both;"></div>');
 	        		$("#answearbox").val("");
