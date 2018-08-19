@@ -16,6 +16,7 @@ import com.bean.Answear_Bean;
 import com.bean.ApplyMoney;
 import com.bean.BetsDataLog;
 import com.bean.KefuMes;
+import com.bean.Message;
 import com.bean.OpenNumber;
 import com.bean.Recharge;
 import com.bean.SecondTable;
@@ -176,6 +177,20 @@ public class EasyUI_Controller extends BaseController{
 		double s = getParaToInt("nom");
 		SecondTable st = SecondTable.dao.findById("857bef8a26ba4e97aa5550c4072fdebe");
 		st.set("closetime", s);
+		if(st.update()){
+			json.put("state", "success");
+		}else{
+			json.put("state", "error");
+		}
+		renderJson(json);
+	}
+	
+	//手动封盘
+	public void upstusfp(){
+		JSONObject json = new JSONObject();
+		String s = getPara("nom");
+		SecondTable st = SecondTable.dao.findById("857bef8a26ba4e97aa5550c4072fdebe");
+		st.set("fenpan", s);
 		if(st.update()){
 			json.put("state", "success");
 		}else{
@@ -452,7 +467,19 @@ public class EasyUI_Controller extends BaseController{
 				uif.set("fd_status", "1");
 				try {
 					if(useif.update()){
+						//更新充值数据状态
 						uif.update();
+						//新增系统消息
+						Message ms = new Message();
+						String uuid = UUID.randomUUID().toString().replace("-", "").toLowerCase();
+						ms.set("id", uuid);
+						ms.set("fd_creatime", sdf.format(now));
+						ms.set("fd_type", "0");
+						ms.set("fd_ready", "0");
+						ms.set("fd_senduser", useif.getStr("id"));
+						ms.set("fd_title", "恭喜您充值状态的数据已经充值成功，充值金额："+uif.getDouble("fd_money"));
+						ms.set("fd_connet", "【系统消息】恭喜您充值状态的数据已经充值成功，充值金额："+uif.getDouble("fd_money"));
+						ms.save();
 					}
 				} catch (Exception e) {
 					doUp = true;
@@ -467,7 +494,7 @@ public class EasyUI_Controller extends BaseController{
 		renderJson(json.toJSONString());
 	}
 	
-	//修改充值状态成功
+	//修改充值状态失败
 	public void upsrecha(){
 		JSONObject json = new JSONObject();
 		String orderStr = getPara("onu");
@@ -483,6 +510,17 @@ public class EasyUI_Controller extends BaseController{
 				uif.set("fd_commit", "系统暂未收到付款，请认真核对支付单号再重新发起一遍，如果有误，请联系客服通过其他方式确认！");
 				try {
 					uif.update();
+					//新增系统消息
+					Message ms = new Message();
+					String uuid = UUID.randomUUID().toString().replace("-", "").toLowerCase();
+					ms.set("id", uuid);
+					ms.set("fd_creatime", sdf.format(now));
+					ms.set("fd_type", "0");
+					ms.set("fd_ready", "0");
+					ms.set("fd_senduser", uif.getStr("fd_userid"));
+					ms.set("fd_title", "很遗憾，您申请充值的金额："+uif.getDouble("fd_money")+"申请失败");
+					ms.set("fd_connet", "很遗憾，您申请充值的金额："+uif.getDouble("fd_money")+"申请失败，可能充值未到账或者订单号出错，如果没问题可以通过联系客服让客服帮忙处理。或者重新提交充值申请，客服会热情处理保障您的利益");
+					ms.save();
 				} catch (Exception e) {
 					doUp = true;
 				}
@@ -546,21 +584,35 @@ public class EasyUI_Controller extends BaseController{
 			ApplyMoney uif = ApplyMoney.dao.findById(sd);
 			if(uif.getStr("fd_status").equals("0")||uif.getStr("fd_status").equals("1")){
 				String usid = uif.getStr("fd_userid");
+				UserInfo useif = UserInfo.dao.findById(usid);
 				uif.set("fd_arraytime", sdf.format(now));
 				uif.set("fd_status", upStutas);
 				uif.set("fd_failreason", failreason);
 				try {
 					boolean yesavs = uif.update();
+					Message ms = new Message();
 					if(yesavs&&upStutas.equals("2")){//提现完成才要把用户信息中的提现金额清空
-						UserInfo useif = UserInfo.dao.findById(usid);
+						ms.set("fd_title", "您申请提现的申请客服申请提现成功，提现金额："+useif.getDouble("fd_applymoney"));
+						ms.set("fd_connet", "【系统消息】您申请提现的申请客服申请提现成功，提现金额："+useif.getDouble("fd_applymoney"));
 						useif.set("fd_applymoney", 0);
 						useif.update();
 					}else if(yesavs&&upStutas.equals("3")){//如果提现失败，则退回提现金额到账户余额里面
-						UserInfo useif = UserInfo.dao.findById(usid);
+						ms.set("fd_title", "您申请提现的申请客服申请提现失败，提现金额："+useif.getDouble("fd_applymoney"));
+						ms.set("fd_connet", "【系统消息】您申请提现的申请客服申请提现失败，提现金额："+useif.getDouble("fd_applymoney")+"，失败原因："+failreason);
 						useif.set("fd_money", useif.getDouble("fd_money")+useif.getDouble("fd_applymoney"));
 						useif.set("fd_applymoney", 0);
 						useif.update();
+					}else if(yesavs&&upStutas.equals("1")){
+						ms.set("fd_title", "您申请提现的申请客服已受理，提现金额："+useif.getDouble("fd_applymoney"));
+						ms.set("fd_connet", "【系统消息】您申请提现的申请客服已受理，提现金额："+useif.getDouble("fd_applymoney")+"，客服确认满足提现要求之后会提现成功！");
 					}
+					String uuid = UUID.randomUUID().toString().replace("-", "").toLowerCase();
+					ms.set("id", uuid);
+					ms.set("fd_creatime", sdf.format(now));
+					ms.set("fd_type", "0");
+					ms.set("fd_ready", "0");
+					ms.set("fd_senduser", uif.getStr("fd_userid"));
+					ms.save();
 				} catch (Exception e) {
 					doUp = true;
 				}

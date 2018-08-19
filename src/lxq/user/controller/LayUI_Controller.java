@@ -30,6 +30,7 @@ import com.jfinal.aop.Before;
 import com.jfinal.plugin.activerecord.Db;
 
 import demo.UserInterceptor;
+import lxq.util.FormString;
 import lxq.util.MD5Util;
 
 @Before(UserInterceptor.class)
@@ -149,7 +150,7 @@ public class LayUI_Controller extends BaseController{
 	public void newBetsdata(){
 		JSONObject json = new JSONObject();
 		SecondTable st = SecondTable.dao.findById("857bef8a26ba4e97aa5550c4072fdebe");
-		if("0".equals(st.getStr("close"))){
+		if("0".equals(st.getStr("close"))||"2".equals(st.getStr("close"))){
 			json.put("state", "error");
 			json.put("mes", "已经封盘不能下注！");
 			renderJson(json.toJSONString());
@@ -231,11 +232,11 @@ public class LayUI_Controller extends BaseController{
 		String userid = getSessionAttr("UserId");
 		UserInfo uinfo = UserInfo.dao.findById(userid);
 		if(uinfo!=null){
-			setAttr("name",uinfo.get("fd_truename"));
-			setAttr("username",uinfo.get("fd_username"));
-			setAttr("idcase",uinfo.get("fd_IDcase"));
-			setAttr("banka",uinfo.get("fd_bank"));
-			setAttr("phonenum",uinfo.get("fd_phone"));
+			setAttr("name",FormString.formstringstart(1,uinfo.getStr("fd_truename")));
+			setAttr("username",uinfo.getStr("fd_username"));
+			setAttr("idcase",FormString.formstringstart(9,uinfo.getStr("fd_IDcase")));
+			setAttr("banka",FormString.formstringstart(7,uinfo.getStr("fd_bank")));
+			setAttr("phonenum",FormString.formstringstart(5,uinfo.getStr("fd_phone")));
 			render(HomePathPage+"user_center.html");
 		}else{
 			render("/");//返回登录页重新登录
@@ -257,12 +258,12 @@ public class LayUI_Controller extends BaseController{
 		renderJson(json.toJSONString());
 	}
 	
-	//用户修改自己的信息（手机号码）
-	public void upphonenum(){
+	//用户修改登录密码
+	public void uplogpas(){
 		JSONObject json = new JSONObject();
 		String userid = getSessionAttr("UserId");
 		UserInfo uifo = UserInfo.dao.findById(userid);
-		uifo.set("fd_phone", getPara("newInfodate"));
+		uifo.set("fd_password", MD5Util.md5(getPara("newInfodate")));
 		boolean doYes = uifo.update();
 		if(doYes){
 			json.put("state", "success");
@@ -272,12 +273,12 @@ public class LayUI_Controller extends BaseController{
 		renderJson(json.toJSONString());
 	}
 	
-	//用户修改自己的信息（银行号码）
-	public void upbanka(){
+	//用户修改支付密码
+	public void upzhifpas(){
 		JSONObject json = new JSONObject();
 		String userid = getSessionAttr("UserId");
 		UserInfo uifo = UserInfo.dao.findById(userid);
-		uifo.set("fd_bank", getPara("newInfodate"));
+		uifo.set("fd_paypassword", MD5Util.md5(getPara("newInfodate")));
 		boolean doYes = uifo.update();
 		if(doYes){
 			json.put("state", "success");
@@ -315,8 +316,8 @@ public class LayUI_Controller extends BaseController{
 			double getm = Double.parseDouble(getPara("cash"));//申请提现金额
 			//账户余额必须大于或等于提现余额
 			if(yuem>=getm){
-				double iceingm = uifo.getDouble("fd_icemoney");//账户正在冻结的余额
-				if(iceingm==0){
+				//double iceingm = uifo.getDouble("fd_icemoney");//账户正在冻结的余额
+				//if(iceingm==0){
 					//用账户余额里面的现金减去提现金额当成是冻结金额
 					uifo.set("fd_money", yuem-getm);
 					uifo.set("fd_applymoney",getm);
@@ -336,10 +337,10 @@ public class LayUI_Controller extends BaseController{
 					model.save();
 					json.put("mes", "请求已受理，请耐心等待客服审核...");
 					json.put("code", 200);
-				}else{
+				/*}else{
 					json.put("mes", "账户存在冻结的余额，不能申请提现！请耐心等待客服处理之后再申请...");
 					json.put("code", 502);
-				}
+				}*/
 			}else{
 				json.put("mes", "账户余额不足！");
 				json.put("code", 501);

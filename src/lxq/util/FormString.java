@@ -187,6 +187,18 @@ public class FormString {
 		return num.substring(star, num.length());
 	}
 	
+	public static String formstringstart(int num, String forstr){
+		if("".equals(forstr)){
+			return "";
+		}
+		String s = forstr.substring(0,num);
+		String str = "";
+		for(int i=0; i<forstr.length()-num; i++){
+			str+="*";
+		}
+		return s+str;
+	}
+	
 	public static void main(String[] args) { 
 		  System.out.println(new FormString().formNum(10000));
 	}

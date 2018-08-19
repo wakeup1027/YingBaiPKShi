@@ -14,10 +14,10 @@ table>tbody>tr{height:35px; line-height:35px;}
 </head>
 <body>
 <div style="background:#707089; height:37px; line-height:37px; color:#fff; padding-left:15px; border-radius:5px 5px 0px 0px;">个人中心</div>
-<table border="0" cellspacing="10" cellpadding="10">
+<table border="0" cellspacing="10" cellpadding="10" style="margin:20px auto;">
 	<tr>
 		<td style="width:80px">姓名：</td>
-		<td>${name}</td>
+		<td style="width:200px">${name}</td>
 		<td></td>
 	</tr>
 	<tr>
@@ -40,11 +40,21 @@ table>tbody>tr{height:35px; line-height:35px;}
 		<td>${banka}</td>
 		<td></td>
 	</tr>
+	<tr>
+		<td>登录密码：</td>
+		<td>已加密</td>
+		<td><a href="javascript:void(0)" onclick="addAutoNum(this)" wit="0" style="color:blue;">修改</a></td>
+	</tr>
+	<tr>
+		<td>支付密码：</td>
+		<td>已加密</td>
+		<td><a href="javascript:void(0)" onclick="addAutoNum(this)" wit="1" style="color:blue;">修改</a></td>
+	</tr>
 </table>
 <div id="opendBox" style="padding-bottom:15px; margin:0px auto; margin-top:15px; display: none; background: #fff;">
 	<table style="margin:15px auto;">
 		<tr>
-			<td id="inptName" style="width:100px;">标题：</td>
+			<td id="inptName" style="width:100px;"></td>
 			<td>
 				<input type="text" id="newInfodate" style="padding: 5px 10px; border: 1px solid #e1e1e1; border-radius: 5px;"/>
 			</td>
@@ -56,7 +66,12 @@ table>tbody>tr{height:35px; line-height:35px;}
 layui.use(['table'], function(){});
 
 function addAutoNum(inc){
-	var typebtn = $(inc).attr("text");	
+	var typebtn = $(inc).attr("wit");	
+	if(typebtn=="0"){
+		$("#inptName").text("修改登录密码");
+	}else if(typebtn=="1"){
+		$("#inptName").text("修改支付密码");
+	}
 	layer.open({
 		type: 1,
 		title: formType(typebtn),
@@ -71,11 +86,10 @@ function addAutoNum(inc){
 }
 
 function UpdateFunc(typenam){
-	var UpdateUrl = "${BASE_PATH}VipCustomer/upidcase.html";
-	if(typenam=="phonenum"){
-		UpdateUrl = "${BASE_PATH}VipCustomer/upphonenum.html";
-	}else if(typenam=="banka"){
-		UpdateUrl = "${BASE_PATH}VipCustomer/upbanka.html";
+	if(typenam=="0"){
+		UpdateUrl = "${BASE_PATH}VipCustomer/uplogpas.html";
+	}else if(typenam=="1"){
+		UpdateUrl = "${BASE_PATH}VipCustomer/upzhifpas.html";
 	}
 	$.ajax({
 		url:UpdateUrl,

@@ -18,6 +18,23 @@ tr{height:35px; line-height:35px;}
 <body>
 <table style="margin:30px auto; width:450px;">
 	<tr>
+		<td style="width:100px;">封盘状态</td>
+		<td>
+		<%if(st.fenpan=="0"){%>
+			封盘
+		<%}else{%>
+			正常
+		<%}%>
+		</td>
+		<td>
+		<%if(st.fenpan=="0"){%>
+			<a id="statusBtn" href="javascript:void(0)" onclick="_upfpstat(this)" wit="1">正常</a>
+		<%}else{%>
+			<a id="statusBtn" href="javascript:void(0)" onclick="_upfpstat(this)" wit="0">封盘</a>
+		<%}%>
+		</td>
+	</tr>
+	<tr>
 		<td style="width:100px;">赔率</td>
 		<td>${st.lostnum}</td>
 		<td><a href="javascript:void(0)" onclick="_show(this)" wit="0">修改</a></td>
@@ -134,6 +151,22 @@ function _p(){
         type: "POST",
         data:{
         	"nom":losk
+        },
+        dataType: "json",
+        success: function(data){
+        	if(data.state=="success"){
+        		window.location.reload();
+        	}
+        }
+    });
+}
+
+function _upfpstat(inc){
+	$.ajax({
+        url: "${BASE_PATH}AdminStrUrl/upstusfp.html",
+        type: "POST",
+        data:{
+        	"nom":$(inc).attr("wit")
         },
         dataType: "json",
         success: function(data){

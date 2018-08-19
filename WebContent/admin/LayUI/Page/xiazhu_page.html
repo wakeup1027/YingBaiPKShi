@@ -124,7 +124,6 @@ $(function(){
 			});
 		});
 	});
-	//sdjms();
 	sendemail(${sec});
 });
 
@@ -132,47 +131,36 @@ document.addEventListener("visibilitychange", function(){
 	document.hidden ? "北京PK拾":parent.location.reload();
 });
 
-/*var timer3;
-function sdjms(){
-	$.ajax({
-		 url:"${BASE_PATH}VipCustomer/findmswe.html",
-		 dataType:"json",
-		 async:true,
-		 type:"POST",
-		 success:function(req){
-			window.clearTimeout(timer3);
-			if(req.ss<=30000){
-				console.log("===改封盘===");
-			}
-		  	
-		 },
-		 error:function(){}
-	});
-}*/
-
 function sendemail(countdown){
 	if(countdown<=0){
 		$("#mmBox").text("--");
 		$("#ssBox").text("--");
-		$("#opening").text("开奖中...");
-		/*$("#openNumTshi").css({"color":"#E73F3F","font-weight":"700"});
-    	$("#openNumTshi").text("开奖结束");*/
+		if(${close}=="2"||${close}==2){
+			$("#opening").text("封盘");
+		}else{
+			$("#opening").text("开奖中");
+		}
 	}else{
 		settime(countdown);
 	}
 }
+
 function settime(countdown) {
     if(countdown <= 0){ //倒计时完之后刷新整个页面
     	$("#mmBox").text("--");
 		$("#ssBox").text("--");
-		$("#opening").text("开奖中...");
+		if(${close}=="2"||${close}==2){
+			$("#opening").text("封盘");
+		}else{
+			$("#opening").text("开奖中");
+		}
     	var timer2=window.setTimeout(function(){
     		parent.location.reload();
 			window.clearTimeout(timer2);
 		},10000);
     }else{  //否则倒计时
     	if(countdown==${closetime}){
-    		parent.location.reload();
+    		location.reload();
     	}
     	var mmss = fromTime(countdown);
     	countdown = parseInt(countdown)-1000;
@@ -306,6 +294,9 @@ function forname(num){
 
 function BuildHtml(){
 	var num = ${close};
+	if(num==2||num=="2"){
+		$("#opening").text("封盘");
+	}
 	for(var i=1; i<=10; i++){
 		var htmlstring = [];
 		var paret = '<li><div class="titleClass" atyn="'+i+'">'+forname(i+"")+'</div><div class="numContent">';
@@ -313,7 +304,7 @@ function BuildHtml(){
 		for(var j=1; j<=10; j++){
 			if((j+"").length==1) j="0"+j;
 			var chhtml = '<div class="numContentList"><div class="conteStype num">'+j+'</div><div class="conteStype zhu">10</div><div class="conteStype money"><input class="inptStyle" type="text" value="0"/><div class="jiaJianBtnBox"><div class="jiaBtn">▲</div><div class="jianBtn">▼</div></div><div style="clear:both;"></div></div><div style="clear:both;"></div></div>';
-			if(num==0||num=="0"){
+			if(num=="0"||num=="2"){
 				chhtml = '<div class="numContentList"><div class="conteStype num">'+j+'</div><div class="conteStype zhu">10</div><div class="conteStype money"><input class="inptStyleClose" type="text" readonly placeholder="封盘"/><div class="jiaJianBtnBox"><div class="jiaBtn">▲</div><div class="jianBtn">▼</div></div><div style="clear:both;"></div></div><div style="clear:both;"></div></div>';
 			}
 			htmlstring.push(chhtml);

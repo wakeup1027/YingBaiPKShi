@@ -27,11 +27,12 @@ public class QuzarTimerJob implements Job{
 
 	@Override
 	public void execute(JobExecutionContext context) throws JobExecutionException {
-		String url = "http://ho.apiplus.net/newly.do?";
+		/*String url = "http://ho.apiplus.net/newly.do?";
 		url += "token="+token+"&";
 		url += "code="+code+"&";
 		url += "rows="+rows+"&";
-		url += "format="+format;
+		url += "format="+format;*/
+		String url = "http://t.apiplus.net/newly.do?code=bjpk10&format=json";
 		String urlAll = new StringBuffer(url).toString();
 		String charset = "UTF-8";
 		String jsonResult = KaiCaiDateUntil.getHttpDate(urlAll, charset);

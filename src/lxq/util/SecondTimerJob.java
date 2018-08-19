@@ -13,9 +13,17 @@ public class SecondTimerJob implements Job{
 		SecondTable st = SecondTable.dao.findById("857bef8a26ba4e97aa5550c4072fdebe");
 		if(st.getInt("second")>0){
 			if(st.getInt("second")<=st.getInt("closetime")){
-				st.set("close", "0");
+				if(st.getStr("fenpan").equals("0")){
+					st.set("close", "2");
+				}else{
+					st.set("close", "0");
+				}
 			}else{
-				st.set("close", "1");
+				if(st.getStr("fenpan").equals("0")){
+					st.set("close", "2");
+				}else{
+					st.set("close", "1");
+				}
 			}
 			st.set("second", st.getInt("second")-1);
 			st.update();

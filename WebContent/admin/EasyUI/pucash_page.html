@@ -149,7 +149,7 @@ function savebx(){
                     	$('#user_dlg').dialog('close');
                     	$('#dg').datagrid('reload');
                     }else{
-                    	$.messager.alert('Warning', '操作失败！建议修改一个或稍后再试');
+                    	$.messager.alert('操作提示', '操作失败！建议修改一个或稍后再试', 'error');
                     }
                 },error:function(error){
                 	console.log(error);
