@@ -10,7 +10,6 @@ public class MD5Util {
     }
 	
 	private static String encodeByMD5(String originString){ 
-		System.out.println("这个字符串是什么："+originString);
 		try {
             // 得到一个信息摘要器
             MessageDigest digest = MessageDigest.getInstance("md5");
