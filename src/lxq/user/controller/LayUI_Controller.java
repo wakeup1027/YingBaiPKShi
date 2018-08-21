@@ -52,6 +52,7 @@ public class LayUI_Controller extends BaseController{
 		//获取有未读的联系客服信息
 		KefuMes kefu = KefuMes.dao.findFirst("SELECT * FROM kefumes WHERE fd_creater='"+userid+"' AND fd_useread='0'");
 		setAttr("userm",uinfo.get("fd_username"));
+		setAttr("xiazhum",uinfo.get("fd_xiazhumoney"));
 		setAttr("money",uinfo.get("fd_money"));
 		setAttr("icemoney",uinfo.get("fd_icemoney"));
 		setAttr("applymoney",uinfo.get("fd_applymoney"));
@@ -190,6 +191,9 @@ public class LayUI_Controller extends BaseController{
 			json.put("mes", "余额不足！");
 			renderJson(json.toJSONString());
 			return;
+		}else{
+			uinfo.set("fd_money", uinfo.getDouble("fd_money")-sum);
+			uinfo.set("fd_xiazhumoney", sum);
 		}
 		
 		boolean bl = false;
@@ -205,6 +209,7 @@ public class LayUI_Controller extends BaseController{
 			json.put("state", "error");
 			json.put("mes", "保存出错！");
 		}else{
+			uinfo.update();
 			json.put("state", "success");
 			json.put("mes", "下注成功！");
 		}

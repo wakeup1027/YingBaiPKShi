@@ -74,7 +74,7 @@ public class QuzarTimerJob implements Job{
 			String sd = openum[s-1];
 			String sds = bd.getStr("fd_num");
 			if(sd.equals(sds)){
-				bd.set("fd_iswin", "1");  //赢
+				bd.set("fd_iswin", "1");//赢
 				uif.set("fd_money", uif.getDouble("fd_money")+(bd.getDouble("fd_tatol")*stabl.getDouble("lostnum"))); //倍率
 				Message ms = new Message();
 				String uuid = UUID.randomUUID().toString().replace("-", "").toLowerCase();
@@ -88,10 +88,11 @@ public class QuzarTimerJob implements Job{
 				ms.set("fd_senduser", bd.getStr("fd_userid"));
 				ms.save();
 			}else{
-				bd.set("fd_iswin", "0");  //输
-				uif.set("fd_money", uif.getDouble("fd_money")-bd.getDouble("fd_tatol")); //输没有倍率
+				bd.set("fd_iswin", "0");//输
+				//uif.set("fd_money", uif.getDouble("fd_money")-bd.getDouble("fd_tatol")); //输没有倍率
 			}
 			if(bd.update()){
+				uif.set("fd_xiazhumoney", 0);
 				uif.update();
 			}
 		}

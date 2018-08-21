@@ -16,7 +16,6 @@ public class AdminInterceptor implements Interceptor{
 		HttpSession session = request.getSession();
 		Object obj = session.getAttribute("loginAdmin");
 		if (obj == null) {
-			System.out.println("该管理员还没有登陆");
 			controller.redirect("/alogin/login.html");
 			return;
 		}
