@@ -317,7 +317,7 @@ public class EasyUI_Controller extends BaseController{
 		Map<String, Object> map = new HashMap<String, Object>();
 		int page = getParaToInt("page");
 		int rows = getParaToInt("rows");
-		List<Recharge> UI = Recharge.dao.findByPage(page, rows, "ORDER BY fd_status ASC");
+		List<Recharge> UI = Recharge.dao.findByPage(page, rows, "ORDER BY fd_creatime DESC");
 		Long total = Recharge.dao.count("SELECT * FROM recharge");
 		map.put("taoslm", Recharge.dao.findFirst("SELECT SUM(fd_money) AS total FROM recharge"));
 		map.put("rows", UI);
@@ -539,7 +539,7 @@ public class EasyUI_Controller extends BaseController{
 		Map<String, Object> map = new HashMap<String, Object>();
 		int page = getParaToInt("page");
 		int rows = getParaToInt("rows");
-		List<ApplyMoney> UI = ApplyMoney.dao.findByPage(page, rows, "ORDER BY fd_status ASC");
+		List<ApplyMoney> UI = ApplyMoney.dao.findByPage(page, rows, "ORDER BY fd_creatime DESC");
 		Long total = ApplyMoney.dao.count("SELECT * FROM applymoney");
 		map.put("taoslm", ApplyMoney.dao.findFirst("SELECT SUM(fd_money) AS total FROM applymoney"));
 		map.put("rows", UI);

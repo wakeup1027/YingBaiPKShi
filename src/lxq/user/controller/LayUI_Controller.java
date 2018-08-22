@@ -60,7 +60,11 @@ public class LayUI_Controller extends BaseController{
 		String[] howall = fpw.split(",");
 		setAttr("opnum",howall);
 		setAttr("qish",opnunew.get("fd_qishu"));
-		setAttr("mjus",mjus.getStr("fd_connect"));
+		if(mjus==null){
+			setAttr("mjus","ÔÝÎÞ¹«¸æ");
+		}else{
+			setAttr("mjus",mjus.getStr("fd_connect"));
+		}
 		if(null!=noread){
 			setAttr("havs",0);
 		}else{
@@ -193,7 +197,7 @@ public class LayUI_Controller extends BaseController{
 			return;
 		}else{
 			uinfo.set("fd_money", uinfo.getDouble("fd_money")-sum);
-			uinfo.set("fd_xiazhumoney", sum);
+			uinfo.set("fd_xiazhumoney", uinfo.getDouble("fd_xiazhumoney")+sum);
 		}
 		
 		boolean bl = false;

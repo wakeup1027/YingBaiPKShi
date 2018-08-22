@@ -6,7 +6,9 @@
 <link rel="stylesheet" type="text/css"href="${BASE_PATH}easyui/themes/gray/easyui.css"/>
 <link rel="stylesheet" type="text/css"href="${BASE_PATH}easyui/themes/icon.css"/>
 <link rel="stylesheet" type="text/css"href="${BASE_PATH}easyui/themes/gray/datagrid.css"/>
+<link rel="stylesheet" type="text/css"href="${BASE_PATH}css/select2.css"/>
 <script type="text/javascript" src="${BASE_PATH}easyui/jquery.min.js"></script>
+<script type="text/javascript" src="${BASE_PATH}js/select2.js"></script>
 <script type="text/javascript" src="${BASE_PATH}js/jquery.form.js"></script>
 <script type="text/javascript" src="${BASE_PATH}easyui/jquery.easyui.min.js"></script>
 <script type="text/javascript" src="${BASE_PATH}easyui/locale/easyui-lang-zh_CN.js"></script>
@@ -17,6 +19,7 @@
 <body>
 <div>
 	<div style="float:left;">
+		<a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-edit',plain:true" onclick="newQuest()">发起</a>
 		<a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-edit',plain:true" onclick="lookseed()">查看</a>
 		<a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-cut',plain:true" onclick="deletes()">删除</a>
 	</div>
@@ -37,7 +40,7 @@
 <div id="res_dlg" class="easyui-dialog" style="width:630px; height:500px;" closed="true" modal="true">
 	<input type="hidden" id="datafd">
 	<div style="width:500px; margin: 10px auto 0px auto; color:blue; font-size:14px; font-weight:bold;">问题描述</div>
-	<div id="questionBox" style="width:500px; margin: 10px auto 0px auto;">今天充值了为什么还没到账呢？订单编号：43630033651312066   支付宝    请赶紧确认</div>
+	<div id="questionBox" style="width:500px; margin: 10px auto 0px auto;"></div>
 	<div id="answearBoxBig" style="width:500px; margin:10px auto;"></div>
 	<div style="width:500px; margin: 10px auto 0px auto; color:blue; font-size:14px; font-weight:bold;">回复</div>
 	<div style="width:500px; margin:30px auto;">
@@ -50,8 +53,33 @@
 		</div>
 	</div>
 </div>
+<div id="newans_dlg" class="easyui-dialog" style="width:630px; height:350px;" closed="true" buttons="#user_dlg-buttons" modal="true">
+	<table style="margin:30px;">
+		<tr style="height:30px;">
+			<th>发送人：</th>
+			<td>
+				<select id="choseUserName" style="width:300px; height:20px;">
+					<option value="">==选择发送用户==</option>
+					<option value="test1">test1</option>
+					<option value="test2">test2</option>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<th>发送内容：</th>
+			<td>
+				<input id="losnmj" name="fd_connect" class="easyui-textbox" data-options="multiline:true,prompt:'在这里输入发送内容'" style="width:430px;height:170px;"/>
+			</td>
+		</tr>
+	</table>
+</div>
+<div id="user_dlg-buttons">
+	<a href="javascript:void(0)" class="easyui-linkbutton c6" iconCls="icon-ok" onclick="_p()" style="width: 90px">保存</a> 
+	<a href="javascript:void(0)" class="easyui-linkbutton"	iconCls="icon-cancel" onclick="javascript:$('#newans_dlg').dialog('close')" style="width: 90px">取消</a>
+</div>
 <script>
 $(function(){
+	$("#choseUserName").select2();
 	$("#grigtBox").css("height",($(window).height()-53)+"px");
 	
 	$('#dg').datagrid({
@@ -110,12 +138,17 @@ $(function(){
 	});
 });
 
+function newQuest(){
+	$('#newans_dlg').dialog('open').dialog('setTitle',"发起客服消息");
+}
+
 function lookseed(){
 	var rows = $('#dg').datagrid('getSelections');
-	if(rows.length==0){
+	if(rows.length==0||rows.length>1){
 		$.messager.alert('操作提醒', '请选择一条数据进行查看！');
 		return;
 	}
+	$("#questionBox").text(rows[0].fd_connect);
 	$("#datafd").val(rows[0].id);
 	$.ajax({
         type: "POST",

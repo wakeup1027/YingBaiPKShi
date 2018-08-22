@@ -6,7 +6,9 @@
 <link rel="stylesheet" type="text/css"href="${BASE_PATH}easyui/themes/gray/easyui.css"/>
 <link rel="stylesheet" type="text/css"href="${BASE_PATH}easyui/themes/icon.css"/>
 <link rel="stylesheet" type="text/css"href="${BASE_PATH}easyui/themes/gray/datagrid.css"/>
+<link rel="stylesheet" type="text/css"href="${BASE_PATH}css/select2.css"/>
 <script type="text/javascript" src="${BASE_PATH}easyui/jquery.min.js"></script>
+<script type="text/javascript" src="${BASE_PATH}js/select2.js"></script>
 <script type="text/javascript" src="${BASE_PATH}js/jquery.form.js"></script>
 <script type="text/javascript" src="${BASE_PATH}easyui/jquery.easyui.min.js"></script>
 <script type="text/javascript" src="${BASE_PATH}easyui/locale/easyui-lang-zh_CN.js"></script>
@@ -17,7 +19,10 @@
 		<a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-edit',plain:true" onclick="upstatus()">修改状态</a>
 	</div>
 	<div style="float:left; margin-left:50px;">
-		<input id="searchKey" class="easyui-textbox" data-options="prompt:'请输入搜索用户名'" style="width:200px; height:26px;"/>
+		<select id="searchKey" style="width:150px;margin-top: 2px;">
+			<option value="">==选择筛选用户==</option>
+			<option value="未开放">未开放</option>
+		</select>
 		<select class="easyui-combobox" id="upStutastx" style="width:130px;" panelHeight="115">
 			<option value="">==状态选择==</option>
 			<option value="0">审核中</option>
@@ -69,7 +74,7 @@
 <script>
 $(function(){
 	//$("#grigtBox").css("height",($(window).height()-53)+"px");
-	
+	$("#searchKey").select2();
 	$('#dg').datagrid({
 	    height: '100%',
 	    fit:true,
