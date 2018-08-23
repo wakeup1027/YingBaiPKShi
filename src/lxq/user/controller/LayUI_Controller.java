@@ -621,7 +621,7 @@ public class LayUI_Controller extends BaseController{
 	//联系客服界面
 	public void htpkfmes(){
 		String userid = getSessionAttr("UserId");
-		List<KefuMes> mes = KefuMes.dao.find("SELECT * FROM kefuMes WHERE fd_creater='"+userid+"' ORDER BY fd_useread ASC,fd_createtime DESC LIMIT 0,10");
+		List<KefuMes> mes = KefuMes.dao.find("SELECT * FROM kefuMes WHERE fd_creater='"+userid+"' ORDER BY fd_createtime DESC,fd_useread ASC LIMIT 0,10");
 		Long total = KefuMes.dao.count("SELECT * FROM kefuMes WHERE fd_creater='"+userid+"'");
 		Long noreadtotal = KefuMes.dao.count("SELECT * FROM kefuMes WHERE fd_creater='"+userid+"' AND fd_useread='0'");
 		setAttr("systemess",mes);

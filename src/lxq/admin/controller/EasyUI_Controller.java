@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.base.BaseController;
 import com.bean.Answear;
@@ -377,6 +378,31 @@ public class EasyUI_Controller extends BaseController{
 			json.put("status", 1);
 		}
 		renderJson(json.toJSONString());
+	}
+	
+	//用户提问提交的方法
+	public void addquenfunc(){
+		String userid = getPara("onu");
+		String username = (UserInfo.dao.findById(userid)).getStr("fd_username");
+		String sd = getPara("sd");
+		String uuid = UUID.randomUUID().toString().replace("-", "").toLowerCase();
+	    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		Date now = new Date();
+		KefuMes kfm = new KefuMes();
+		kfm.set("id", uuid);
+		kfm.set("fd_connect", "【来自客服】"+sd);
+		kfm.set("fd_createtime", sdf.format(now));
+		kfm.set("fd_creater", userid);
+		kfm.set("fd_name", username);
+		kfm.set("fd_kfread", "1");
+		kfm.set("fd_useread", "0");
+		JSONObject json = new JSONObject();
+		if(kfm.save()){
+			json.put("status", "1");
+		}else{
+			json.put("status", "0");
+		}
+		renderJson(json);
 	}
 	
 	//联系客服查找加载数据
@@ -845,6 +871,19 @@ public class EasyUI_Controller extends BaseController{
 			json.put("status", 0);
 		}
 		renderJson(json.toJSONString());
+	}
+	
+	//加载全部用户供下拉框使用
+	public void loaduseinf(){
+		JSONArray ja = new JSONArray();
+		List<UserInfo> userlist = UserInfo.dao.find("select fd_username,id from userinfo order by fd_creatime desc");
+		for(UserInfo uif : userlist){
+			JSONObject json = new JSONObject();
+			json.put("rname", uif.getStr("fd_username"));
+			json.put("rid", uif.getStr("id"));
+			ja.add(json);
+		}
+		renderJson(ja.toString());
 	}
 	
 	//开始定时器

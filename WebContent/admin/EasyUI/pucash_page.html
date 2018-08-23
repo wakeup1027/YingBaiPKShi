@@ -19,10 +19,7 @@
 		<a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-edit',plain:true" onclick="upstatus()">修改状态</a>
 	</div>
 	<div style="float:left; margin-left:50px;">
-		<select id="searchKey" style="width:150px;margin-top: 2px;">
-			<option value="">==选择筛选用户==</option>
-			<option value="未开放">未开放</option>
-		</select>
+		<select id="searchKey" style="width:150px;margin-top: 2px;"></select>
 		<select class="easyui-combobox" id="upStutastx" style="width:130px;" panelHeight="115">
 			<option value="">==状态选择==</option>
 			<option value="0">审核中</option>
@@ -74,8 +71,8 @@
 <script>
 $(function(){
 	//$("#grigtBox").css("height",($(window).height()-53)+"px");
-	$("#searchKey").select2();
-	$('#dg').datagrid({
+	
+	/*$('#dg').datagrid({
 	    height: '100%',
 	    fit:true,
 	    url: '${BASE_PATH}AdminStrUrl/loadpucashPage.html',
@@ -117,8 +114,10 @@ $(function(){
 				    {field: 'fd_creatime', title:'申请时间', width:'20%',formatter:fotmateDate},
 				    {field: 'fd_arraytime', title:'完成时间', width:'20%',formatter:fotmateDate}
 	    ]]
-	});
+	});*/
+	loadduse();
 });
+
 
 function upstatus(){
 	var rows = $('#dg').datagrid('getSelections');
@@ -131,6 +130,25 @@ function upstatus(){
 		return;
 	}
 	$('#user_dlg').dialog('open').dialog('setTitle','修改状态');
+}
+
+function loadduse(){
+	$.ajax({
+        type: "POST",
+        dataType: 'json',
+        url: "${BASE_PATH}AdminStrUrl/loaduseinf.html",
+        success:function(data) {
+        	$("#searchKey").empty();
+        	$("#searchKey").append("<option value=''>==选择筛选用户==</option>");
+        	for(var i=0; i<data.length; i++){
+        		var op = '<option value="'+data[i].rname+'">'+data[i].rname+'</option>';
+        		$("#searchKey").append(op);
+        	}
+        	$("#searchKey").select2();
+        },error:function(error){
+        	console.log(error);
+        }
+	});
 }
 
 function savebx(){
@@ -169,7 +187,7 @@ function savebx(){
 }
 
 function queryfind(){
-	var usnma = $("#searchKey").textbox("getValue");
+	var usnma = $("#searchKey").val();
 	var upStutastx = $("#upStutastx").combobox('getValue');
 	$('#dg').datagrid({
 	    height: '100%',

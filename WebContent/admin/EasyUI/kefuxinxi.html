@@ -58,11 +58,7 @@
 		<tr style="height:30px;">
 			<th>发送人：</th>
 			<td>
-				<select id="choseUserName" style="width:300px; height:20px;">
-					<option value="">==选择发送用户==</option>
-					<option value="test1">test1</option>
-					<option value="test2">test2</option>
-				</select>
+				<select id="choseUserName" style="width:300px; height:20px;"></select>
 			</td>
 		</tr>
 		<tr>
@@ -79,7 +75,6 @@
 </div>
 <script>
 $(function(){
-	$("#choseUserName").select2();
 	$("#grigtBox").css("height",($(window).height()-53)+"px");
 	
 	$('#dg').datagrid({
@@ -102,14 +97,14 @@ $(function(){
 				    {field: 'ck', checkbox:true},
 				    {field: 'fd_connect', title:'提问问题', width:'58%'},
 				    {field: 'fd_name', title:'提问人', width:'10%'},
-				    {field: 'fd_kfread', title:'充值状态', width:'7%',formatter:function(value){  
+				    {field: 'fd_kfread', title:'状态', width:'7%',formatter:function(value){  
 		            	if(value == '0' || value == 0){
 							return "未读";
 						}else if(value == '1' || value == 1){
 							return "已读";
 						}
 					}},
-				    {field: 'fd_createtime', title:'充值时间', width:'20%',formatter:fotmateDate}
+				    {field: 'fd_createtime', title:'提问时间', width:'20%',formatter:fotmateDate}
 	    ]]
 	});
 	
@@ -136,7 +131,28 @@ $(function(){
 	        }
 		});
 	});
+	
+	loadduse();
 });
+
+function loadduse(){
+	$.ajax({
+        type: "POST",
+        dataType: 'json',
+        url: "${BASE_PATH}AdminStrUrl/loaduseinf.html",
+        success:function(data) {
+        	$("#choseUserName").empty();
+        	$("#choseUserName").append("<option value=''>==选择发送用户==</option>");
+        	for(var i=0; i<data.length; i++){
+        		var op = '<option value="'+data[i].rid+'">'+data[i].rname+'</option>';
+        		$("#choseUserName").append(op);
+        	}
+        	$("#choseUserName").select2();
+        },error:function(error){
+        	console.log(error);
+        }
+	});
+}
 
 function newQuest(){
 	$('#newans_dlg').dialog('open').dialog('setTitle',"发起客服消息");
@@ -173,6 +189,7 @@ function lookseed(){
         }
 	});
 	
+	
 }
 
 function deletes(){
@@ -207,6 +224,34 @@ function deletes(){
     });
 }
 
+function _p(){
+	var ss = $("#choseUserName").val();
+	var sd = $("#losnmj").textbox("getValue");
+	if(ss==""||ss==null){
+		$.messager.alert('操作提示', '请选择发送会员！');
+		return;
+	}
+	if(sd==""||sd==null){
+		$.messager.alert('操作提示', '请输入发送内容！');
+	}
+	$.ajax({
+        type: "POST",
+        data:{"onu":ss,"sd":sd},
+        dataType: 'json',
+        url: "${BASE_PATH}AdminStrUrl/addquenfunc.html",
+        success:function(data) {
+            if(data.status=="1"||data.status==1){
+            	$('#dg').datagrid('reload');
+            	$('#newans_dlg').dialog('close');
+            }else{
+            	$.messager.alert('操作提示', '操作失败！建议稍后再试!');
+            }
+        },error:function(error){
+        	console.log(error);
+        }
+	});
+}
+
 function queryfind(){
 	var usnma = $("#searchKey").textbox("getValue");
 	var upStutas = $("#upStutas").combobox('getValue');
@@ -231,14 +276,14 @@ function queryfind(){
 				    {field: 'ck', checkbox:true},
 				    {field: 'fd_connect', title:'提问问题', width:'58%'},
 				    {field: 'fd_name', title:'提问人', width:'10%'},
-				    {field: 'fd_kfread', title:'充值状态', width:'7%',formatter:function(value){  
+				    {field: 'fd_kfread', title:'状态', width:'7%',formatter:function(value){  
 		            	if(value == '0' || value == 0){
 							return "未读";
 						}else if(value == '1' || value == 1){
 							return "已读";
 						}
 					}},
-				    {field: 'fd_createtime', title:'充值时间', width:'20%',formatter:fotmateDate}
+				    {field: 'fd_createtime', title:'提问时间', width:'20%',formatter:fotmateDate}
 	    ]]
 	});
 }
