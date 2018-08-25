@@ -25,7 +25,7 @@ public class Controller extends BaseController {
 		if(uinfo!=null){
 			setSessionAttr("loginUser", uinfo.get("fd_username"));
 			setSessionAttr("UserId", uinfo.get("id"));
-			setSessionAttr("Password", uinfo.get("fd_password"));
+			setSessionAttr("Password", uinfo.get("fd_paypassword"));
 			redirect("/VipCustomer.html");
 		}else{
 			render("/admin/LayUI/login.html");

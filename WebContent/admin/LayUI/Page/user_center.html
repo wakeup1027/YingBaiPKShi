@@ -43,12 +43,12 @@ table>tbody>tr{height:35px; line-height:35px;}
 	<tr>
 		<td>登录密码：</td>
 		<td>已加密</td>
-		<td></td>
+		<td><a href="javascript:void(0)" onclick="addAutoNum(this)" wit="0" style="color:blue;">修改</a></td>
 	</tr>
 	<tr>
 		<td>支付密码：</td>
 		<td>已加密</td>
-		<td></td>
+		<td><a href="javascript:void(0)" onclick="addAutoNum(this)" wit="1" style="color:blue;">修改</a></td>
 	</tr>
 </table>
 <div id="opendBox" style="padding-bottom:15px; margin:0px auto; margin-top:15px; display: none; background: #fff;">
@@ -61,5 +61,67 @@ table>tbody>tr{height:35px; line-height:35px;}
 		</tr>
 	</table>
 </div>
+<script>
+//声明layui下面才能使用layer的方法
+layui.use(['table'], function(){});
+
+function addAutoNum(inc){
+	var typebtn = $(inc).attr("wit");	
+	if(typebtn=="0"){
+		$("#inptName").text("修改登录密码");
+	}else if(typebtn=="1"){
+		$("#inptName").text("修改支付密码");
+	}
+	layer.open({
+		type: 1,
+		title: formType(typebtn),
+		area: '500px',
+        shadeClose: true,
+        btn: ['确定','关闭'],
+        btn1: function(index, layero){
+        	UpdateFunc(typebtn);
+        },
+        content: $("#opendBox")
+    });
+}
+
+function UpdateFunc(typenam){
+	if(typenam=="0"){
+		UpdateUrl = "${BASE_PATH}VipCustomer/uplogpas.html";
+	}else if(typenam=="1"){
+		UpdateUrl = "${BASE_PATH}VipCustomer/upzhifpas.html";
+	}
+	$.ajax({
+		url:UpdateUrl,
+		type:"POST",
+		data:{"newInfodate":$("#newInfodate").val()},
+		dataType:"json",
+		success: function(res) {
+			if(res.state=="success"){
+				location.reload();
+			}else{
+				alert("修改失败！请稍后再次修改！");
+			}
+		},error:function(){
+			alert("请求错误！");
+		}
+	});
+}
+
+function formType(typebtn){
+	var titlename;
+	if(typebtn=="idcase"){
+		titlename = "修改身份证";
+		$("#inptName").text("新身份证号码：");
+	}else if(typebtn=="phonenum"){
+		titlename = "修改手机号码";
+		$("#inptName").text("新手机号码：");
+	}else if(typebtn=="banka"){
+		titlename = "修改绑定银行卡";
+		$("#inptName").text("新银行卡号码：");
+	}
+	return titlename;
+}
+</script>
 </body>
 </html>

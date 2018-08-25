@@ -1,5 +1,6 @@
 package lxq.user.controller;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -16,6 +17,7 @@ import com.bean.Message;
 import com.bean.OpenNumber;
 import com.bean.OpenNumber_Bean;
 import com.bean.ApplyMoneyLog_Bean;
+import com.bean.BetsDataDownLine;
 import com.bean.Answear;
 import com.bean.Answear_Bean;
 import com.bean.ApplyMoney;
@@ -28,6 +30,7 @@ import com.bean.UserInfo;
 import com.config.ControllerBind;
 import com.jfinal.aop.Before;
 import com.jfinal.plugin.activerecord.Db;
+import com.jfinal.plugin.activerecord.Record;
 
 import demo.UserInterceptor;
 import lxq.util.FormString;
@@ -356,7 +359,7 @@ public class LayUI_Controller extends BaseController{
 			}
 			
 		}else{
-			json.put("mes", "密码不正确！");
+			json.put("mes", "支付密码不正确！");
 			json.put("code", 500);
 		}
 		renderJson(json.toJSONString());
@@ -475,6 +478,11 @@ public class LayUI_Controller extends BaseController{
 	//开奖号码界面
 	public void openumstr(){
 		render(HomePathPage+"openNum.html");
+	}
+	
+	//下线代理界面
+	public void xiaxdaip(){
+		render(HomePathPage+"xiaxiandaili.html");
 	}
 	
 	//加载开奖号码数据
@@ -609,7 +617,7 @@ public class LayUI_Controller extends BaseController{
 	//加载信息记录
 	public void getMessage(){
 		String userid = getSessionAttr("UserId");
-		List<Message> mes = Message.dao.find("SELECT * FROM message WHERE fd_senduser='"+userid+"' ORDER BY fd_ready ASC LIMIT 0,10");
+		List<Message> mes = Message.dao.find("SELECT * FROM message WHERE fd_senduser='"+userid+"' ORDER BY fd_creatime DESC,fd_ready ASC LIMIT 0,10");
 		Long total = Recharge.dao.count("SELECT * FROM message WHERE fd_senduser='"+userid+"'");
 		Long noreadtotal = Recharge.dao.count("SELECT * FROM message WHERE fd_senduser='"+userid+"' AND fd_ready='0'");
 		setAttr("systemess",mes);
@@ -743,6 +751,183 @@ public class LayUI_Controller extends BaseController{
 			json.put("status", 500);
 		}
 		renderJson(json);
+	}
+	
+	//加载开奖号码数据
+	public void downline() throws ParseException{
+		List<Record> list = Db.find("SELECT bl.*,ui.fd_username FROM userinfo ui LEFT JOIN betsdatalog bl ON bl.fd_userid = ui.id WHERE ui.fd_tjUser = '"+getSessionAttr("loginUser")+"'"); //LIMIT "+(getParaToInt("page")-1)*getParaToInt("limit")+","+getParaToInt("limit")
+		List<BetsDataDownLine> newPer = new ArrayList<BetsDataDownLine>();
+		List<BetsDataDownLine> overline = new ArrayList<BetsDataDownLine>();
+		//获取数据并按照的格式整理
+		for(Record pr : list){
+			//拾推荐人但是没下注过
+			if(null==pr.getStr("id")||"null".equals(pr.getStr("id"))){
+				BetsDataDownLine ll = new BetsDataDownLine();
+				ll.setUsername(pr.getStr("fd_username"));
+				ll.setStatus("");
+				ll.setStarttime(new Date());
+				newPer.add(ll);
+			}else{
+				BetsDataDownLine ll = new BetsDataDownLine();
+				ll.setUsername(pr.getStr("fd_username"));
+				ll.setStatus(pr.getStr("fd_iswin"));
+				ll.setStarttime(pr.getDate("fd_creatime"));
+				ll.setWin(pr.getDouble("fd_tatol")+0);
+				newPer.add(ll);
+			}
+		}
+		//整理重复的用户名
+		JSONArray jary = new JSONArray();
+		for(BetsDataDownLine bdline : newPer){
+			boolean ss = true;
+			for(int i=0; i<jary.size(); i++){
+				JSONObject json = jary.getJSONObject(i);
+				if(bdline.getUsername().equals(json.getString("usern"))){
+					ss = false;
+					break;
+				}
+			}
+			if(ss){
+				JSONObject json = new JSONObject();
+				json.put("usern", bdline.getUsername());
+				jary.add(json);
+			}
+		}
+		//将数据分类成用户名的金额相加的数据
+		for(int i=0; i<jary.size(); i++){
+			BetsDataDownLine bddl = new BetsDataDownLine();
+			JSONObject jsj = jary.getJSONObject(i);
+			bddl.setUsername(jsj.getString("usern"));
+			bddl.setFilult(0);
+			bddl.setWin(0);
+			String string = "2015-01-01 00:00:00";
+	        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	        bddl.setStarttime(sdf.parse(string));
+	        bddl.setOvertime(sdf.parse(string));
+	        int number = 0;
+			for(BetsDataDownLine bdl : newPer){
+				if(bddl.getUsername().equals(bdl.getUsername())){
+					if("0".equals(bdl.getStatus())){//输
+						bddl.setFilult(bddl.getFilult()+bdl.getWin());
+					}else if("1".equals(bdl.getStatus())){
+						bddl.setWin(bddl.getWin()+bdl.getWin());
+					}
+					//首次的时候把时间范围重置
+					if(number==0){
+						bddl.setStarttime(bdl.getStarttime());
+						bddl.setOvertime(bdl.getStarttime());
+					}else{//往后的开始进行对比
+						if(bddl.getStarttime().after(bdl.getStarttime())){
+							bddl.setStarttime(bdl.getStarttime());
+						}else if(bddl.getOvertime().before(bdl.getStarttime())){
+							bddl.setOvertime(bdl.getStarttime());
+						}
+					}
+					number++;
+				}
+			}
+			overline.add(bddl);
+		}
+		JSONObject json = new JSONObject();
+		json.put("code", 0);
+		json.put("msg", "");
+		json.put("count", overline.size());
+		json.put("data", overline);
+		renderJson(json.toJSONString());
+	}
+	
+	//加载开奖号码数据
+	public void finddownline() throws ParseException{
+		String startime = getPara("startime");
+		String starover = getPara("starover");
+		String username = getSessionAttr("loginUser");
+		String wherestr = "WHERE ui.fd_tjUser = '"+username+"'";
+		if(!startime.equals("")){
+			wherestr+=" AND bl.fd_creatime >= '"+startime+"'";
+		}
+		if(!starover.equals("")){
+			wherestr+=" AND bl.fd_creatime <='"+starover+"'";
+		}
+		String sqlstr = "SELECT bl.*,ui.fd_username FROM userinfo ui LEFT JOIN betsdatalog bl ON bl.fd_userid = ui.id "+wherestr;
+		List<Record> list = Db.find(sqlstr);
+		List<BetsDataDownLine> newPer = new ArrayList<BetsDataDownLine>();
+		List<BetsDataDownLine> overline = new ArrayList<BetsDataDownLine>();
+		//获取数据并按照的格式整理
+		for(Record pr : list){
+			//拾推荐人但是没下注过
+			if(null==pr.getStr("id")||"null".equals(pr.getStr("id"))){
+				BetsDataDownLine ll = new BetsDataDownLine();
+				ll.setUsername(pr.getStr("fd_username"));
+				ll.setStatus("");
+				ll.setStarttime(new Date());
+				newPer.add(ll);
+			}else{
+				BetsDataDownLine ll = new BetsDataDownLine();
+				ll.setUsername(pr.getStr("fd_username"));
+				ll.setStatus(pr.getStr("fd_iswin"));
+				ll.setStarttime(pr.getDate("fd_creatime"));
+				ll.setWin(pr.getDouble("fd_tatol")+0);
+				newPer.add(ll);
+			}
+		}
+		//整理重复的用户名
+		JSONArray jary = new JSONArray();
+		for(BetsDataDownLine bdline : newPer){
+			boolean ss = true;
+			for(int i=0; i<jary.size(); i++){
+					JSONObject json = jary.getJSONObject(i);
+					if(bdline.getUsername().equals(json.getString("usern"))){
+						ss = false;
+						break;
+					}
+			}
+			if(ss){
+				JSONObject json = new JSONObject();
+				json.put("usern", bdline.getUsername());
+				jary.add(json);
+			}
+		}
+		//将数据分类成用户名的金额相加的数据
+		for(int i=0; i<jary.size(); i++){
+			BetsDataDownLine bddl = new BetsDataDownLine();
+			JSONObject jsj = jary.getJSONObject(i);
+			bddl.setUsername(jsj.getString("usern"));
+			bddl.setFilult(0);
+			bddl.setWin(0);
+			String string = "2015-01-01 00:00:00";
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			bddl.setStarttime(sdf.parse(string));
+			bddl.setOvertime(sdf.parse(string));
+			int number = 0;
+			for(BetsDataDownLine bdl : newPer){
+				if(bddl.getUsername().equals(bdl.getUsername())){
+					if("0".equals(bdl.getStatus())){//输
+						bddl.setFilult(bddl.getFilult()+bdl.getWin());
+					}else if("1".equals(bdl.getStatus())){
+						bddl.setWin(bddl.getWin()+bdl.getWin());
+					}
+					//首次的时候把时间范围重置
+					if(number==0){
+						bddl.setStarttime(bdl.getStarttime());
+						bddl.setOvertime(bdl.getStarttime());
+					}else{//往后的开始进行对比
+						if(bddl.getStarttime().after(bdl.getStarttime())){
+							bddl.setStarttime(bdl.getStarttime());
+						}else if(bddl.getOvertime().before(bdl.getStarttime())){
+							bddl.setOvertime(bdl.getStarttime());
+						}
+					}
+					number++;
+				}
+			}
+			overline.add(bddl);
+		}
+		JSONObject json = new JSONObject();
+		json.put("code", 0);
+		json.put("msg", "");
+		json.put("count", overline.size());
+		json.put("data", overline);
+		renderJson(json.toJSONString());
 	}
 	
 }
