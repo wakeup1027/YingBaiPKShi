@@ -40,6 +40,12 @@ public class EasyUI_Controller extends BaseController{
 		//查看开到多少期了
 		OpenNumber onum = OpenNumber.dao.findFirst("SELECT * FROM opennumber ORDER BY fd_qishu DESC");
 		List<BetsDataLog> btlist = BetsDataLog.dao.find("SELECT * FROM betsdatalog WHERE fd_qishu = '"+(onum.getInt("fd_qishu")+1)+"'");
+		long noUser = Db.queryLong("SELECT count(*) FROM userinfo WHERE fd_status = '0'");
+		long reachrt = Db.queryLong("SELECT count(*) FROM recharge WHERE fd_status = '0'");
+		long applym = Db.queryLong("SELECT count(*) FROM applymoney WHERE fd_status = '0'");
+		if(noUser>0){setAttr("noUser","+"+noUser);}else{setAttr("noUser","");}
+		if(reachrt>0){setAttr("reachrt","+"+reachrt);}else{setAttr("reachrt","");}
+		if(applym>0){setAttr("applym","+"+applym);}else{setAttr("applym","");}
 		setAttr("btlist",btlist);
 		setAttr("opennum",onum.getInt("fd_qishu")+1);
 		setAttr("montotal",BetsDataLog.dao.findFirst("SELECT SUM(fd_tatol) AS total FROM betsdatalog WHERE fd_qishu = '"+(onum.getInt("fd_qishu")+1)+"'"));
@@ -726,12 +732,16 @@ public class EasyUI_Controller extends BaseController{
 		Map<String, Object> map = new HashMap<String, Object>();
 		String keyWordUsm = getPara("keyowl");
 		String upStutas = getPara("upStutas");
+		String xiashuKey = getPara("xiashuKey");
 		String wherestr = "WHERE 1=1";
 		if(!keyWordUsm.equals("")){
 			wherestr+=" AND fd_username='"+keyWordUsm+"'";
 		}
 		if(!upStutas.equals("")){
 			wherestr+=" AND fd_status='"+upStutas+"'";
+		}
+		if(!xiashuKey.equals("")){
+			wherestr+=" AND fd_tjUser='"+xiashuKey+"'";
 		}
 		int page = getParaToInt("page");
 		int rows = getParaToInt("rows");

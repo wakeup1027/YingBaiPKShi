@@ -2,7 +2,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<title>北京PK拾管理后台</title> 
+	<title>豪门娱乐管理员平台</title> 
+	<link href="${BASE_PATH}images/favicon.ico" rel="shortcut icon"/>
 	<link rel="stylesheet" type="text/css" href="${BASE_PATH}css/easyui/css/default.css" />
 	<link rel="stylesheet" type="text/css" href="${BASE_PATH}js/easyui/js/themes/gray/easyui.css" />
     <link rel="stylesheet" type="text/css" href="${BASE_PATH}js/easyui/js/themes/icon.css" />
@@ -18,10 +19,10 @@
 	 var _menus = {"menus":[
 						{"menuid":"1","icon":"icon-sys","menuname":"系统设置",
 							"menus":[
-										{"menuname":"充值管理","icon":"icon-pen","url":"${BASE_PATH}AdminStrUrl/rechargePage.html"},
-										{"menuname":"提现管理","icon":"icon-nav","url":"${BASE_PATH}AdminStrUrl/pucashPage.html"},
+										{"menuname":"充值管理<span style='color:#f00'>${reachrt}</span>","icon":"icon-pen","url":"${BASE_PATH}AdminStrUrl/rechargePage.html"},
+										{"menuname":"提现管理<span style='color:#f00'>${applym}</span>","icon":"icon-nav","url":"${BASE_PATH}AdminStrUrl/pucashPage.html"},
 										{"menuname":"用户下注","icon":"icon-role","url":"${BASE_PATH}AdminStrUrl/userwinPage.html"},
-										{"menuname":"会员管理","icon":"icon-users","url":"${BASE_PATH}AdminStrUrl/userInfoPage.html"},
+										{"menuname":"会员管理<span style='color:#f00'>${noUser}</span>","icon":"icon-users","url":"${BASE_PATH}AdminStrUrl/userInfoPage.html"},
 										{"menuname":"公告发布","icon":"icon-log","url":"${BASE_PATH}AdminStrUrl/historyPage.html"},
 										{"menuname":"开奖号码","icon":"icon-set","url":"${BASE_PATH}AdminStrUrl/openNums.html"},
 										{"menuname":"客服信息","icon":"icon-users","url":"${BASE_PATH}AdminStrUrl/kefuMess.html"},

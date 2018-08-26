@@ -6,7 +6,9 @@
 <link rel="stylesheet" type="text/css"href="${BASE_PATH}easyui/themes/gray/easyui.css"/>
 <link rel="stylesheet" type="text/css"href="${BASE_PATH}easyui/themes/icon.css"/>
 <link rel="stylesheet" type="text/css"href="${BASE_PATH}easyui/themes/gray/datagrid.css"/>
+<link rel="stylesheet" type="text/css"href="${BASE_PATH}css/select2.css"/>
 <script type="text/javascript" src="${BASE_PATH}easyui/jquery.min.js"></script>
+<script type="text/javascript" src="${BASE_PATH}js/select2.js"></script>
 <script type="text/javascript" src="${BASE_PATH}js/jquery.form.js"></script>
 <script type="text/javascript" src="${BASE_PATH}easyui/jquery.easyui.min.js"></script>
 <script type="text/javascript" src="${BASE_PATH}easyui/locale/easyui-lang-zh_CN.js"></script>
@@ -25,6 +27,7 @@
 			<option value="1">正常</option>
 			<option value="2">冻结</option>
 		</select>
+		<select id="xiashuKey" style="width:150px;margin-top: 2px;"></select>
 		<a href="javascript:void(0)" onclick="queryfind()" class="easyui-linkbutton" style="width:70px;">搜 索</a>
 	</div>
 	<div style="clear:both;"></div>
@@ -182,6 +185,8 @@ $(function(){
 				    {field: 'fd_creatime', title:'注册时间', width:'15%',formatter:fotmateDate}
 	    ]]
 	});
+	
+	loadduse();
 });
 
 function _seemore(){
@@ -206,6 +211,25 @@ function _seemore(){
             	}
             } 
             $('#user_dlg').dialog('open').dialog('setTitle','查看用户信息');
+        },error:function(error){
+        	console.log(error);
+        }
+	});
+}
+
+function loadduse(){
+	$.ajax({
+        type: "POST",
+        dataType: 'json',
+        url: "${BASE_PATH}AdminStrUrl/loaduseinf.html",
+        success:function(data) {
+        	$("#xiashuKey").empty();
+        	$("#xiashuKey").append("<option value=''>==查看用户下线==</option>");
+        	for(var i=0; i<data.length; i++){
+        		var op = '<option value="'+data[i].rname+'">'+data[i].rname+'</option>';
+        		$("#xiashuKey").append(op);
+        	}
+        	$("#xiashuKey").select2();
         },error:function(error){
         	console.log(error);
         }
@@ -298,6 +322,7 @@ function _delet(){
 function queryfind(){
 	var usnma = $("#searchKey").textbox("getValue");
 	var upStutas = $("#upStutastx").combobox("getValue");
+	var xiashuKey = $("#xiashuKey").val();
 	$('#dg').datagrid({
 	    height: '100%',
 	    fit:true,
@@ -314,7 +339,7 @@ function queryfind(){
 	    toolbar: "#tb",
 	    singleSelect: false,
 		rownumbers:true,
-		queryParams:{"keyowl":usnma,"upStutas":upStutas},
+		queryParams:{"keyowl":usnma,"upStutas":upStutas,"xiashuKey":xiashuKey},
 		columns: [[
 				    {field: 'ck', checkbox:true},
 				    {field: 'fd_username', title:'会员名', width:'10%'},

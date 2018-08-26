@@ -1,5 +1,6 @@
 package lxq.user.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.base.BaseController;
 import com.bean.UserInfo;
 import com.config.ControllerBind;
@@ -21,15 +22,22 @@ public class Controller extends BaseController {
 	
 	//µÇÂ¼ÓÃ»§
 	public void login(){
-		UserInfo uinfo = GetUserInfo.CheckUser(getPara("userName"), getPara("password"));
+		JSONObject json = new JSONObject();
+		if("".equals(getPara("rname"))||null==getPara("rname")){
+			render("/admin/LayUI/login.html");
+			return;
+		}
+		UserInfo uinfo = GetUserInfo.CheckUser(getPara("rname"), getPara("ssword"));
 		if(uinfo!=null){
 			setSessionAttr("loginUser", uinfo.get("fd_username"));
 			setSessionAttr("UserId", uinfo.get("id"));
 			setSessionAttr("Password", uinfo.get("fd_paypassword"));
-			redirect("/VipCustomer.html");
+			json.put("state", "succed");
 		}else{
-			render("/admin/LayUI/login.html");
+			json.put("state", "error");
+			//redirect("/VipCustomer.html");
 		}
+		renderJson(json.toJSONString());
 	}
 	
 	//ÍË»§µÇÂ¼

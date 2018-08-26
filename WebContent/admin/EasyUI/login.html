@@ -2,25 +2,74 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>北京PK拾_管理员</title>
+<title>豪门娱乐管理员登录</title>
+<link href="${BASE_PATH}images/favicon.ico" rel="shortcut icon"/>
+<script src="${BASE_PATH}js/jquery-1.8.3.min.js"></script>
+<style>
+html,body{height:100%; padding:0px; margin:0px;}
+</style>
 </head>
 <body>
-<div style="width:250px; height:150px; margin:0px auto;">
-<form action="${BASE_PATH}alogin/login.html" method="post">
-	<table>
-		<tr>
-			<td>用户名：</td>
-			<td><input type="text" name="userName"/></td>
-		</tr>
-		<tr>
-			<td>密　码：</td>
-			<td><input type="password" name="password"/></td>
-		</tr>
-		<tr>
-			<td colspan="2"><input type="submit" value="登　陆"/></td>
-		</tr>
-	</table>
-</form>
+<div style="background:rgba(0,0,0,0.5); width:100%; height:100%;">
+	<div id="logebox" style="position:absolute; top:100px; right:100px; width:300px; height:250px; border-radius:5px; background:#fff;">
+		<div style="line-height:55px; height: 55px; margin-left: 17px;">管理员登录</div>
+		<div>
+			<div style="float: left; border: 1px solid #e1e1e1; border-right: none; margin-left: 18px; border-radius: 5px 0px 0px 5px;">
+				<img src="${BASE_PATH}images/userimg.png" style="width: 25px;  margin-left: 5px;  margin-top: 3px;"/>
+			</div>
+			<div style="float:left;">
+				<input type="text" id="userName" placeholder="登录账号" style="border: 1px solid #e1e1e1; height: 30px; outline: none; width: 220px; padding-left: 10px; border-radius: 0px 5px 5px 0px;"/>
+			</div>
+			<div style="clear:both;"></div>
+		</div>
+		<div style="margin-top:15px;">
+			<div style="float: left; border: 1px solid #e1e1e1; border-right: none; margin-left: 18px; border-radius: 5px 0px 0px 5px;">
+				<img src="${BASE_PATH}images/suo.png" style="width: 25px;  margin-left: 5px;  margin-top: 3px;"/>
+			</div>
+			<div style="float:left;">
+				<input type="password" id="password" placeholder="登录密码" style="border: 1px solid #e1e1e1; height: 30px; outline: none; width: 220px; padding-left: 10px; border-radius: 0px 5px 5px 0px;"/>
+			</div>
+			<div style="clear:both;"></div>
+		</div>
+		<div id="messbox" style="color:#f00; font-size:13px; height:15px; line-height:15px; width: 263px; margin: 10px auto;"></div>
+		<div style="margin-top:10px;">
+			<div onclick="btnsa()" style="color:#fff; text-align:center; height:35px; line-height:35px; background:blue; margin:5px auto; width:263px; border-radius:5px; cursor:pointer;">登 录</div>
+		</div>
+	</div>
 </div>
 </body>
+<script>
+$(document).keydown(function(event){
+	if(event.keyCode == 13){
+		btnsa();
+	}
+});
+function btnsa(){
+	if($("#userName").val()==""){
+		$("#messbox").text("请输入登录账号");
+		return false;
+	}
+	if($("#password").val()==""){
+		$("#messbox").text("请输入登录密码");
+		return false;
+	}
+	$.ajax({
+        url: "${BASE_PATH}alogin/login.html",
+        type: "POST",
+        data:{
+        	"rname":$("#userName").val(),
+        	"ssword":$("#password").val()
+        },
+        dataType: "json",
+        success: function(data){
+			if(data.state=="error"){
+				$("#messbox").text("账号或密码错误，请核对之后再试");
+			}else{
+				$("#messbox").text("");
+				window.location.href="${BASE_PATH}AdminStrUrl.html";
+			}
+        }
+    });
+}
+</script>
 </html>

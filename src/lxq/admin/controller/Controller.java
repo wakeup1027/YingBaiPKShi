@@ -1,5 +1,6 @@
 package lxq.admin.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.base.BaseController;
 import com.config.ControllerBind;
 
@@ -20,12 +21,18 @@ public class Controller extends BaseController {
 	
 	//µÇÂ¼ÓÃ»§
 	public void login(){
-		if(new FormString().userLogin(getPara("userName"), getPara("password"))){
-			setSessionAttr("loginAdmin", getPara("userName"));
-			redirect("/AdminStrUrl.html");
-		}else{
+		JSONObject json = new JSONObject();
+		if("".equals(getPara("rname"))||null==getPara("rname")){
 			render("/admin/EasyUI/login.html");
+			return;
 		}
+		if(new FormString().userLogin(getPara("rname"), getPara("ssword"))){
+			setSessionAttr("loginAdmin", getPara("rname"));
+			json.put("state", "succed");
+		}else{
+			json.put("state", "error");
+		}
+		renderJson(json.toJSONString());
 	}
 	
 	//ÍË»§µÇÂ¼
