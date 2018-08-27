@@ -720,7 +720,7 @@ public class EasyUI_Controller extends BaseController{
 		Map<String, Object> map = new HashMap<String, Object>();
 		int page = getParaToInt("page");
 		int rows = getParaToInt("rows");
-		List<UserInfo> UI = UserInfo.dao.findByPage(page, rows, "");
+		List<UserInfo> UI = UserInfo.dao.findByPage(page, rows, "ORDER BY fd_creatime DESC");
 		Long total = UserInfo.dao.count("SELECT * FROM userinfo");
 		map.put("rows", UI);
 	    map.put("total", total); 
