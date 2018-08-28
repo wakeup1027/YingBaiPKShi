@@ -24,10 +24,13 @@ public class DemoConfig extends JFinalConfig{
         me.setDevMode(Boolean.parseBoolean(Config.getInstance().getConfigValue("DevMode")));
 		//设置解析渲染html的工厂
 		me.setViewType(ViewType.JSP); // 设置视图类型为Jsp，否则默认为FreeMarker
+		me.setError404View("/admin/LayUI/404.html");
+		me.setError500View("/admin/LayUI/500.html");
+		
 		JFinal3BeetlRenderFactory rf = new JFinal3BeetlRenderFactory();
 		rf.config();
 		me.setRenderFactory(rf);
-		
+
 		// 获取GroupTemplate ,可以设置共享变量等操作  作用是在渲染界面的时候如果出现界面中的方法 也可以执行
 		GroupTemplate groupTemplate = rf.groupTemplate;
 		groupTemplate.registerFunctionPackage("strutil", FormString.class);
