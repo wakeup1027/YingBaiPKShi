@@ -248,6 +248,7 @@ public class LayUI_Controller extends BaseController{
 			setAttr("username",uinfo.getStr("fd_username"));
 			setAttr("idcase",FormString.formstringstart(9,uinfo.getStr("fd_IDcase")));
 			setAttr("banka",FormString.formstringstart(7,uinfo.getStr("fd_bank")));
+			setAttr("banktype",uinfo.getStr("fd_banktype"));
 			setAttr("phonenum",FormString.formstringstart(5,uinfo.getStr("fd_phone")));
 			render(HomePathPage+"user_center.html");
 		}else{
@@ -321,8 +322,9 @@ public class LayUI_Controller extends BaseController{
 		String userid = getSessionAttr("UserId");
 		String agenPass = getPara("fdpassword");
 		String truePass = getSessionAttr("Password");
+		String ss = MD5Util.md5(agenPass);
 		//比较密码是否正确
-		if(MD5Util.md5(agenPass).equals(truePass)){
+		if(ss.equals(truePass)){
 			UserInfo uifo = UserInfo.dao.findById(userid);
 			double yuem = uifo.getDouble("fd_money");//账户余额
 			double getm = Double.parseDouble(getPara("cash"));//申请提现金额

@@ -43,6 +43,11 @@ input{height:30px; width:270px; border:#e1e1e1 solid 1px; border-radius:5px; out
 		<td id="icmes" class="yespskal" style="color:#ff0000;"></td>
 	</tr>
 	<tr>
+		<td>开户行：</td>
+		<td><input id="bankidtype" type="text"/></td>
+		<td id="bantypekmess" class="yespskal" style="color:#ff0000;"></td>
+	</tr>
+	<tr>
 		<td>银行卡：</td>
 		<td><input id="bankidcare" type="text"/></td>
 		<td id="bankmess" class="yespskal" style="color:#ff0000;"></td>
@@ -86,6 +91,10 @@ function submitbtn(){
 		alert("请填写身份证！");
 		return;
 	}
+	if($("#bankidtype").val()==""){
+		alert("请填写开户行！");
+		return;
+	}
 	if($("#bankidcare").val()==""){
 		alert("请绑定真实银行卡！");
 		return;
@@ -107,7 +116,8 @@ function submitbtn(){
         	"userInfo.fd_phone":$("#userphone").val(),
         	"userInfo.fd_truename":$("#truename").val(),
         	"userInfo.fd_IDcase":$("#useridcare").val(),
-        	"fd_bank.fd_IDcase":$("#bankidcare").val()
+        	"userInfo.fd_banktype":$("#bankidtype").val(),
+        	"userInfo.fd_bank":$("#bankidcare").val()
         },
         dataType: "json",
         success: function(data){

@@ -84,6 +84,12 @@
 			</td>
 		</tr>
 		<tr>
+			<td>开户行</td>
+			<td>
+				<input id="banktype" class="easyui-textbox" style="padding-left:10px; width:200px; height:26px;"/>
+			</td>
+		</tr>
+		<tr>
 			<td>银行卡</td>
 			<td>
 				<input id="bank" class="easyui-textbox" style="padding-left:10px; width:200px; height:26px;"/>
@@ -245,6 +251,7 @@ function _savebtninfo(){
 	$.messager.confirm('确认', '确认修改用户信息?', function (r) {
         if (r) {
         	var IDcase = $("#IDcase").textbox("getValue");
+        	var banktype = $("#banktype").textbox("getValue");
         	var bank = $("#bank").textbox("getValue");
         	var phone = $("#phone").textbox("getValue");
         	var status = $("#status").combobox("getValue");
@@ -258,6 +265,7 @@ function _savebtninfo(){
                 data:{
                 	"onu":rows[0].id,
                 	"IDcase":IDcase,
+                	"banktype":banktype,
                 	"bank":bank,
                 	"phone":phone,
                 	"status":status,

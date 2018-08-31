@@ -161,6 +161,7 @@ function settime(countdown) {
     }else{  //否则倒计时
     	if(countdown==${closetime}){
     		location.reload();
+    		return false;
     	}
     	var mmss = fromTime(countdown);
     	countdown = parseInt(countdown)-1000;

@@ -14,8 +14,8 @@ body{padding:0px; margin:0px; font-size:13px; font-family:'微软雅黑'}
 <div>
 	<div style="background:#707089; height:37px; line-height:37px; color:#fff; padding-left:15px; border-radius:5px 5px 0px 0px; font-size:13px;">会员充值</div>
 	<div class="Technological" style="width:250px; margin: 25px auto 10px auto;"></div>
-	<div id="saomaBox" style="background: #fff;padding-top:30px;height: 330px; width: 320px; margin: 30px auto;border-radius:5px;">
-		<table style="margin:0px auto; text-align:center;" cellspacing="10" cellpadding="10" border="0">
+	<div id="saomaBox" style="background: #fff;padding-top:30px;height: 330px; width:600px; margin: 30px auto;border-radius:5px;">
+		<table style="text-align:center; width:100%;" cellspacing="5" cellpadding="10" border="0">
 			<tr>
 				<td>
 					<img src="${BASE_PATH+st.wachat}" style="width:121px; height:121px;">
@@ -23,10 +23,27 @@ body{padding:0px; margin:0px; font-size:13px; font-family:'微软雅黑'}
 				<td>
 					<img src="${BASE_PATH+st.zhifb}" style="width:121px; height:121px;">
 				</td>
+				<td>
+					<table style="text-align:left; border:1px solid #e1e1e1;" cellspacing="7.5">
+						<tr style="height:10px;">
+							<th>姓名：</th>
+							<td>${st.yl_name}</td>
+						</tr>
+						<tr style="height:35px;">
+							<th>卡号：</th>
+							<td>${st.yl_number}</td>
+						</tr>
+						<tr style="height:35px;">
+							<th>开户行：</th>
+							<td>${st.yl_type}</td>
+						</tr>
+					</table>
+				</td>
 			</tr>
 			<tr>
-				<td>微信</td>
-				<td>支付宝</td>
+				<td style="text-align:center;">微信</td>
+				<td style="text-align:center;">支付宝</td>
+				<td style="text-align:center;">银联</td>
 			</tr>
 		</table>
 		<div id="gowrite" style="padding:7px 20px; background:#0000FF; margin:10px auto; cursor:pointer; border-radius:5px; color:#fff; text-align:center; width:250px;">扫码转账成功,去填写转账订单</div>
@@ -40,6 +57,7 @@ body{padding:0px; margin:0px; font-size:13px; font-family:'微软雅黑'}
 					<select id="reTy" style="border: 1px solid #e1e1e1; padding:2px 10px;">
 					  <option value ="1">微信</option>
 					  <option value ="2">支付宝</option>
+					   <option value ="3">银联</option>
 					</select>
 				</td>
 			</tr>
@@ -65,8 +83,10 @@ body{padding:0px; margin:0px; font-size:13px; font-family:'微软雅黑'}
 				<td>
 				<%if(rechar.fd_ordertype=="1"){%>
 					微信
-				<%}else{%>
+				<%}else if(rechar.fd_ordertype=="2"){%>
 					支付宝
+				<%}else{%>
+					银联
 				<%}%>
 				</td>
 			</tr>
@@ -74,8 +94,10 @@ body{padding:0px; margin:0px; font-size:13px; font-family:'微软雅黑'}
 				<td>
 				<%if(rechar.fd_ordertype=="1"){%>
 					微信转账单号：
-				<%}else{%>
+				<%}else if(rechar.fd_ordertype=="2"){%>
 					支付宝转账单号：
+				<%}else{%>
+					银联转账单号：
 				<%}%>
 				</td>
 				<td>${rechar.fd_ordernum}</td>
@@ -101,7 +123,6 @@ $(function(){
 	LoadIMG();
 	//审核通过或者没有记录
 	<%if(rechar.fd_status==-1||rechar.fd_status=="-1"||rechar.fd_status=="1"||rechar.fd_status==1){%>
-		console.log("怎么回事");
 	<%}else{%>
 		$("#saomaBox").hide();
 		$("#writeBox").hide();

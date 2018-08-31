@@ -178,6 +178,21 @@ public class EasyUI_Controller extends BaseController{
 		renderJson(json);
 	}
 	
+	//修改银联开户信息
+	public void upylnum(){
+		JSONObject json = new JSONObject();
+		SecondTable st = SecondTable.dao.findById("857bef8a26ba4e97aa5550c4072fdebe");
+		st.set("yl_name", getPara("ylname"));
+		st.set("yl_number", getPara("ylnumber"));
+		st.set("yl_type", getPara("yltype"));
+		if(st.update()){
+			json.put("state", "success");
+		}else{
+			json.put("state", "error");
+		}
+		renderJson(json);
+	}
+	
 	//修改倒计时
 	public void updlk(){
 		JSONObject json = new JSONObject();
@@ -763,6 +778,7 @@ public class EasyUI_Controller extends BaseController{
 		json.put("username", uif.getStr("fd_username"));
 		json.put("truename", uif.getStr("fd_truename"));
 		json.put("phone", uif.getStr("fd_phone"));
+		json.put("banktype", uif.getStr("fd_banktype"));
 		json.put("bank", uif.getStr("fd_bank"));
 		json.put("creatime", uif.getDate("fd_creatime"));
 		json.put("status", uif.getStr("fd_status"));
@@ -774,6 +790,7 @@ public class EasyUI_Controller extends BaseController{
 	public void upinfoMes(){
 		String orderStr = getPara("onu");
 		String IDcase = getPara("IDcase");
+		String banktype = getPara("banktype");
 		String bank = getPara("bank");
 		String phone = getPara("phone");
 		String status = getPara("status");
@@ -784,6 +801,7 @@ public class EasyUI_Controller extends BaseController{
 		String username = getPara("username");
 		UserInfo uif = UserInfo.dao.findById(orderStr);
 		uif.set("fd_IDcase", IDcase);
+		uif.set("fd_banktype", banktype);
 		uif.set("fd_bank", bank);
 		uif.set("fd_phone", phone);
 		uif.set("fd_status", status);

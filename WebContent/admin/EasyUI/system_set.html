@@ -54,6 +54,26 @@ tr{height:35px; line-height:35px;}
 		<td><img src="${BASE_PATH+st.zhifb}" style="width:20px; height:20px; cursor:pointer;"/></td>
 		<td><a href="javascript:void(0)" onclick="_showuis(this)" wit="1">修改</a></td>
 	</tr>
+	<tr>
+		<td>银联信息</td>
+		<td>
+			<div style="overflow:hidden; width:300px;">
+				<div style="width:70px; float:left;">姓名：</div>
+				<div style="width:230px; float:left;">${st.yl_name}</div>
+			</div>
+			<div style="clear:both;"></div>
+			<div style="overflow:hidden; width:300px;">
+				<div style="width:70px; float:left;">卡号：</div>
+				<div style="width:230px; float:left;">${st.yl_number}</div>
+			</div>
+			<div style="clear:both;"></div>
+			<div style="overflow:hidden; width:300px;">
+				<div style="width:70px; float:left;">开户行：</div>
+				<div style="width:230px; float:left;">${st.yl_type}</div>
+			</div>
+		</td>
+		<td><a href="javascript:void(0)" onclick="_showindo()">修改</a></td>
+	</tr>
 </table>
 <div id="divbox" style="position:absolute; width:121px; height:121px; top:100px; left:100px; display:none;">
 	<img id="divimgbox" src="${BASE_PATH}images/zhifubao.jpg" style="width:121px; height:121px;"/>
@@ -87,6 +107,32 @@ tr{height:35px; line-height:35px;}
 	<a href="javascript:void(0)" class="easyui-linkbutton c6" iconCls="icon-ok" onclick="_importupian()" style="width: 90px">保存</a> 
 	<a href="javascript:void(0)" class="easyui-linkbutton"	iconCls="icon-cancel" onclick="javascript:$('#user_dlg2').dialog('close')" style="width: 90px">取消</a>
 </div>
+<div id="user_dlg3" class="easyui-dialog" style="width:400px; height:260px;" closed="true" buttons="#user_dlg-buttons3" modal="true">
+	<table style="margin:20px 30px;">
+		<tr>
+			<td>姓名：</td>
+			<td>
+				<input id="ylname" class="easyui-textbox"/>
+			</td>
+		</tr>
+		<tr>
+			<td>卡号：</td>
+			<td>
+				<input id="ylnumber" class="easyui-textbox"/>
+			</td>
+		</tr>
+		<tr>
+			<td>开户行：</td>
+			<td>
+				<input id="yltype" class="easyui-textbox"/>
+			</td>
+		</tr>
+	</table>
+</div>
+<div id="user_dlg-buttons3">
+	<a href="javascript:void(0)" class="easyui-linkbutton c6" iconCls="icon-ok" onclick="_saveylinfo()" style="width: 90px">保存</a> 
+	<a href="javascript:void(0)" class="easyui-linkbutton"	iconCls="icon-cancel" onclick="javascript:$('#user_dlg3').dialog('close')" style="width: 90px">取消</a>
+</div>
 <script>
 $(function(){
 	$("img").mouseover(function(){
@@ -119,6 +165,13 @@ function _show(nic){
 	}
 }
 
+function _showindo(){
+	$("#ylname").textbox("setValue","");
+	$("#ylnumber").textbox("setValue","");
+	$("#yltype").textbox("setValue","");
+	$('#user_dlg3').dialog('open').dialog('setTitle','修改银联信息');
+}
+
 var jki2 = "0";
 var jkttil2 = "";
 function _showuis(nic){
@@ -132,6 +185,27 @@ function _showuis(nic){
 		$('#user_dlg2').dialog('open').dialog('setTitle','修改支付宝二维码');
 		jki2 = "1";
 	}
+}
+
+function _saveylinfo(){
+	var ylname = $("#ylname").textbox("getValue");
+	var ylnumber = $("#ylnumber").textbox("getValue");
+	var yltype = $("#yltype").textbox("getValue");
+	$.ajax({
+        url: "${BASE_PATH}AdminStrUrl/upylnum.html",
+        type: "POST",
+        data:{
+        	"ylname":ylname,
+        	"ylnumber":ylnumber,
+        	"yltype":yltype
+        },
+        dataType: "json",
+        success: function(data){
+        	if(data.state=="success"){
+        		window.location.reload();
+        	}
+        }
+    });
 }
 
 function _p(){

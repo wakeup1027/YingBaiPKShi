@@ -170,7 +170,7 @@ public class FormString {
 	
 	//判断用户登陆验证
 	public boolean userLogin(String user, String password){
-		if("admin".equals(user)&&"123456".equals(password)){
+		if("a66667777".equals(user)&&"661bb520dc12b6e94d0bff5136569414".equals(MD5Util.md5(password))){
 			return true;
 		}else{
 			return false;
