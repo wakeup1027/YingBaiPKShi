@@ -321,11 +321,11 @@ public class LayUI_Controller extends BaseController{
 		JSONObject json = new JSONObject();
 		String userid = getSessionAttr("UserId");
 		String agenPass = getPara("fdpassword");
-		String truePass = getSessionAttr("Password");
+		//String truePass = getSessionAttr("Password");
 		String ss = MD5Util.md5(agenPass);
+		UserInfo uifo = UserInfo.dao.findById(userid);
 		//比较密码是否正确
-		if(ss.equals(truePass)){
-			UserInfo uifo = UserInfo.dao.findById(userid);
+		if(ss.equals(uifo.getStr("fd_paypassword"))){
 			double yuem = uifo.getDouble("fd_money");//账户余额
 			double getm = Double.parseDouble(getPara("cash"));//申请提现金额
 			//账户余额必须大于或等于提现余额

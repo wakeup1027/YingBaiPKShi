@@ -29,9 +29,9 @@ public class Controller extends BaseController {
 		}
 		UserInfo uinfo = GetUserInfo.CheckUser(getPara("rname"), getPara("ssword"));
 		if(uinfo!=null){
-			setSessionAttr("loginUser", uinfo.get("fd_username"));
-			setSessionAttr("UserId", uinfo.get("id"));
-			setSessionAttr("Password", uinfo.get("fd_paypassword"));
+			setSessionAttr("loginUser", uinfo.getStr("fd_username"));
+			setSessionAttr("UserId", uinfo.getStr("id"));
+			//setSessionAttr("Password", uinfo.get("fd_paypassword"));
 			json.put("state", "succed");
 		}else{
 			json.put("state", "error");
