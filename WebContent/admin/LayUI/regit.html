@@ -124,6 +124,10 @@ function submitbtn(){
 			if(data.status=="200"||data.status==200){
 				alert("注册成功！等待客服审核");
 				parent.location.reload();
+			}else if(data.status=="600"||data.status==600){
+				alert("注册失败！填写的信息存在特殊字符");
+			}else if(data.status=="500"||data.status==500){
+				alert("注册失败！");
 			}
         }
     });	

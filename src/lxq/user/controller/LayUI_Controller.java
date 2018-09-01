@@ -589,17 +589,41 @@ public class LayUI_Controller extends BaseController{
 		
 	//保存用户申请信息
 	public void ApplyRegit(){
+		JSONObject json = new JSONObject();
 		String uuid = UUID.randomUUID().toString().replace("-", "").toLowerCase();
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		Date now = new Date();
 		UserInfo model = getModel(UserInfo.class,"userInfo");
+		boolean yespass = false;
+		if(FormString.specialfyns(model.getStr("fd_username"))){
+			yespass = true;
+		}
+		if(FormString.specialfyns(model.getStr("fd_phone"))){
+			yespass = true;
+		}
+		if(FormString.specialfyns(model.getStr("fd_truename"))){
+			yespass = true;
+		}
+		if(FormString.specialfyns(model.getStr("fd_IDcase"))){
+			yespass = true;
+		}
+		if(FormString.specialfyns(model.getStr("fd_banktype"))){
+			yespass = true;
+		}
+		if(FormString.specialfyns(model.getStr("fd_bank"))){
+			yespass = true;
+		}
+		if(yespass){
+			json.put("status", "600");
+			renderJson(json.toJSONString());
+			return;
+		}
 		model.set("fd_password", MD5Util.md5(model.getStr("fd_password")));
 		model.set("id", uuid);
 		model.set("fd_creatime",sdf.format(now));
 		model.set("fd_status","0");
 		model.set("fd_tjUser",getSessionAttr("loginUser"));
 		boolean res = model.save();
-		JSONObject json = new JSONObject();
 		if(res){
 			json.put("status", "200");
 		}else{

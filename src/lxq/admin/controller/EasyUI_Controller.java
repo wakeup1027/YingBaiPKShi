@@ -608,7 +608,7 @@ public class EasyUI_Controller extends BaseController{
 		if(!upStutas.equals("")){
 			wherestr+=" AND fd_status='"+upStutas+"'";
 		}
-		List<ApplyMoney> UI = ApplyMoney.dao.findByPage(wherestr, page, rows,"fd_status");
+		List<ApplyMoney> UI = ApplyMoney.dao.findByPage(wherestr, page, rows,"fd_creatime");
 		Long total = ApplyMoney.dao.count("SELECT * FROM applymoney "+wherestr);
 		//获取查找用户的提现总金额
 	    map.put("taoslm", ApplyMoney.dao.findFirst("SELECT SUM(fd_money) AS total FROM applymoney "+wherestr));

@@ -36,9 +36,9 @@ body{background:#fff;font-size:13px; color:#666; font-family:'微软雅黑';padd
 		<div style="height:80px;">
 			<div style="background:#707089; border-radius:5px 5px 0px 0px; height:37px; line-height:37px; color:#fff; padding-left:15px;">
 				<span>开奖倒计时：</span>
-				<span id="mmBox">04</span>
+				<span id="mmBox"></span>
 				<span>分</span>
-				<span id="ssBox">32</span>
+				<span id="ssBox"></span>
 				<span>秒</span>&nbsp;&nbsp;&nbsp;&nbsp;
 				<span id="opening"></span>
 			</div>
@@ -160,8 +160,10 @@ function settime(countdown) {
 		},10000);
     }else{  //否则倒计时
     	if(countdown==${closetime}){
-    		location.reload();
-    		return false;
+    		var intime = setInterval(function(){
+    			location.reload();
+    			window.clearInterval(intime);
+    		},1000);
     	}
     	var mmss = fromTime(countdown);
     	countdown = parseInt(countdown)-1000;
